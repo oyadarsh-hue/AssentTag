@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>AssentTag - Admin Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Modern Reset and Base Styles - Dark Mode */
+        :root {
+            --bg-color: #000000;
+            --card-bg: #0a0a0a;
+            --text-main: #ffffff;
+            --text-secondary: #a3a3a3;
+            --border-color: #333333;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color) !important;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000000 100%);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Overriding the deprecated bgcolor/text attributes */
+        body[bgcolor] {
+            background-color: var(--bg-color) !important;
+            color: var(--text-main) !important;
+        }
+
+        /* Header Styling - Dark */
+        table[width="100%"] {
+            background: #111111 !important;
+            border-bottom: 1px solid #333;
+            padding: 1rem 2rem;
+            width: 100%;
+            border-spacing: 0;
+        }
+
+        font[size="6"] {
+            font-size: 1.5rem !important;
+            font-weight: 800;
+            color: #ffffff !important;
+            letter-spacing: -0.025em;
+            text-transform: uppercase;
+            background: linear-gradient(to right, #fff, #888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Button Styling - Unique & Vibrant */
+        button {
+            border: none;
+            padding: 10px 24px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        /* Nav Buttons - "Solar Flare" */
+        table[width="100%"] button {
+            background: linear-gradient(135deg, #FFD700 0%, #FF4500 100%);
+            /* Gold to Orange Red */
+            color: #000000;
+            box-shadow: 0 0 10px rgba(255, 69, 0, 0.4);
+            margin-left: 10px;
+        }
+
+        table[width="100%"] button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        }
+
+        /* Dashboard Action Buttons - Grid Layout Appearance */
+        /* Primary Actions */
+        a[href="admin-manage-users.html"] button,
+        a[href="admin-photo-details.html"] button,
+        a[href="admin-complaints.html"] button,
+        a[href="admin-feedback.html"] button {
+            background: linear-gradient(135deg, #FF00FF 0%, #00FFFF 100%);
+            /* Magenta to Cyan */
+            color: #000000;
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
+            font-size: 1rem !important;
+            min-width: 200px;
+            margin: 10px;
+        }
+
+        a button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+            filter: brightness(1.2);
+        }
+
+        /* Logout Button - Red Warning */
+        a[href="login.html"] button {
+            background: linear-gradient(135deg, #FF4500 0%, #8B0000 100%);
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(255, 69, 0, 0.4);
+            font-size: 1rem !important;
+            margin: 10px;
+        }
+
+        a[href="login.html"] button:hover {
+            filter: brightness(1.2);
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: #333;
+            margin: 0;
+        }
+
+        /* Main Content Container Styling - Dark Card */
+        center>table {
+            background: #111111 !important;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            margin-top: 3rem;
+            width: 750px !important;
+            border: 1px solid #333 !important;
+            max-width: 95%;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            border-left: 4px solid #00FFFF;
+            /* Cyan accent */
+            padding-left: 15px;
+            display: inline-block;
+        }
+
+        h3 {
+            color: #fff;
+            border-bottom: 2px solid #FF00FF;
+            display: inline-block;
+            padding-bottom: 5px;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        p {
+            color: #a3a3a3;
+            margin-top: 0;
+        }
+
+        /* List Styling */
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            color: #ccc !important;
+        }
+
+        li::marker {
+            color: #00FFFF;
+            /* Cyan bullets */
+        }
+
+        font[size="3"] {
+            font-size: 1rem !important;
+        }
+
+        /* Footer */
+        font[color="#777777"] {
+            color: #444 !important;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body bgcolor="#f4f4f4" text="#333333" link="#0000EE" vlink="#551A8B">
+
+    <!-- Header Table -->
+    <table width="100%" border="0" cellpadding="10" bgcolor="#ffffff">
+        <tr>
+            <td align="left">
+                <font size="6" face="Arial, sans-serif" color="#222222">
+                    <strong>AssentTag Admin Module</strong>
+                </font>
+            </td>
+            <td align="right">
+                <a href="index.html"><button>Back to Main</button></a>
+                <a href="login.html"><button>Admin Login</button></a>
+            </td>
+        </tr>
+    </table>
+
+    <hr color="#dddddd" size="1">
+
+    <br>
+
+    <!-- Main Content Container -->
+    <center>
+        <table width="650" border="0" cellpadding="20" bgcolor="#ffffff">
+            <tr>
+                <td align="center">
+                    <font face="Arial, sans-serif">
+
+                        <h1>Welcome Administrator</h1>
+                        <p>Restricted access for system administrators only.</p>
+
+                        <br>
+                        <hr color="#eeeeee" size="1" width="80%">
+                        <br>
+
+                        <h3>Admin Capabilities</h3>
+
+                        <table width="100%" border="0" cellpadding="5">
+                            <tr>
+                                <td align="left">
+                                    <ul style="list-style-type: square; color: #444444;">
+                                        <li>
+                                            <font size="3">Admin login</font>
+                                        </li>
+                                        <li>
+                                            <font size="3">View and manage registered users</font>
+                                        </li>
+                                        <li>
+                                            <font size="3">Verify registered user</font>
+                                        </li>
+                                        <li>
+                                            <font size="3">Monitor uploaded photos</font>
+                                        </li>
+                                        <li>
+                                            <font size="3">View face recognition and tagging logs</font>
+                                        </li>
+                                        <li>
+                                            <font size="3">Detect and block fake or duplicate accounts</font>
+                                        </li>
+                                        <li>
+                                            <font size="3">Manage security images database</font>
+                                        </li>
+                                        <li>
+                                            <font size="3">View access control decisions (public/private)</font>
+                                        </li>
+                                        <li>
+                                            <font size="3">Handle reported or flagged photos</font>
+                                        </li>
+                                        <li>
+                                            <font size="3">Manage chat misuse or violations</font>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <br><br>
+                        <hr color="#eeeeee" size="1" width="80%">
+                        <br>
+
+                        <a href="admin-manage-users.html"><button style="padding: 10px 20px; font-size: 16px;">View
+                                Registered
+                                Users</button></a>
+                        &nbsp;&nbsp;
+                        <a href="admin-photo-details.html"><button style="padding: 10px 20px; font-size: 16px;">Monitor
+                                Photos</button></a>
+                        <br><br>
+                        <a href="admin-complaints.html"><button style="padding: 10px 20px; font-size: 16px;">View
+                                Complaints</button></a>
+                        &nbsp;&nbsp;
+                        <a href="admin-feedback.html"><button style="padding: 10px 20px; font-size: 16px;">View
+                                Feedback</button></a>
+                        &nbsp;&nbsp;
+                        <a href="login.html"><button style="padding: 10px 20px; font-size: 16px;">Admin
+                                Logout</button></a>
+
+                        <br><br>
+                        <font size="2" color="#777777">
+                            <p>&copy; 2026 AssentTag Systems</p>
+                        </font>
+
+                    </font>
+                </td>
+            </tr>
+        </table>
+    </center>
+
+    <br><br>
+
+</body>
+
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>AssentTag - Post Feedback</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Modern Reset and Base Styles - Dark Mode */
+        :root {
+            --bg-color: #000000;
+            --card-bg: #0a0a0a;
+            --text-main: #ffffff;
+            --text-secondary: #a3a3a3;
+            --border-color: #333333;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color) !important;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000000 100%);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Overriding the deprecated bgcolor/text attributes */
+        body[bgcolor] {
+            background-color: var(--bg-color) !important;
+            color: var(--text-main) !important;
+        }
+
+        /* Header Styling - Dark */
+        table[width="100%"] {
+            background: #111111 !important;
+            border-bottom: 1px solid #333;
+            padding: 1rem 2rem;
+            width: 100%;
+            border-spacing: 0;
+        }
+
+        font[size="6"] {
+            font-size: 1.5rem !important;
+            font-weight: 800;
+            color: #ffffff !important;
+            letter-spacing: -0.025em;
+            text-transform: uppercase;
+            background: linear-gradient(to right, #fff, #888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Button Styling - Unique & Vibrant */
+
+        /* Primary "Submit" Button - "Neon Cyber" */
+        input[type="submit"] {
+            background: linear-gradient(135deg, #FF00FF 0%, #00FFFF 100%);
+            /* Magenta to Cyan */
+            color: #000000;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 800;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        input[type="submit"]:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+            filter: brightness(1.2);
+        }
+
+        /* Secondary "Back" Button - "Solar Flare" */
+        a button {
+            background: linear-gradient(135deg, #FFD700 0%, #FF4500 100%);
+            /* Gold to Orange Red */
+            color: #000000;
+            border: none;
+            padding: 10px 24px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 69, 0, 0.4);
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+        }
+
+        a button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: #333;
+            margin: 0;
+        }
+
+        /* Main Content Container Styling - Dark Card */
+        center table {
+            background: #111111 !important;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            margin-top: 3rem;
+            width: 650px !important;
+            border: 1px solid #333 !important;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            border-left: 4px solid #00FFFF;
+            /* Cyan accent */
+            padding-left: 12px;
+            display: inline-block;
+        }
+
+        p {
+            color: #a3a3a3;
+            margin-top: 0;
+        }
+
+        /* Form Controls Styling - Dark */
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            background-color: #050505;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 8px;
+            padding: 1rem !important;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #FF00FF;
+            box-shadow: 0 0 0 2px rgba(255, 0, 255, 0.2);
+        }
+
+        select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 16px;
+        }
+
+        /* Labels override */
+        td strong font {
+            color: #ffffff !important;
+            font-size: 0.95rem !important;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Recent Feedback Box Styling - Blue Accent for Feedback */
+        div[style*="background-color: #f0faff"] {
+            background-color: #1a1a1a !important;
+            border: 1px dashed #333 !important;
+            border-radius: 8px;
+            padding: 1.5rem !important;
+            color: #ccc;
+            border-left: 4px solid #00FFFF !important;
+            /* Cyan accent */
+        }
+
+        div[style*="background-color: #f0faff"] font {
+            color: #cccccc !important;
+        }
+
+        div[style*="background-color: #f0faff"] strong {
+            color: #fff;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Footer */
+        font[color="#999999"] {
+            color: #444 !important;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body bgcolor="#f4f4f4" text="#333333" link="#0000EE" vlink="#551A8B">
+
+    <!-- Header Table -->
+    <table width="100%" border="0" cellpadding="10" bgcolor="#ffffff">
+        <tr>
+            <td align="left">
+                <font size="6" face="Arial, sans-serif" color="#222222">
+                    <strong>Post Feedback</strong>
+                </font>
+            </td>
+            <td align="right">
+                <a href="user_home.html"><button>Back to User Home</button></a>
+            </td>
+        </tr>
+    </table>
+
+    <hr color="#dddddd" size="1">
+
+    <br><br>
+
+    <!-- Main Content -->
+    <center>
+        <table width="600" border="0" cellpadding="20" bgcolor="#ffffff">
+            <tr>
+                <td align="center">
+                    <font face="Arial, sans-serif">
+
+                        <h2>Share Your Thoughts</h2>
+                        <p>We'd love to hear your suggestions and feedback.</p>
+
+                        <br>
+                        <hr color="#eeeeee" size="1" width="80%">
+                        <br>
+
+                        <form method="POST">
+                            {% csrf_token %}
+                            <table width="100%" border="0" cellpadding="5">
+                                <tr>
+                                    <td align="right"><strong>
+                                            <font size="2">Topic:</font>
+                                        </strong></td>
+                                    <td align="left">
+                                        <input type="text" name="topic" size="40" required style="padding: 5px;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="right" valign="top"><strong>
+                                            <font size="2">Comments:</font>
+                                        </strong></td>
+                                    <td align="left">
+                                        <textarea name="comments" rows="6" cols="42" required style="padding: 5px;"
+                                            placeholder="What do you think?"></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="right"><strong>
+                                            <font size="2">Rating:</font>
+                                        </strong></td>
+                                    <td align="left">
+                                        <select name="rating" style="padding: 5px;">
+                                            <option value="5">Excellent</option>
+                                            <option value="4">Good</option>
+                                            <option value="3">Neutral</option>
+                                            <option value="2">Poor</option>
+                                            <option value="1">Very Poor</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td align="left">
+                                        <br>
+                                        <input type="submit" value="Submit Feedback" style="padding: 8px 20px;">
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+
+                        <br><br>
+                        <div align="left" style="background-color: #f0faff; padding: 15px; border: 1px solid #ddefed;">
+                            <font size="2">
+                                <strong>Your Recent Feedback:</strong><br><br>
+                                <em>No feedback sent yet.</em>
+                            </font>
+                        </div>
+
+                    </font>
+                </td>
+            </tr>
+        </table>
+    </center>
+
+    <br><br>
+    <font face="Arial" size="1" color="#999999">
+        <center>&copy; 2026 AssentTag Systems</center>
+    </font>
+
+</body>
+
+</html>

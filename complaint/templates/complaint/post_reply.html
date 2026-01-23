@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>AssentTag - Admin Reply</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Modern Reset and Base Styles - Dark Mode */
+        :root {
+            --bg-color: #000000;
+            --card-bg: #0a0a0a;
+            --text-main: #ffffff;
+            --text-secondary: #a3a3a3;
+            --border-color: #333333;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color) !important;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000000 100%);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Overriding the deprecated bgcolor/text attributes */
+        body[bgcolor] {
+            background-color: var(--bg-color) !important;
+            color: var(--text-main) !important;
+        }
+
+        /* Header Styling - Dark */
+        table[width="100%"] {
+            background: #111111 !important;
+            border-bottom: 1px solid #333;
+            padding: 1rem 2rem;
+            width: 100%;
+            border-spacing: 0;
+        }
+
+        font[size="6"] {
+            font-size: 1.5rem !important;
+            font-weight: 800;
+            color: #ffffff !important;
+            letter-spacing: -0.025em;
+            text-transform: uppercase;
+            background: linear-gradient(to right, #fff, #888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Button Styling - Unique & Vibrant */
+
+        /* Primary "Post Reply" Button - "Neon Cyber" */
+        input[type="submit"] {
+            background: linear-gradient(135deg, #FF00FF 0%, #00FFFF 100%);
+            /* Magenta to Cyan */
+            color: #000000;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 800;
+            border-radius: 4px;
+            /* Sharp corners for cyber feel */
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        input[type="submit"]:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+            filter: brightness(1.2);
+        }
+
+        /* Secondary "Back" Button - "Solar Flare" */
+        a button {
+            background: linear-gradient(135deg, #FFD700 0%, #FF4500 100%);
+            /* Gold to Orange Red */
+            color: #000000;
+            border: none;
+            padding: 10px 24px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 69, 0, 0.4);
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+        }
+
+        a button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: #333;
+            margin: 0;
+        }
+
+        /* Main Content Container Styling - Dark Card */
+        center table {
+            background: #111111 !important;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            margin-top: 3rem;
+            width: 650px !important;
+            border: 1px solid #333 !important;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            color: #ffffff;
+            margin-bottom: 1.2rem;
+            border-left: 4px solid #FF00FF;
+            /* Matching the neon pink */
+            padding-left: 12px;
+        }
+
+        /* Complaint Box Styling - Dark Mode */
+        div[style*="background-color: #f9f9f9"] {
+            background-color: #1a1a1a !important;
+            border: 1px solid #333 !important;
+            border-radius: 8px;
+            padding: 1.5rem !important;
+            margin-bottom: 2.5rem;
+            border-left: 4px solid #00FFFF !important;
+            /* Cyan accent */
+        }
+
+        div[style*="background-color: #f9f9f9"] font {
+            font-size: 1rem !important;
+            color: #cccccc !important;
+        }
+
+        /* Form Textarea Styling - Dark */
+        textarea {
+            width: 100%;
+            background-color: #050505;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 8px;
+            padding: 1.2rem !important;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #FF00FF;
+            box-shadow: 0 0 0 2px rgba(255, 0, 255, 0.2);
+        }
+
+        textarea::placeholder {
+            color: #555;
+        }
+
+        /* Labels override */
+        td[valign="top"] strong font {
+            color: #ffffff !important;
+        }
+
+        /* Footer */
+        font[color="#999999"] {
+            color: #444 !important;
+            font-weight: 500;
+        }
+    </style>
+
+
+</head>
+
+<body bgcolor="#f4f4f4" text="#333333">
+
+    <!-- Header -->
+    <table width="100%" border="0" cellpadding="10" bgcolor="#ffffff">
+        <tr>
+            <td align="left">
+                <font size="6" face="Arial, sans-serif" color="#222222">
+                    <strong>AssentTag Admin - Post Reply</strong>
+                </font>
+            </td>
+            <td align="right">
+                <a href="admin-dashboard.html">
+                    <button>Back to Admin Home</button>
+                </a>
+            </td>
+        </tr>
+    </table>
+
+    <hr color="#dddddd" size="1">
+
+    <br><br>
+
+    <!-- Main Content -->
+    <center>
+        <table width="600" border="0" cellpadding="20" bgcolor="#ffffff">
+            <tr>
+                <td>
+                    <font face="Arial, sans-serif">
+
+                        <h3>Complaint Description</h3>
+                        <div style="padding: 10px; background-color: #f9f9f9; border: 1px solid #dddddd;">
+                            <font size="2">
+                                This is the complaint description submitted by the user.
+                                Admin can read the issue here before posting a reply.
+                            </font>
+                        </div>
+
+                        <br><br>
+
+                        <h3>Admin Reply</h3>
+
+                        <form method="POST">
+                            {% csrf_token %}
+                            <table width="100%" border="0" cellpadding="5">
+                                <tr>
+                                    <td valign="top" align="right" width="80">
+                                        <strong>
+                                            <font size="2" style="font-weight: 600; color: var(--text-main);">Reply:
+                                            </font>
+                                        </strong>
+                                    </td>
+                                    <td align="left">
+                                        <textarea name="admin_reply" rows="5" cols="42" required style="padding: 5px;"
+                                            placeholder="Enter admin reply here..."></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td align="left">
+                                        <br>
+                                        <input type="submit" value="Post Reply" style="padding: 8px 20px;">
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+
+                    </font>
+                </td>
+            </tr>
+        </table>
+    </center>
+
+    <br><br>
+
+    <font face="Arial" size="1" color="#999999">
+        <center>&copy; 2026 AssentTag Systems</center>
+    </font>
+
+</body>
+
+</html>

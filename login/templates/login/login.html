@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login - AssentTag</title>
+</head>
+
+<body bgcolor="#f4f4f4" text="#333333" link="#0000EE" vlink="#551A8B">
+
+    <!-- Navigation Header -->
+    <table width="100%" border="0" cellpadding="10" bgcolor="#ffffff">
+        <tr>
+            <td align="left">
+                <font size="5" face="Arial"><strong>AssentTag</strong></font>
+            </td>
+            <td align="right">
+                <a href="index.html"><button>Back to Home</button></a>
+                <a href="register.html"><button>Signup</button></a>
+            </td>
+        </tr>
+    </table>
+
+    <hr color="#cccccc" size="1">
+
+    <br><br>
+
+    <!-- Login Box Container -->
+    <center>
+        <table bgcolor="#ffffff" border="0" cellpadding="30" width="400">
+            <tr>
+                <td align="center" style="border: 1px solid #dddddd;">
+                    <font face="Arial">
+                        
+                        <h1>AssentTag Authentication</h1>
+                        <p><font size="2">Please enter your credentials to access your secure AssentTag dashboard.</font></p>
+                        
+                        <br>
+
+                        <form method="POST">
+                            {% csrf_token %}
+                            <p>
+                                <font size="2"><strong>Email Address:</strong></font><br>
+                                <input type="email" id="email" name="email" required size="35">
+                            </p>
+
+                            <p>
+                                <font size="2"><strong>Password:</strong></font><br>
+                                <input type="password" id="password" name="password" required size="35">
+                            </p>
+
+                            <p>
+                                <font size="2"><strong>Access Role:</strong></font><br>
+                                <select id="role">
+                                    <option value="user">User</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </p>
+
+                            <br>
+                            <input type="submit" value="Login to Dashboard" style="padding: 5px 20px;">
+                        </form>
+
+                        <br>
+                        <font size="2">
+                            <p>Don't have an account? <a href="register.html">Register here</a></p>
+                        </font>
+
+                    </font>
+                </td>
+            </tr>
+        </table>
+        
+        <br>
+        <font face="Arial" size="1" color="#999999">
+            <p>&copy; 2026 AssentTag Systems - Secure Login</p>
+        </font>
+    </center>
+
+</body>
+
+</html>
