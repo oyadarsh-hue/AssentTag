@@ -1,0 +1,43 @@
+<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        .scan-line {
+            animation: scan 2s ease-in-out infinite;
+        }
+        @keyframes scan {
+            0%, 100% { transform: translateY(0); opacity: 0.2; }
+            50% { transform: translateY(50px); opacity: 1; }
+        }
+        .pulse {
+            animation: pulse-glow 2s infinite alternate;
+        }
+        @keyframes pulse-glow {
+            from { filter: drop-shadow(0 0 2px #00f3ff); }
+            to { filter: drop-shadow(0 0 8px #00f3ff); }
+        }
+    </style>
+    
+    <!-- Corner Brackets -->
+    <path d="M15 30V15H30" stroke="#00f3ff" stroke-width="4" stroke-linecap="round" class="pulse"/>
+    <path d="M70 15H85V30" stroke="#00f3ff" stroke-width="4" stroke-linecap="round" class="pulse"/>
+    <path d="M15 70V85H30" stroke="#00f3ff" stroke-width="4" stroke-linecap="round" class="pulse"/>
+    <path d="M70 85H85V70" stroke="#00f3ff" stroke-width="4" stroke-linecap="round" class="pulse"/>
+    
+    <!-- Simplified Face Silhouette -->
+    <path d="M50 25C40 25 35 35 35 45C35 55 40 65 50 65C60 65 65 55 65 45C65 35 60 25 50 25Z" fill="#00f3ff" fill-opacity="0.2"/>
+    <path d="M30 80C30 70 40 65 50 65C60 65 70 70 70 80" stroke="#00f3ff" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="45" cy="42" r="2" fill="#00f3ff"/>
+    <circle cx="55" cy="42" r="2" fill="#00f3ff"/>
+    
+    <!-- Animated Scan Line -->
+    <g class="scan-line">
+        <rect x="20" y="25" width="60" height="2" fill="#00f3ff" class="pulse"/>
+        <rect x="20" y="25" width="60" height="8" fill="url(#scanGradient)" opacity="0.3"/>
+    </g>
+    
+    <defs>
+        <linearGradient id="scanGradient" x1="50" y1="25" x2="50" y2="33" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#00f3ff"/>
+            <stop offset="1" stop-color="#00f3ff" stop-opacity="0"/>
+        </linearGradient>
+    </defs>
+</svg>

@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AssentTag - My Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root { --neon-blue: #00f3ff; --magenta: #ff00ff; --bg-dark: #050505; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: url('/static/assets/user_bg.jpg') center/cover fixed; color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-y: auto; padding: 100px 20px 40px;}
+        
+        .glass-nav { position: fixed; top: 0; left: 0; width: 100%; height: 80px; background: rgba(10,10,14,0.95); border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; padding: 0 4%; z-index: 1000;}
+        
+        .nav-left { display: flex; align-items: center; gap: 12px; }
+        .logo-img { width: 35px; animation: pulseGlow 3s infinite alternate; filter: drop-shadow(0 0 5px var(--neon-blue)); }
+        @keyframes pulseGlow { 0% { filter: drop-shadow(0 0 5px var(--neon-blue)); transform: scale(1); } 100% { filter: drop-shadow(0 0 15px var(--neon-blue)); transform: scale(1.05); } }
+        .logo-text { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.2rem; color: #fff; text-transform: uppercase; letter-spacing: 1px;}
+
+        .nav-right { display: flex; align-items: center; gap: 20px; }
+        .nav-btn { background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 8px 16px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: 0.3s; }
+        .nav-btn:hover { background: rgba(0,243,255,0.1); box-shadow: 0 0 10px rgba(0,243,255,0.2); }
+        .profile-wrap { display: flex; align-items: center; gap: 10px; }
+        .profile-name { font-size: 0.85rem; font-weight: 700; color: #fff; }
+        .avatar-circle { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--neon-blue); object-fit: cover; }
+        
+        .btn-outline { background: #ff6600; color: #000; padding: 8px 18px; border-radius: 4px; font-weight: 800; font-size: 0.75rem; text-decoration: none; text-transform: uppercase; transition: 0.3s; border: none; }
+        
+        /* Modal Window mirroring Image 2 */
+        .profile-card { background: #111; border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; width: 100%; max-width: 650px; padding: 2.5rem; box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
+        
+        .header-section { margin-bottom: 25px; border-left: 3px solid var(--neon-blue); padding-left: 15px; }
+        .header-section h2 { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 5px; }
+        .header-section p { font-size: 0.85rem; color: #888; }
+        
+        .table-container { width: 100%; border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; overflow: hidden; }
+        
+        .row-item { display: flex; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .row-item:last-child { border-bottom: none; }
+        
+        .label-col { width: 35%; padding: 15px 20px; font-size: 0.75rem; font-weight: 800; color: #fff; text-transform: uppercase; border-right: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; }
+        .val-col { width: 65%; padding: 15px 20px; font-size: 0.85rem; color: #ccc; display: flex; align-items: center; }
+        
+        .photo-preview { width: 120px; border-radius: 8px; border: 2px solid rgba(255,255,255,0.1); object-fit: cover; }
+        
+        .status-badge { background: rgba(255,193,7,0.1); color: #ffc107; border: 1px solid #ffc107; padding: 6px 12px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .btn-edit { background: linear-gradient(90deg, var(--magenta), var(--neon-blue)); color: #fff; border: none; padding: 12px 24px; font-size: 0.85rem; font-weight: 800; border-radius: 4px; display: inline-block; text-decoration: none; margin-top: 25px; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+        .btn-edit:hover { filter: brightness(1.2); box-shadow: 0 0 15px rgba(0,243,255,0.4); }
+        
+        .footer-text { text-align: center; font-size: 0.7rem; color: #444; margin-top: 50px; }
+
+        /* Biometric Time-Stream UI */
+        #timestream-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #0a0a14 0%, #000 100%);
+            z-index: 2000; display: none; overflow: hidden; perspective: 1000px;
+        }
+        .stream-viewport {
+            width: 100%; height: 100%; perspective: 1500px; transform-style: preserve-3d;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .bio-vault-card {
+            position: absolute; width: 300px; height: 300px; border-radius: 20px;
+            background: rgba(10,10,14,0.8); border: 2px solid var(--neon-blue);
+            transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer;
+            transform-style: preserve-3d; box-shadow: 0 0 30px rgba(0,243,255,0.2);
+        }
+        .vault-img { width: 100%; height: 100%; object-fit: cover; border-radius: 18px; filter: blur(20px); transition: 0.8s; opacity: 0.3; }
+        .vault-lock {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 80px; height: 80px; background: rgba(0,0,0,0.8); border: 2px solid var(--magenta);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            display: flex; align-items: center; justify-content: center; z-index: 10;
+            color: var(--magenta); font-size: 1.5rem; transition: 0.3s;
+        }
+        .vault-lock i { filter: drop-shadow(0 0 10px var(--magenta)); }
+        
+        .bio-key {
+            position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%);
+            width: 70px; height: 70px; border-radius: 50%; background: var(--neon-blue);
+            display: flex; align-items: center; justify-content: center; font-size: 1.8rem;
+            color: #000; cursor: grab; z-index: 3000; box-shadow: 0 0 25px var(--neon-blue);
+            touch-action: none;
+        }
+        .bio-key:active { cursor: grabbing; scale: 0.9; }
+
+        /* HUD & Telemetry */
+        .hud-telemetry {
+            position: absolute; top: 20px; color: rgba(0,243,255,0.4); font-family: 'Orbitron', monospace;
+            font-size: 0.65rem; pointer-events: none; z-index: 2500;
+        }
+        .tele-left { left: 20px; text-align: left; }
+        .tele-right { right: 20px; text-align: right; }
+        .tele-line { margin-bottom: 5px; opacity: 0; animation: teleFade 4s infinite; }
+        @keyframes teleFade { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+
+        .btn-activate-stream {
+            background: transparent; border: 2px solid var(--magenta); color: var(--magenta);
+            padding: 10px 20px; border-radius: 30px; font-weight: 800; font-family: 'Orbitron';
+            text-transform: uppercase; cursor: pointer; margin-top: 20px; transition: 0.3s;
+            display: inline-flex; align-items: center; gap: 10px;
+        }
+        .btn-activate-stream:hover { background: var(--magenta); color: #fff; box-shadow: 0 0 20px rgba(255,0,255,0.4); }
+
+        .btn-exit-stream {
+            position: absolute; top: 30px; right: 50%; transform: translateX(50%);
+            color: #aaa; text-decoration: none; font-weight: 800; font-size: 0.8rem;
+            z-index: 3000; padding: 10px 20px; border: 1px solid #333; border-radius: 20px;
+            background: rgba(0,0,0,0.5); transition: 0.3s;
+        }
+        .btn-exit-stream:hover { color: #fff; background: rgba(255,51,51,0.2); border-color: #ff3333; }
+
+        .handshake-status {
+            position: absolute; bottom: 160px; left: 50%; transform: translateX(-50%);
+            font-family: 'Orbitron'; font-size: 0.9rem; color: var(--neon-blue);
+            opacity: 0; transition: 0.3s; letter-spacing: 2px;
+        }
+
+        /* Posts Grid Matching Public Profile */
+        .posts-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 20px; 
+            width: 100%; 
+            max-width: 1000px; 
+            margin-top: 40px; 
+        }
+        .post-item { 
+            width: 100%; 
+            aspect-ratio: 1; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            position: relative; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            cursor: pointer; 
+            transition: 0.3s; 
+            background: #0a0a0c;
+        }
+        .post-item img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            transition: transform 0.5s; 
+        }
+        .post-item:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 10px 30px rgba(0,243,255,0.2); 
+            border-color: rgba(0,243,255,0.3); 
+        }
+        .post-item:hover img { transform: scale(1.05); }
+        
+        .btn-delete-small {
+            position: absolute; 
+            top: 10px; 
+            right: 10px; 
+            z-index: 100;
+            background: rgba(255,0,0,0.8); 
+            border: none; 
+            color: #fff; 
+            border-radius: 50%; 
+            width: 30px; 
+            height: 30px; 
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+        .btn-delete-small:hover { background: #ff0000; scale: 1.1; }
+        
+    </style>
+</head>
+<body>
+    <nav class="glass-nav">
+        <div class="nav-left">
+            <img src="/static/assets/logo.svg" class="logo-img" onerror="this.style.display='none'">
+            <div class="logo-text">MY PROFILE</div>
+        </div>
+        <div class="nav-right">
+            <a href="/index/index3/" class="nav-btn">Back to Dashboard</a>
+            <div class="profile-wrap">
+                <span class="profile-name">{{ current_user.first_name|default:"User" }}</span>
+                <a href="/register/profile/"><img src="{% if current_user.photo %}/static/{{ current_user.photo }}{% else %}/static/assets/user_icon.svg{% endif %}" class="avatar-circle" onerror="this.onerror=null; this.src='/static/assets/user_icon.svg';"></a>
+            </div>
+        </div>
+    </nav>
+
+    <div id="timestream-overlay">
+        <div class="hud-telemetry tele-left" id="tele-left"></div>
+        <div class="hud-telemetry tele-right" id="tele-right"></div>
+        <a href="#" class="btn-exit-stream" onclick="toggleTimeStream()">EXIT SECURE STREAM &times;</a>
+        
+        <div class="stream-viewport" id="stream-viewport">
+            {% for post in user_posts %}
+            <div class="bio-vault-card">
+                <div class="vault-lock"><i class="fas fa-fingerprint"></i></div>
+                <img src="/image/content/media/{{ post.image_id }}/" class="vault-img">
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="handshake-status" id="handshake-status">INITIATING BIOMETRIC HANDSHAKE...</div>
+        <div class="bio-key" id="bio-key" draggable="true"><i class="fas fa-fingerprint"></i></div>
+    </div>
+
+    <div class="profile-card">
+        <div class="header-section">
+            <h2>Profile Details</h2>
+            <p>Review your personal AssentTag footprint.</p>
+        </div>
+        
+        <div class="table-container">
+            <div class="row-item"> <div class="label-col">FIRST NAME</div> <div class="val-col">{{ j.first_name }}</div> </div>
+            <div class="row-item"> <div class="label-col">LAST NAME</div> <div class="val-col">{{ j.last_name }}</div> </div>
+            <div class="row-item"> <div class="label-col">EMAIL</div> <div class="val-col">{{ j.email }}</div> </div>
+            <div class="row-item"> <div class="label-col">DATE OF BIRTH</div> <div class="val-col">{{ j.date_of_birth|default:"Not specified" }}</div> </div>
+            <div class="row-item"> <div class="label-col">GENDER</div> <div class="val-col">{{ j.gender }}</div> </div>
+            <div class="row-item"> <div class="label-col">CITY</div> <div class="val-col">{{ j.city }}</div> </div>
+            <div class="row-item"> <div class="label-col">MOBILE</div> <div class="val-col">{{ j.mobile|default:"Not recorded" }}</div> </div>
+            <div class="row-item"> <div class="label-col">BIO</div> <div class="val-col">{{ j.bio|default:"No bio provided." }}</div> </div>
+            <div class="row-item"> <div class="label-col">COUNTRY</div> <div class="val-col">{{ j.country|default:"N/A" }}</div> </div>
+            
+            <div class="row-item"> 
+                <div class="label-col">PHOTO</div> 
+                <div class="val-col">
+                    {% if j.photo %}
+                        <img src="/static/{{ j.photo }}" class="photo-preview">
+                    {% else %}
+                        No photo uploaded.
+                    {% endif %}
+                </div> 
+            </div>
+            
+            <div class="row-item"> <div class="label-col">SECURITY STATS</div> <div class="val-col"><span class="status-badge">{% if j.is_private %}PRIVATE{% else %}PUBLIC ROUTED{% endif %}</span></div> </div>
+        </div>
+        
+        <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap; justify-content: center; margin-top: 25px;">
+            <a href="/register/edit/{{ j.register_id }}/" class="btn-edit" style="margin-top:0;">EDIT PROFILE &rarr;</a>
+            <button class="btn-activate-stream" style="margin-top:0; padding:12px 24px;" onclick="toggleTimeStream()"><i class="fas fa-project-diagram"></i> ACTIVATE TIME-STREAM</button>
+            <button class="btn-edit" style="margin-top:0; background: rgba(255,165,0,0.2); border-color: #ffa500; color: #ffa500;" onclick="deactivateAccount()"><i class="fas fa-power-off"></i> HIBERNATE ACCOUNT</button>
+            <button class="btn-edit" style="margin-top:0; background: linear-gradient(90deg, #ff0000, #ff6600);" onclick="initiateScorchedEarth()"><i class="fas fa-fire"></i> INITIATE SCORCHED EARTH</button>
+        </div>
+    </div>
+
+    <!-- POSTS GRID (ADDED FOR DELETION CONTROL) -->
+    <div class="posts-grid">
+        {% for post in user_posts %}
+        <div class="post-item">
+            <div class="btn-delete-small" onclick="confirmDelete('/image/delete_post/{{ post.image_id }}/')">
+                <i class="fas fa-trash-alt"></i>
+            </div>
+            
+            {% if post.is_ghost_text %}
+                <div style="padding:20px; text-align:center; height:100%; display:flex; flex-direction:column; justify-content:center; background:rgba(0,0,0,0.8); color:#0f0; font-family:monospace; font-size:0.8rem;">
+                    <i class="fas fa-fingerprint" style="margin-bottom:10px; color:var(--neon-blue);"></i> GHOST TEXT SECURED
+                </div>
+            {% else %}
+                <img src="/image/content/media/{{ post.image_id }}/" onerror="this.src='/static/assets/default.jpg'">
+            {% endif %}
+        </div>
+        {% empty %}
+        <div style="grid-column: 1 / -1; text-align: center; color: #444; padding: 40px; font-weight: 800; font-family: 'Orbitron'; font-size: 1.2rem; letter-spacing: 2px;">NO DATA SECURED IN VAULT</div>
+        {% endfor %}
+    </div>
+
+    <div class="footer-text">&copy; 2026 AssentTag Systems - Military-Grade Protection</div>
+
+    <script>
+        const viewport = document.getElementById('stream-viewport');
+        const overlay = document.getElementById('timestream-overlay');
+        const key = document.getElementById('bio-key');
+        const statusEl = document.getElementById('handshake-status');
+        let currentZ = 0;
+        let targetZ = 0;
+        let isStreamActive = false;
+
+        function toggleTimeStream() {
+            isStreamActive = !isStreamActive;
+            overlay.style.display = isStreamActive ? 'block' : 'none';
+            if (isStreamActive) {
+                document.body.style.overflow = 'hidden';
+                initStream();
+            } else {
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function initStream() {
+            const cards = document.querySelectorAll('.bio-vault-card');
+            cards.forEach((card, i) => {
+                const z = -i * 800;
+                card.dataset.z = z;
+                card.style.transform = `translate3d(0, 0, ${z}px)`;
+            });
+            runAmbientTelemetry();
+        }
+
+        // Scroll Engine
+        window.addEventListener('wheel', (e) => {
+            if (!isStreamActive) return;
+            targetZ += e.deltaY * 5;
+            targetZ = Math.min(0, targetZ); // Don't go past the first one
+        });
+
+        function animateStream() {
+            if (isStreamActive) {
+                currentZ += (targetZ - currentZ) * 0.1;
+                const cards = document.querySelectorAll('.bio-vault-card');
+                cards.forEach(card => {
+                    const baseZ = parseInt(card.dataset.z);
+                    const finalZ = baseZ - currentZ;
+                    
+                    // Opacity based on distance
+                    const opacity = Math.max(0, 1 - Math.abs(finalZ) / 2000);
+                    card.style.opacity = opacity;
+                    card.style.transform = `translate3d(0, 0, ${finalZ}px)`;
+                    card.style.pointerEvents = (finalZ > -400 && finalZ < 400) ? 'auto' : 'none';
+                });
+            }
+            requestAnimationFrame(animateStream);
+        }
+        animateStream();
+
+        // Drag & Drop Handshake
+        let activeCard = null;
+
+        key.addEventListener('mousedown', (e) => { if (isStreamActive) startDrag(e); });
+        key.addEventListener('touchstart', (e) => { if (isStreamActive) startDrag(e.touches[0]); });
+
+        function startDrag(e) {
+            const move = (moveE) => { drag(moveE.clientX || moveE.touches[0].clientX, moveE.clientY || moveE.touches[0].clientY); };
+            const stop = () => {
+                document.removeEventListener('mousemove', move);
+                document.removeEventListener('mouseup', stop);
+                document.removeEventListener('touchmove', move);
+                document.removeEventListener('touchend', stop);
+                checkHandshake();
+            };
+            document.addEventListener('mousemove', move);
+            document.addEventListener('mouseup', stop);
+            document.addEventListener('touchmove', move);
+            document.addEventListener('touchend', stop);
+        }
+
+        function drag(x, y) {
+            key.style.left = x + 'px';
+            key.style.top = y + 'px';
+            key.style.transform = 'translate(-50%, -50%) scale(1.2)';
+            
+            // Detection
+            const targets = document.querySelectorAll('.bio-vault-card');
+            activeCard = null;
+            targets.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom) {
+                    const currentZ = parseFloat(card.style.transform.split('translate3d(')[1].split(',')[2]);
+                    if (currentZ > -400 && currentZ < 400) {
+                        activeCard = card;
+                        card.style.borderColor = 'var(--magenta)';
+                        card.style.boxShadow = '0 0 50px var(--magenta)';
+                    }
+                } else {
+                    card.style.borderColor = 'var(--neon-blue)';
+                    card.style.boxShadow = '0 0 30px rgba(0,243,255,0.2)';
+                }
+            });
+        }
+
+        function checkHandshake() {
+            key.style.left = '50%';
+            key.style.top = '';
+            key.style.bottom = '80px';
+            key.style.transform = 'translateX(-50%)';
+
+            if (activeCard) {
+                statusEl.style.opacity = '1';
+                setTimeout(() => {
+                    decryptVault(activeCard);
+                    statusEl.innerText = 'HANDSHAKE VERIFIED: ACCESS GRANTED';
+                    setTimeout(() => { statusEl.style.opacity = '0'; statusEl.innerText = 'INITIATING BIOMETRIC HANDSHAKE...'; }, 2000);
+                }, 1000);
+            }
+        }
+
+        function decryptVault(card) {
+            const img = card.querySelector('.vault-img');
+            const lock = card.querySelector('.vault-lock');
+            img.style.filter = 'blur(0)';
+            img.style.opacity = '1';
+            lock.style.transform = 'translate(-50%, -50%) scale(0) rotate(180deg)';
+            lock.style.opacity = '0';
+            card.style.borderColor = '#0f0';
+            card.style.boxShadow = '0 0 50px #0f0';
+            
+            // Particle Bloom
+            createBloom(card);
+        }
+
+        function createBloom(parent) {
+            for(let i=0; i<20; i++) {
+                const p = document.createElement('div');
+                p.style.position = 'absolute';
+                p.style.top = '50%'; p.style.left = '50%';
+                p.style.width = '4px'; p.style.height = '4px';
+                p.style.background = 'var(--neon-blue)';
+                p.style.borderRadius = '50%';
+                parent.appendChild(p);
+
+                const tx = (Math.random()-0.5)*400;
+                const ty = (Math.random()-0.5)*400;
+                
+                p.animate([
+                    { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+                    { transform: `translate(${tx}px, ${ty}px) scale(0)`, opacity: 0 }
+                ], { duration: 1000, easing: 'cubic-bezier(0,0,0,1)' }).onfinish = () => p.remove();
+            }
+        }
+
+        function runAmbientTelemetry() {
+            const left = document.getElementById('tele-left');
+            const right = document.getElementById('tele-right');
+            const data = [
+                "SIGNAL: ENCRYPTED", "PACKET_ID: 0x99F1", "CORE_STATE: BALANCED", 
+                "BIO_SYNC: 99.8%", "LOC_REF: NULL", "ENTROPY: LOW", "NEXUS_LINK: STABLE",
+                "MEM_GUARD: ACTIVE", "AUTH_TOKEN: VERIFIED", "UPLINK: 4.2 Gbps"
+            ];
+
+            setInterval(() => {
+                const lLine = document.createElement('div');
+                lLine.className = 'tele-line';
+                lLine.innerText = `>> ${data[Math.floor(Math.random()*data.length)]}`;
+                left.prepend(lLine);
+                if(left.children.length > 15) left.lastChild.remove();
+
+                const rLine = document.createElement('div');
+                rLine.className = 'tele-line';
+                rLine.innerText = `${(Math.random()*10000).toFixed(0)} [STBL]`;
+                right.prepend(rLine);
+                if(right.children.length > 15) right.lastChild.remove();
+            }, 800);
+        }
+
+        function confirmDelete(url) {
+            Swal.fire({
+                title: '<span style="font-family:\'Orbitron\', sans-serif; color:#ff3333;">Secure Deletion Protocol</span>',
+                html: "WARNING: This will permanently scrub your securely encrypted asset from the AssentTag server array. This action is <b>irreversible</b>.",
+                icon: 'warning',
+                showCancelButton: true,
+                background: 'rgba(15, 15, 20, 0.95)',
+                color: '#fff',
+                cancelButtonColor: 'rgba(255,51,51,0.2)',
+                confirmButtonColor: 'rgba(0, 243, 255, 0.8)',
+                confirmButtonText: 'Initiate Wipe',
+                cancelButtonText: 'Abort'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Scrubbing Target...',
+                        background: 'rgba(15, 15, 20, 0.95)',
+                        color: '#00f3ff',
+                        showConfirmButton: false,
+                        didOpen: () => { Swal.showLoading() }
+                    });
+                    window.location.href = url;
+                }
+            });
+        }
+
+        function deactivateAccount() {
+            Swal.fire({
+                title: '<span style="font-family:\'Orbitron\', sans-serif; color:#ffa500;">HIBERNATE ACCOUNT</span>',
+                html: "This will render your account dormant and log you out. You can automatically break hibernation and restore your profile simply by logging back in.",
+                icon: 'warning',
+                showCancelButton: true,
+                background: 'rgba(5, 5, 5, 0.98)',
+                color: '#fff',
+                confirmButtonColor: '#ffa500',
+                cancelButtonColor: '#111',
+                confirmButtonText: 'Hibernate Now'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/register/deactivate/';
+                }
+            });
+        }
+
+        function initiateScorchedEarth() {
+            Swal.fire({
+                title: '<span style="font-family:\'Orbitron\', sans-serif; color:#ff0000; font-size: 2rem; text-shadow: 0 0 20px #ff0000;">SCORCHED EARTH</span>',
+                html: "<div style='color:#ccc; font-family:monospace; text-align:left; line-height:1.6; background:rgba(255,0,0,0.1); padding:15px; border:1px solid #ff0000; border-radius:8px;'>WARNING: Activating Purge Protocol.<br>> Severing all biometric linkages.<br>> Scrubbing identity footprints.<br>> Permanent data obliteration across entire matrix.<br><br><span style='color:#fff;'>Type <b>PURGE</b> to authorize Self-Destruct.</span></div>",
+                input: 'text',
+                inputAttributes: {
+                    autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                background: 'rgba(5, 5, 5, 0.98)',
+                backdrop: `rgba(255,0,0,0.4) url("/static/assets/glitch.gif") left top no-repeat`,
+                confirmButtonText: 'EXECUTE',
+                cancelButtonText: 'ABORT',
+                confirmButtonColor: '#ff0000',
+                cancelButtonColor: '#111',
+                preConfirm: (login) => {
+                    if (login !== 'PURGE') {
+                        Swal.showValidationMessage('Authorization Failed. Protocol Aborted.')
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: '<span style="font-family:\'Orbitron\', sans-serif; color:#ff0000;">OBLITERATING IDENTITY...</span>',
+                        background: 'rgba(5, 5, 5, 0.98)',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        didOpen: () => { Swal.showLoading() }
+                    });
+                    setTimeout(() => {
+                        window.location.href = '/register/scorched_earth/';
+                    }, 1500);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+\documentclass{beamer}
+\usepackage[british]{babel}
+\usepackage{graphicx,hyperref,ru,url}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{ragged2e}
+\usepackage{caption}
+\usepackage{tikz}
+
+% Fully justify text everywhere
+\let\olditem\item
+\renewcommand{\item}{\olditem\justifying}
+\def\newblock{\hskip .11em plus .33em minus .07em}
+\captionsetup{justification = raggedright, singlelinecheck = false}
+\captionsetup[subfigure]{justification=centering,singlelinecheck=false}
+\definecolor{blueone}{RGB}{26,123,242}
+\setbeamercolor{titlelike}{bg=blueone}
+\makeatother
+
+\setbeamertemplate{section in toc}
+{\leavevmode\leftskip=5ex%
+  \llap{%
+    \usebeamerfont*{section number projected}%
+    \usebeamercolor{section number projected}%
+    \begin{pgfpicture}{-1ex}{0ex}{2.7ex}{4ex}
+      \color{bg}
+      \pgfpathcircle{\pgfpoint{0pt}{.8ex}}{1.9ex}
+      \pgfusepath{fill}
+      \pgftext[base]{\color{fg}\inserttocsectionnumber}
+    \end{pgfpicture}\kern1.25ex%
+  }%
+  \inserttocsection\par}
+\setbeamertemplate{subsection in toc}
+  {\leavevmode\leftskip=2em$\bullet$\hskip1em\inserttocsubsection\par}
+ 
+\setbeamertemplate{frametitle continuation}{}  
+
+\begin{document}
+\begin{frame}
+    \frametitle{Outline}
+    \begin{columns}[t]
+        \begin{column}{0.48\textwidth}
+            \tableofcontents[sections={1-7}]
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \tableofcontents[sections={8-14}]
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\section{Introduction}
+\begin{frame}{Intro}\end{frame}
+\section{Two}
+\begin{frame}{Two}\end{frame}
+\section{Three}
+\begin{frame}{Three}\end{frame}
+\section{Four}
+\begin{frame}\end{frame}
+\section{Five}
+\begin{frame}\end{frame}
+\section{Six}
+\begin{frame}\end{frame}
+\section{Seven}
+\begin{frame}\end{frame}
+\section{Eight}
+\begin{frame}\end{frame}
+\section{Nine}
+\begin{frame}\end{frame}
+\section{Ten}
+\begin{frame}\end{frame}
+\section{Eleven}
+\begin{frame}\end{frame}
+\section{Twelve}
+\begin{frame}\end{frame}
+\section{Thirteen}
+\begin{frame}\end{frame}
+\section{Fourteen}
+\begin{frame}\end{frame}
+\end{document}

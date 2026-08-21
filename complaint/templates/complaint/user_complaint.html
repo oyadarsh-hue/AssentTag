@@ -1,317 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>AssentTag - Post Complaint</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        /* Modern Reset and Base Styles - Dark Mode */
-        :root {
-            --bg-color: #000000;
-            --card-bg: #0a0a0a;
-            --text-main: #ffffff;
-            --text-secondary: #a3a3a3;
-            --border-color: #333333;
-        }
+        :root { --bg-color: #050505; --neon-blue: #00f3ff; --magenta: #ff00ff; --text-main: #ffffff; --text-secondary: #999999; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-y: auto;}
+        
+        .user-bg-container { position: fixed; top: -50%; left: -50%; width: 200%; height: 200%; z-index: -1; pointer-events: none; overflow: hidden; background: #050505; }
+        .user-bg-image { width: 100%; height: 100%; object-fit: cover; animation: rotateBG 120s linear infinite; opacity: 0.3; mix-blend-mode: screen; filter: hue-rotate(20deg) contrast(1.2); }
+        @keyframes rotateBG { 0% { transform: rotate(0deg) scale(1.2); } 100% { transform: rotate(360deg) scale(1.2); } }
 
-        * {
-            box-sizing: border-box;
+        .glass-nav { 
+            background: rgba(10,10,14,0.9); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0 4%; 
+            display: flex; justify-content: space-between; align-items: center; height: 80px; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
         }
+        
+        .nav-left { display: flex; align-items: center; gap: 12px; }
+        .logo-img { width: 35px; animation: pulseGlow 3s infinite alternate; filter: drop-shadow(0 0 5px var(--neon-blue)); }
+        @keyframes pulseGlow { 0% { filter: drop-shadow(0 0 5px var(--neon-blue)); transform: scale(1); } 100% { filter: drop-shadow(0 0 15px var(--neon-blue)); transform: scale(1.05); } }
+        .logo-text { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.2rem; color: #fff; text-transform: uppercase; letter-spacing: 1px;}
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color) !important;
-            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000000 100%);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-
-        /* Overriding the deprecated bgcolor/text attributes */
-        body[bgcolor] {
-            background-color: var(--bg-color) !important;
-            color: var(--text-main) !important;
-        }
-
-        /* Header Styling - Dark */
-        table[width="100%"] {
-            background: #111111 !important;
-            border-bottom: 1px solid #333;
-            padding: 1rem 2rem;
-            width: 100%;
-            border-spacing: 0;
-        }
-
-        font[size="6"] {
-            font-size: 1.5rem !important;
-            font-weight: 800;
-            color: #ffffff !important;
-            letter-spacing: -0.025em;
-            text-transform: uppercase;
-            background: linear-gradient(to right, #fff, #888);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Button Styling - Unique & Vibrant */
-
-        /* Primary "Submit" Button - "Neon Cyber" */
-        input[type="submit"] {
-            background: linear-gradient(135deg, #FF00FF 0%, #00FFFF 100%);
-            /* Magenta to Cyan */
-            color: #000000;
-            border: none;
-            padding: 12px 30px;
-            font-size: 1rem;
-            font-weight: 800;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
-            font-family: 'Inter', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-        }
-
-        input[type="submit"]:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
-            filter: brightness(1.2);
-        }
-
-        /* Secondary "Back" Button - "Solar Flare" */
-        a button {
-            background: linear-gradient(135deg, #FFD700 0%, #FF4500 100%);
-            /* Gold to Orange Red */
-            color: #000000;
-            border: none;
-            padding: 10px 24px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(255, 69, 0, 0.4);
-            font-family: 'Inter', sans-serif;
-            text-transform: uppercase;
-        }
-
-        a button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        hr {
-            border: 0;
-            height: 1px;
-            background: #333;
-            margin: 0;
-        }
-
-        /* Main Content Container Styling - Dark Card */
-        center table {
-            background: #111111 !important;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-            margin-top: 3rem;
-            width: 650px !important;
-            border: 1px solid #333 !important;
-        }
-
-        h2 {
-            font-size: 1.5rem;
-            color: #ffffff;
-            margin-bottom: 0.5rem;
-            border-left: 4px solid #00FFFF;
-            /* Cyan accent */
-            padding-left: 12px;
-            display: inline-block;
-        }
-
-        p {
-            color: #a3a3a3;
-            margin-top: 0;
-        }
-
-        /* Form Controls Styling - Dark */
-        input[type="text"],
-        textarea,
-        select {
-            width: 100%;
-            background-color: #050505;
-            border: 1px solid #333;
-            color: #fff;
-            border-radius: 8px;
-            padding: 1rem !important;
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        textarea {
-            resize: vertical;
-        }
-
-        input[type="text"]:focus,
-        textarea:focus,
-        select:focus {
-            outline: none;
-            border-color: #FF00FF;
-            box-shadow: 0 0 0 2px rgba(255, 0, 255, 0.2);
-        }
-
-        select {
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 1rem center;
-            background-size: 16px;
-        }
-
-        /* Labels override */
-        td strong font {
-            color: #ffffff !important;
-            font-size: 0.95rem !important;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        /* Recent Complaints Box Styling */
-        div[style*="background-color: #fff0f0"] {
-            background-color: #1a1a1a !important;
-            border: 1px dashed #333 !important;
-            border-radius: 8px;
-            padding: 1.5rem !important;
-            color: #ccc;
-            border-left: 4px solid #FF4500 !important;
-            /* Orange Red accent */
-        }
-
-        div[style*="background-color: #fff0f0"] font {
-            color: #cccccc !important;
-        }
-
-        div[style*="background-color: #fff0f0"] strong {
-            color: #fff;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Footer */
-        font[color="#999999"] {
-            color: #444 !important;
-            font-weight: 500;
-        }
+        .nav-right { display: flex; align-items: center; gap: 20px; }
+        .nav-btn { background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 8px 16px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: 0.3s; }
+        .nav-btn:hover { background: rgba(0,243,255,0.1); box-shadow: 0 0 10px rgba(0,243,255,0.2); }
+        .profile-wrap { display: flex; align-items: center; gap: 10px; }
+        .profile-name { font-size: 0.85rem; font-weight: 700; color: #fff; }
+        .avatar-circle { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--neon-blue); object-fit: cover; }
+        
+        .main-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 120px 20px 60px; }
+        
+        .card-wrapper { display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 650px; }
+        .feedback-card { background: rgba(15,15,18,0.85); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 3rem; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
+        
+        .title { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 0.3rem; margin-top: 10px; border-left: 3px solid #ff4500; padding-left: 10px; display: inline-block; }
+        .subtitle { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 2rem; }
+        
+        .divider-fade { width: 100%; height: 1px; background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent); margin-bottom: 2rem; }
+        
+        .form-group { display: flex; align-items: flex-start; margin-bottom: 1.5rem; text-align: left; }
+        .form-label { width: 130px; font-size: 0.8rem; font-weight: 800; color: #fff; text-transform: uppercase; padding-top: 15px; }
+        .form-control { flex: 1; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 15px; border-radius: 6px; font-family: 'Inter',sans-serif; font-size: 0.9rem; transition: 0.3s; }
+        .form-control:focus { outline: none; border-color: var(--neon-blue); box-shadow: 0 0 10px rgba(0,243,255,0.1); }
+        
+        select.form-control { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em; cursor: pointer; }
+        textarea.form-control { resize: vertical; min-height: 120px; }
+        
+        .btn-submit { background: linear-gradient(135deg, #FF4500, #ff00ff); color: #fff; border: none; padding: 14px 28px; font-size: 0.85rem; font-weight: 800; border-radius: 6px; cursor: pointer; margin-top: 1rem; text-transform: uppercase; transition: 0.3s; width: 100%; }
+        .btn-submit:hover { filter: brightness(1.2); box-shadow: 0 0 20px rgba(255,69,0,0.4); }
+        
+        .recent-card { background: rgba(15,15,18,0.85); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 2rem; border-left: 3px solid #ff4500; text-align: left; }
+        .recent-title { font-size: 0.8rem; font-weight: 800; color: #fff; text-transform: uppercase; margin-bottom: 20px; }
+        .recent-msg { font-size: 0.85rem; color: var(--text-secondary); font-style: italic; }
+        
+        .footer-tag { text-align: center; color: #444; font-size: 0.75rem; width: 100%; margin-top: 30px; }
     </style>
 </head>
+<body>
 
-<body bgcolor="#f4f4f4" text="#333333" link="#0000EE" vlink="#551A8B">
+    <div class="user-bg-container">
+        <img src="/static/assets/user_bg.jpg" class="user-bg-image" onerror="this.src='/static/assets/back.jpg'">
+    </div>
 
-    <!-- Header Table -->
-    <table width="100%" border="0" cellpadding="10" bgcolor="#ffffff">
-        <tr>
-            <td align="left">
-                <font size="6" face="Arial, sans-serif" color="#222222">
-                    <strong>Post Complaint</strong>
-                </font>
-            </td>
-            <td align="right">
-                <a href="/index/index1/"><button>Back to User Home</button></a>
-            </td>
-    </table>
+    <nav class="glass-nav">
+        <div class="nav-left">
+            <img src="/static/assets/logo.svg" class="logo-img" onerror="this.style.display='none'">
+            <div class="logo-text">AssentTag Complaint</div>
+        </div>
+        <div class="nav-right">
+            <a href="/index/index3/" class="nav-btn">Back &rarr;</a>
+            <div class="profile-wrap">
+                <span class="profile-name">{{ current_user.first_name }}</span>
+                <a href="/register/profile/"><img src="{% if current_user.photo %}/static/{{ current_user.photo }}{% else %}/static/assets/user_icon.svg{% endif %}" class="avatar-circle" onerror="this.onerror=null; this.src='/static/assets/user_icon.svg';"></a>
+            </div>
+        </div>
+    </nav>
 
-    <hr color="#dddddd" size="1">
-
-    <br><br>
-
-    <!-- Main Content -->
-    <center>
-        <table width="600" border="0" cellpadding="20" bgcolor="#ffffff">
-            <tr>
-                <td align="center">
-                    <font face="Arial, sans-serif">
-
-                        <h2>Report an Issue</h2>
-                        <p>Please describe the issue or complaint you are facing.</p>
-
-                        <br>
-                        <hr color="#eeeeee" size="1" width="80%">
-                        <br>
-
-                        <form method="POST">
-                            {% csrf_token %}
-
-                            <table width="100%" border="0" cellpadding="5">
-                                <tr>
-                                    <td align="right"><strong>
-                                            <font size="2">Subject:</font>
-                                        </strong></td>
-                                    <td align="left">
-                                        <input type="text" name="subject" size="40" required style="padding: 5px;"
-                                            placeholder="Brief subject...">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td align="right" valign="top"><strong>
-                                            <font size="2">Description:</font>
-                                        </strong></td>
-                                    <td align="left">
-                                        <textarea name="description" rows="6" cols="42" required style="padding: 5px;"
-                                            placeholder="Describe the incident or problem..."></textarea>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td align="right"><strong>
-                                            <font size="2" name="urgency">Urgency:</font>
-                                        </strong></td>
-                                    <td align="left">
-                                        <select name="urgency" style="padding: 5px;">
-                                            <option value="low">Low</option>
-                                            <option value="medium">Medium</option>
-                                            <option value="high">High</option>
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td align="left">
-                                        <br>
-                                        <input type="submit" value="Submit Complaint" style="padding: 8px 20px;">
-                                    </td>
-                                </tr>
-                            </table>
-                        </form>
-
-                        <br><br>
-                        <div align="left" style="background-color: #fff0f0; padding: 15px; border: 1px solid #ffdddd;">
-                            <font size="2">
-                                <strong>Recent Complaints:</strong><br><br>
-                                <em>No active complaints.</em>
-                            </font>
-                        </div>
-
-                    </font>
-                </td>
-            </tr>
-        </table>
-    </center>
-
-    <br><br>
-    <font face="Arial" size="1" color="#999999">
-        <center>&copy; 2026 AssentTag Systems</center>
-    </font>
-
+    <div class="main-container">
+        <div class="card-wrapper">
+            <form method="POST" class="feedback-card">
+                {% csrf_token %}
+                <h1 class="title">Report an Issue</h1>
+                <p class="subtitle">Securely log your incident or complaint below.</p>
+                
+                <div class="divider-fade"></div>
+                
+                <div class="form-group">
+                    <label class="form-label">Subject:</label>
+                    <input type="text" name="subject" class="form-control" placeholder="Brief subject..." required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Description:</label>
+                    <textarea name="description" class="form-control" placeholder="Describe the incident or problem in detail..." required></textarea>
+                </div>
+                
+                <div class="form-group" style="align-items: center;">
+                    <label class="form-label">Urgency:</label>
+                    <select name="urgency" class="form-control" required>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn-submit">Submit Complaint</button>
+            </form>
+            
+            <div class="recent-card">
+                <div class="recent-title">Your Recent Complaints:</div>
+                <div class="recent-msg">No active complaints logged in the system.</div>
+            </div>
+            
+            <div class="footer-tag">&copy; 2026 AssentTag Systems</div>
+        </div>
+    </div>
 </body>
-
 </html>

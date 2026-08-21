@@ -1,267 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>AssentTag - Manage Complaints</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
     <style>
-        /* Modern Reset and Base Styles - Dark Mode */
-        :root {
-            --bg-color: #000000;
-            --card-bg: #0a0a0a;
-            --text-main: #ffffff;
-            --text-secondary: #a3a3a3;
-            --border-color: #333333;
+        :root { --bg-dark: #0a0a0c; --neon-blue: #00f3ff; --magenta: #ff00ff; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: #fff; margin:0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+
+        .top-nav {
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0 4%;
+            display: flex; justify-content: space-between; align-items: center; height: 80px; width: 100%; box-sizing: border-box; position: sticky; top: 0; z-index: 1000;
         }
 
-        * {
-            box-sizing: border-box;
+        .logo-box { display: flex; align-items: center; gap: 15px; }
+        .logo-text { font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: 1px; color: #fff; text-transform: uppercase; }
+
+        .btn-orange {
+            background: linear-gradient(135deg, #FFD700 0%, #FF4500 100%); border: none; padding: 10px 20px; 
+            color: #000; font-weight: 800; font-size: 0.8rem; border-radius: 4px; cursor: pointer; text-decoration: none; transition: 0.3s;
+        }
+        .btn-orange:hover { transform: translateY(-2px); box-shadow: 0 0 15px rgba(255,69,0,0.5); }
+
+        .details-card { margin-top: 40px; margin-bottom: 60px; display: flex; flex-direction: column; gap: 20px; }
+        .card-header h2 { font-size: 1.8rem; margin: 0 0 5px 0; border-left: 4px solid var(--neon-blue); padding-left: 15px; }
+        .card-header p { font-size: 0.85rem; color: #888; padding-left: 15px; margin: 0; }
+
+        .table-container {
+            border-radius: 8px; overflow: hidden; background: #161b22; padding: 20px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color) !important;
-            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000000 100%);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-            min-height: 100vh;
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        thead { border-bottom: 2px solid var(--neon-blue); }
+        th { 
+            padding: 15px 10px; color: #fff; font-size: 0.65rem; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 0.5px;
         }
 
-        /* Overriding the deprecated bgcolor/text attributes */
-        body[bgcolor] {
-            background-color: var(--bg-color) !important;
-            color: var(--text-main) !important;
-        }
-
-        /* Header Styling - Dark */
-        table[width="100%"] {
-            background: #111111 !important;
-            border-bottom: 1px solid #333;
-            padding: 1rem 2rem;
-            width: 100%;
-            border-spacing: 0;
-        }
-
-        font[size="6"] {
-            font-size: 1.5rem !important;
-            font-weight: 800;
-            color: #ffffff !important;
-            letter-spacing: -0.025em;
-            text-transform: uppercase;
-            background: linear-gradient(to right, #fff, #888);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Button Styling - Unique & Vibrant */
-        button,
-        a.btn-reply {
-            border: none;
-            padding: 10px 24px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Inter', sans-serif;
-            text-transform: uppercase;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        /* Secondary "Back" Button - "Solar Flare" */
-        table[width="100%"] button {
-            background: linear-gradient(135deg, #FFD700 0%, #FF4500 100%);
-            /* Gold to Orange Red */
-            color: #000000;
-            box-shadow: 0 0 10px rgba(255, 69, 0, 0.4);
-        }
-
-        table[width="100%"] button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        hr {
-            border: 0;
-            height: 1px;
-            background: #333;
-            margin: 0;
-        }
-
-        /* Main Content Container Styling - Dark Card */
-        center>table {
-            background: #111111 !important;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-            margin-top: 3rem;
-            width: 1000px !important;
-            /* Wider for the table */
-            border: 1px solid #333 !important;
-            max-width: 95%;
-        }
-
-        h2 {
-            font-size: 1.5rem;
-            color: #ffffff;
-            margin-bottom: 0.5rem;
-            border-left: 4px solid #00FFFF;
-            /* Cyan accent */
-            padding-left: 12px;
-            display: inline-block;
-        }
-
-        p {
-            color: #a3a3a3;
-            margin-top: 0;
-        }
-
-        /* Structured Data Table Styling */
-        table[border="1"] {
-            width: 100%;
-            border-collapse: collapse;
-            border: 1px solid #333;
-            margin-top: 2rem;
-            background-color: #1a1a1a;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        table[border="1"] th {
-            background: #222;
-            color: #fff;
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 2px solid #FF00FF;
-            /* Neon pink accent line */
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 0.05em;
-        }
-
-        table[border="1"] td {
-            padding: 1rem;
-            border-bottom: 1px solid #333;
-            color: #ccc;
-            font-size: 0.95rem;
-        }
-
-        table[border="1"] tr:last-child td {
-            border-bottom: none;
-        }
-
-        table[border="1"] tr:hover td {
-            background-color: #2a2a2a;
-            color: #fff;
-        }
-
-        /* Reply Link Button */
-        a.btn-reply {
-            background: linear-gradient(135deg, #FF00FF 0%, #00FFFF 100%);
-            /* Magenta to Cyan */
-            color: #000000;
-            padding: 6px 16px;
-            font-size: 0.8rem;
-            box-shadow: 0 0 10px rgba(255, 0, 255, 0.4);
-        }
-
-        a.btn-reply:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
-            filter: brightness(1.2);
-        }
-
-        /* Footer */
-        font[color="#999999"] {
-            color: #444 !important;
-            font-weight: 500;
-        }
+        tbody tr { border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s; }
+        tbody tr:hover { background: rgba(255,255,255,0.02); }
+        
+        td { padding: 15px 10px; color: #ccc; font-size: 0.75rem; font-weight: 500; vertical-align: middle; }
+        
+        .btn-reply { background: var(--magenta); color: #fff; text-decoration: none; padding: 8px 14px; border-radius: 4px; font-weight: 800; font-size: 0.7rem; display: inline-block; transition: 0.3s; }
+        .btn-reply:hover { background: #ff33ff; box-shadow: 0 0 10px var(--magenta); color: #fff; }
     </style>
 </head>
+<body>
 
-<body bgcolor="#f4f4f4" text="#333333">
+    <nav class="top-nav">
+        <div class="logo-box">
+            <span class="logo-text">MANAGE COMPLAINTS</span>
+        </div>
+        <a href="/index/index2/" class="btn-orange">BACK TO ADMIN HOME</a>
+    </nav>
 
-    <!-- Header Table -->
-    <table width="100%" border="0" cellpadding="10" bgcolor="#ffffff">
-        <tr>
-            <td align="left">
-                <font size="6" face="Arial, sans-serif" color="#222222">
-                    <strong>Manage Complaints</strong>
-                </font>
-            </td>
-            <td align="right">
-                <a href="/index/index2/">
-    <button type="button">Back to Admin Home</button>
-             </a>
+    <div class="details-card" style="max-width: 1400px; width: 95%;">
+        <div class="card-header">
+            <h2>User Complaints</h2>
+            <p>Review and resolve user reported issues.</p>
+        </div>
 
-            </td>
-        </tr>
-    </table>
-
-    <hr color="#dddddd" size="1">
-
-    <br><br>
-
-    <!-- Main Content -->
-    <center>
-        <table width="1000" border="0" cellpadding="20" bgcolor="#ffffff">
-            <tr>
-                <td align="center">
-                    <font face="Arial, sans-serif">
-
-                        <div style="text-align: left; padding: 0 1rem;">
-                            <h2>User Complaints</h2>
-                            <p>Review and resolve user reported issues.</p>
-                        </div>
-
-                        <!-- Structured Table -->
-                        <div style="padding: 10px; overflow-x: auto;">
-                            <table border="1">
-                                <tr>
-                                    <th>complaint_id</th>
-                                    <th>date</th>
-                                    <th>time</th>
-                                    <th>complaint</th>
-                                    <th>u_id</th>
-                                    <th>subject</th>
-                                    <th>urgency</th>
-                                    <th>reply</th>
-                                </tr>
-
-                                {% for j in a %}
-                                <tr>
-                                    <td>{{ j.complaint_id }}</td>
-                                    <td>{{ j.date }}</td>
-                                    <td>{{ j.time }}</td>
-                                    <td>{{ j.complaint }}</td>
-                                    <td>{{ j.u_id }}</td>
-                                    <td>{{ j.subject }}</td>
-                                    <td>{{ j.urgency }}</td>
-                                    <td><a href="/complaint/reply/{{ j.complaint_id }}" class="btn-reply">reply</a></td>
-                                </tr>
-                                {% endfor %}
-                            </table>
-                        </div>
-
-                    </font>
-                </td>
-            </tr>
-        </table>
-    </center>
-
-    <br><br>
-    <font face="Arial" size="1" color="#999999">
-        <center>&copy; 2026 AssentTag Systems</center>
-    </font>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>COMPLAINT ID</th>
+                        <th>DATE</th>
+                        <th>TIME</th>
+                        <th>USER</th>
+                        <th>SUBJECT</th>
+                        <th>COMPLAINT THREAD</th>
+                        <th>URGENCY</th>
+                        <th>REPLY LOG</th>
+                        <th>ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for j in a %}
+                    <tr>
+                        <td style="color:var(--neon-blue); font-weight:800;">#{{ j.complaint_id }}</td>
+                        <td>{{ j.date|date:"F j, Y" }}</td>
+                        <td>{{ j.time|time:"g:i a" }}</td>
+                        <td>{{ j.register.first_name }} {{ j.register.last_name }}</td>
+                        <td><span style="color:#fff; font-weight:700;">{{ j.subject }}</span></td>
+                        <td style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ j.complaint }}</td>
+                        <td>
+                            {% if j.urgency == "High" or j.urgency == "Critical" %}
+                                <span style="color:#ff3333; font-weight:800; text-transform:uppercase;">{{ j.urgency }}</span>
+                            {% else %}
+                                <span style="color:#00ff00; font-weight:800; text-transform:uppercase;">{{ j.urgency }}</span>
+                            {% endif %}
+                        </td>
+                        <td style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--magenta);">
+                            {% if j.reply and j.reply != 'pending' and j.reply != 'Pending' %}
+                                {{ j.reply }}
+                            {% else %}
+                                <span style="color:#888; font-style:italic;">Pending...</span>
+                            {% endif %}
+                        </td>
+                        <td><a href="/complaint/reply/{{ j.complaint_id }}" class="btn-reply">REPLY</a></td>
+                    </tr>
+                    {% endfor %}
+                    {% if not a %}
+                    <tr>
+                        <td colspan="9" style="text-align:center; padding: 40px; color:#888;">No complaints reported.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 </body>
-
 </html>

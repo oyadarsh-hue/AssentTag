@@ -1,0 +1,43 @@
+﻿# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# C extensions
+*.so
+
+# Django cache and sessions
+django_cache/
+*.log
+local_settings.py
+db.sqlite3-journal
+
+# Logs and test outputs
+*.log
+*output.txt
+*debug_log.txt
+dynamic_log.txt
+cprofile_output.txt
+serve_error.log
+server_test.log
+
+# IDE & Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+.pyre/
+.pyre_configuration
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/

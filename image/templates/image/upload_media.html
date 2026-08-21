@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AssentTag - Upload Media</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505; --glass: rgba(15, 15, 15, 0.7); --glass-border: rgba(255, 255, 255, 0.08);
+            --neon-blue: #00f3ff; --neon-purple: #bc13fe; --magenta: #ff00ff;
+            --text-main: #ffffff; --text-secondary: #999999;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-main);
+            background-image: url('/static/assets/back.jpg'); background-size: cover; background-attachment: fixed; min-height: 100vh;
+        }
+        .glass-nav {
+            background: rgba(5, 5, 5, 0.85); border-bottom: 1px solid var(--glass-border); padding: 0.8rem 4%; display: flex; justify-content: space-between; align-items: center;
+        }
+        .nav-left { display: flex; align-items: center; gap: 12px; }
+        .logo-img { width: 35px; animation: pulseGlow 3s infinite alternate; filter: drop-shadow(0 0 5px var(--neon-blue)); }
+        @keyframes pulseGlow { 0% { filter: drop-shadow(0 0 5px var(--neon-blue)); transform: scale(1); } 100% { filter: drop-shadow(0 0 15px var(--neon-blue)); transform: scale(1.05); } }
+        .logo-text { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.2rem; color: #fff; text-transform: uppercase; letter-spacing: 1px;}
+
+        .nav-right { display: flex; align-items: center; gap: 20px; }
+        .nav-btn-orange { background: linear-gradient(135deg, #FFC107, #FF5722); border: none; color: #000; padding: 8px 16px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 5px;}
+        .profile-wrap { display: flex; align-items: center; gap: 10px; }
+        .profile-name { font-size: 0.85rem; font-weight: 700; color: #fff; }
+        .avatar-circle { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--neon-purple); object-fit: cover; }
+        
+        .main-container { display: flex; justify-content: center; padding: 6rem 1rem; }
+        
+        .upload-card {
+            background: #0d0d0d;
+            border: 1px solid #222; border-radius: 12px;
+            width: 100%; max-width: 500px; padding: 2.5rem; box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+        }
+        
+        .title { font-size: 1.4rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem; border-left: 3px solid var(--magenta); padding-left: 12px; }
+        .subtitle { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 2rem; margin-left: 15px; }
+        
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .file-input-wrapper {
+            background: #050505; border: 1px solid #222; border-radius: 4px; padding: 10px; display: flex; align-items: center; gap: 10px;
+        }
+        .file-input-wrapper input[type="file"] { color: #fff; font-size: 0.8rem; }
+        .file-input-wrapper input[type="file"]::file-selector-button {
+            background: #222; color: #fff; border: 1px solid #444; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 0.8rem; margin-right: 15px;
+        }
+        
+        .divider { width: 100%; height: 1px; background: #222; margin: 1.5rem 0; }
+        
+        .btn { width: 100%; padding: 14px; font-size: 0.9rem; font-weight: 800; cursor: pointer; border-radius: 4px; border: none; font-family: 'Inter', sans-serif; margin-bottom: 16px; }
+        .btn-capture { background: linear-gradient(135deg, #d38700, #a33b00); color: #000; border: 1px solid #f39c12; }
+        .btn-capture:hover { filter: brightness(1.2); }
+        .btn-submit { background: linear-gradient(135deg, var(--magenta), var(--neon-blue)); color: #fff; text-transform: uppercase; box-shadow: 0 0 15px rgba(0,243,255,0.3); }
+        .btn-submit:hover { filter: brightness(1.2); }
+
+    </style>
+</head>
+<body>
+
+    <nav class="glass-nav">
+        <div class="nav-left">
+            <img src="/static/assets/logo.svg" class="logo-img" onerror="this.style.display='none'">
+            <div class="logo-text">AssentTag Upload</div>
+        </div>
+        <div class="nav-right">
+            <a href="/index/index3/" class="nav-btn-orange">Back to Dashboard</a>
+            <div class="profile-wrap">
+                <span class="profile-name">{{ current_user.first_name }}</span>
+                <a href="/register/profile/"><img src="{% if current_user.photo %}/static/{{ current_user.photo }}{% else %}/static/assets/user_icon.svg{% endif %}" class="avatar-circle" onerror="this.onerror=null; this.src='/static/assets/user_icon.svg';"></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <form method="post" enctype="multipart/form-data" class="upload-card">
+            {% csrf_token %}
+            <h1 class="title">Upload Media</h1>
+            <p class="subtitle">Process your media securely using facial recognition.</p>
+            
+            <div class="form-group">
+                <label class="form-label">1. Select Media File</label>
+                <div class="file-input-wrapper">
+                    <input type="file" name="file" required>
+                </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="form-group">
+                <label class="form-label">2. Verification Capture</label>
+                <button type="button" class="btn btn-capture" onclick="alert('Starting biometric capture...')">CAPTURE WEBCAM</button>
+                <input type="hidden" name="webcam_data" id="webcam_data">
+            </div>
+            
+            <button type="submit" class="btn btn-submit">Start Upload</button>
+        </form>
+    </div>
+</body>
+</html>

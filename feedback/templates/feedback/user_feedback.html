@@ -1,318 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <title>AssentTag - Post Feedback</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Post Feedback - AssentTag</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        /* Modern Reset and Base Styles - Dark Mode */
         :root {
-            --bg-color: #000000;
-            --card-bg: #0a0a0a;
-            --text-main: #ffffff;
-            --text-secondary: #a3a3a3;
-            --border-color: #333333;
+            --neon-blue: #00f3ff;
+            --magenta: #ff00ff;
+            --orange: #ff6600;
+            --bg-dark: #050505;
         }
 
-        * {
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color) !important;
-            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000000 100%);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-            min-height: 100vh;
+            background-color: var(--bg-dark); color: #fff; min-height: 100vh;
+            background: linear-gradient(rgba(5,5,10,0.85), rgba(5,5,10,0.85)), url('/static/assets/user_bg.jpg') center/cover fixed;
+            display: flex; flex-direction: column; align-items: center;
         }
 
-        /* Overriding the deprecated bgcolor/text attributes */
-        body[bgcolor] {
-            background-color: var(--bg-color) !important;
-            color: var(--text-main) !important;
+        /* Top Navigation Bar */
+        .glass-nav { 
+            background: rgba(10,10,14,0.9); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0 4%; 
+            display: flex; justify-content: space-between; align-items: center; height: 80px; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+        }
+        
+        .nav-left { display: flex; align-items: center; gap: 12px; }
+        .logo-img { width: 35px; animation: pulseGlow 3s infinite alternate; filter: drop-shadow(0 0 5px var(--neon-blue)); }
+        @keyframes pulseGlow { 0% { filter: drop-shadow(0 0 5px var(--neon-blue)); transform: scale(1); } 100% { filter: drop-shadow(0 0 15px var(--neon-blue)); transform: scale(1.05); } }
+        .logo-text { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.2rem; color: #fff; text-transform: uppercase; letter-spacing: 1px;}
+
+        .nav-right { display: flex; align-items: center; gap: 20px; }
+        .nav-btn { background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 8px 16px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: 0.3s; }
+        .nav-btn:hover { background: rgba(0,243,255,0.1); box-shadow: 0 0 10px rgba(0,243,255,0.2); }
+        .profile-wrap { display: flex; align-items: center; gap: 10px; }
+        .profile-name { font-size: 0.85rem; font-weight: 700; color: #fff; }
+        .avatar-circle { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--neon-blue); object-fit: cover; }
+
+        /* Central Box */
+        .feedback-card {
+            background: rgba(15,15,18,0.95); backdrop-filter: blur(25px);
+            border: 1px solid rgba(255,255,255,0.05); border-radius: 12px;
+            width: 100%; max-width: 600px; padding: 40px; margin-top: 120px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8); margin-bottom: 50px;
         }
 
-        /* Header Styling - Dark */
-        table[width="100%"] {
-            background: #111111 !important;
-            border-bottom: 1px solid #333;
-            padding: 1rem 2rem;
-            width: 100%;
-            border-spacing: 0;
-        }
+        .card-header { margin-bottom: 30px; }
+        .card-header h2 { font-size: 1.6rem; font-weight: 800; border-left: 3px solid var(--neon-blue); padding-left: 12px; margin-bottom: 8px; }
+        .card-header p { font-size: 0.85rem; color: #888; padding-left: 15px; }
 
-        font[size="6"] {
-            font-size: 1.5rem !important;
-            font-weight: 800;
-            color: #ffffff !important;
-            letter-spacing: -0.025em;
-            text-transform: uppercase;
-            background: linear-gradient(to right, #fff, #888);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Button Styling - Unique & Vibrant */
-
-        /* Primary "Submit" Button - "Neon Cyber" */
-        input[type="submit"] {
-            background: linear-gradient(135deg, #FF00FF 0%, #00FFFF 100%);
-            /* Magenta to Cyan */
-            color: #000000;
-            border: none;
-            padding: 12px 30px;
-            font-size: 1rem;
-            font-weight: 800;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
-            font-family: 'Inter', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-        }
-
-        input[type="submit"]:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
-            filter: brightness(1.2);
-        }
-
-        /* Secondary "Back" Button - "Solar Flare" */
-        a button {
-            background: linear-gradient(135deg, #FFD700 0%, #FF4500 100%);
-            /* Gold to Orange Red */
-            color: #000000;
-            border: none;
-            padding: 10px 24px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(255, 69, 0, 0.4);
-            font-family: 'Inter', sans-serif;
-            text-transform: uppercase;
-        }
-
-        a button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        hr {
-            border: 0;
-            height: 1px;
-            background: #333;
-            margin: 0;
-        }
-
-        /* Main Content Container Styling - Dark Card */
-        center table {
-            background: #111111 !important;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-            margin-top: 3rem;
-            width: 650px !important;
-            border: 1px solid #333 !important;
-        }
-
-        h2 {
-            font-size: 1.5rem;
-            color: #ffffff;
-            margin-bottom: 0.5rem;
-            border-left: 4px solid #00FFFF;
-            /* Cyan accent */
-            padding-left: 12px;
-            display: inline-block;
-        }
-
-        p {
-            color: #a3a3a3;
-            margin-top: 0;
-        }
-
-        /* Form Controls Styling - Dark */
-        input[type="text"],
-        textarea,
-        select {
-            width: 100%;
-            background-color: #050505;
-            border: 1px solid #333;
-            color: #fff;
-            border-radius: 8px;
-            padding: 1rem !important;
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
+        .form-group { margin-bottom: 25px; }
+        label { font-size: 0.75rem; font-weight: 800; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; display: block; }
+        
+        select, textarea {
+            width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
+            color: #fff; padding: 14px 15px; border-radius: 8px; font-size: 0.95rem; font-family: 'Inter', sans-serif;
             transition: all 0.3s;
         }
+        select:focus, textarea:focus { border-color: var(--magenta); outline: none; box-shadow: 0 0 10px rgba(255,0,255,0.2); }
+        select option { background: #111; color: #fff; }
 
-        textarea {
-            resize: vertical;
-        }
+        textarea { resize: vertical; min-height: 120px; }
 
-        input[type="text"]:focus,
-        textarea:focus,
-        select:focus {
-            outline: none;
-            border-color: #FF00FF;
-            box-shadow: 0 0 0 2px rgba(255, 0, 255, 0.2);
+        /* Rating System */
+        .rating-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .rating-box {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px; height: 50px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; font-weight: 800; color: #fff; cursor: pointer; transition: 0.3s;
         }
+        .rating-box:hover { background: rgba(255,255,255,0.1); }
+        .rating-box.selected { background: linear-gradient(135deg, var(--magenta), var(--neon-blue)); border-color: transparent; }
+        input[type="radio"] { display: none; }
 
-        select {
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 1rem center;
-            background-size: 16px;
+        /* Submit Button */
+        .btn-submit {
+            background: linear-gradient(90deg, #b026ff, #00f3ff); border: none; padding: 18px; width: 100%;
+            color: #fff; font-weight: 900; font-size: 1rem; border-radius: 8px; cursor: pointer; text-transform: uppercase;
+            box-shadow: 0 5px 20px rgba(176,38,255,0.4); margin-top: 15px;
         }
+        .btn-submit:hover { filter: brightness(1.2); }
 
-        /* Labels override */
-        td strong font {
-            color: #ffffff !important;
-            font-size: 0.95rem !important;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
+        .footer { padding: 30px; text-align: center; color: #555; font-size: 0.75rem; width: 100%; }
 
-        /* Recent Feedback Box Styling - Blue Accent for Feedback */
-        div[style*="background-color: #f0faff"] {
-            background-color: #1a1a1a !important;
-            border: 1px dashed #333 !important;
-            border-radius: 8px;
-            padding: 1.5rem !important;
-            color: #ccc;
-            border-left: 4px solid #00FFFF !important;
-            /* Cyan accent */
-        }
-
-        div[style*="background-color: #f0faff"] font {
-            color: #cccccc !important;
-        }
-
-        div[style*="background-color: #f0faff"] strong {
-            color: #fff;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Footer */
-        font[color="#999999"] {
-            color: #444 !important;
-            font-weight: 500;
-        }
     </style>
 </head>
+<body>
 
-<body bgcolor="#f4f4f4" text="#333333" link="#0000EE" vlink="#551A8B">
+    <nav class="glass-nav">
+        <div class="nav-left">
+            <img src="/static/assets/logo.svg" class="logo-img" onerror="this.style.display='none'">
+            <div class="logo-text">AssentTag Feedback</div>
+        </div>
+        <div class="nav-right">
+            <a href="/index/index3/" class="nav-btn">Back &rarr;</a>
+            <div class="profile-wrap">
+                <span class="profile-name">{{ current_user.first_name }}</span>
+                <a href="/register/profile/"><img src="{% if current_user.photo %}/static/{{ current_user.photo }}{% else %}/static/assets/user_icon.svg{% endif %}" class="avatar-circle" onerror="this.onerror=null; this.src='/static/assets/user_icon.svg';"></a>
+            </div>
+        </div>
+    </nav>
 
-    <!-- Header Table -->
-    <table width="100%" border="0" cellpadding="10" bgcolor="#ffffff">
-        <tr>
-            <td align="left">
-                <font size="6" face="Arial, sans-serif" color="#222222">
-                    <strong>Post Feedback</strong>
-                </font>
-            </td>
-            <td align="right">
-                <a href="user_home.html"><button>Back to User Home</button></a>
-            </td>
-        </tr>
-    </table>
+    <div class="feedback-card">
+        <div class="card-header">
+            <h2>Share Your Thoughts</h2>
+            <p>Help us improve AssentTag by providing your feedback.</p>
+        </div>
 
-    <hr color="#dddddd" size="1">
+        <form method="POST">
+            {% csrf_token %}
 
-    <br><br>
+            <div class="form-group">
+                <label>Topic of Feedback</label>
+                <select name="topic" required>
+                    <option value="" disabled selected>Select a topic...</option>
+                    <option value="Bug Report">Bug Report</option>
+                    <option value="Feature Request">Feature Request</option>
+                    <option value="User Experience">User Experience</option>
+                    <option value="Privacy Concern">Privacy Concern</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
 
-    <!-- Main Content -->
-    <center>
-        <table width="600" border="0" cellpadding="20" bgcolor="#ffffff">
-            <tr>
-                <td align="center">
-                    <font face="Arial, sans-serif">
+            <div class="form-group">
+                <label>Your Comments</label>
+                <textarea name="comments" placeholder="Describe your experience or suggestions here..." required></textarea>
+            </div>
 
-                        <h2>Share Your Thoughts</h2>
-                        <p>We'd love to hear your suggestions and feedback.</p>
+            <div class="form-group">
+                <label>Overall Rating (1-Poor, 5-Excellent)</label>
+                <div class="rating-grid">
+                    <label class="rating-box">
+                        <input type="radio" name="rating" value="1" required>1
+                    </label>
+                    <label class="rating-box">
+                        <input type="radio" name="rating" value="2" required>2
+                    </label>
+                    <label class="rating-box">
+                        <input type="radio" name="rating" value="3" required>3
+                    </label>
+                    <label class="rating-box">
+                        <input type="radio" name="rating" value="4" required>4
+                    </label>
+                    <label class="rating-box">
+                        <input type="radio" name="rating" value="5" required>5
+                    </label>
+                </div>
+            </div>
 
-                        <br>
-                        <hr color="#eeeeee" size="1" width="80%">
-                        <br>
+            <button type="submit" class="btn-submit">SUBMIT FEEDBACK</button>
+        </form>
+    </div>
 
-                        <form method="POST">
-                            {% csrf_token %}
-                            <table width="100%" border="0" cellpadding="5">
-                                <tr>
-                                    <td align="right"><strong>
-                                            <font size="2">Topic:</font>
-                                        </strong></td>
-                                    <td align="left">
-                                        <input type="text" name="topic" size="40" required style="padding: 5px;">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td align="right" valign="top"><strong>
-                                            <font size="2">Comments:</font>
-                                        </strong></td>
-                                    <td align="left">
-                                        <textarea name="comments" rows="6" cols="42" required style="padding: 5px;"
-                                            placeholder="What do you think?"></textarea>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td align="right"><strong>
-                                            <font size="2">Rating:</font>
-                                        </strong></td>
-                                    <td align="left">
-                                        <select name="rating" style="padding: 5px;">
-                                            <option value="5">Excellent</option>
-                                            <option value="4">Good</option>
-                                            <option value="3">Neutral</option>
-                                            <option value="2">Poor</option>
-                                            <option value="1">Very Poor</option>
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td align="left">
-                                        <br>
-                                        <input type="submit" value="Submit Feedback" style="padding: 8px 20px;">
-                                    </td>
-                                </tr>
-                            </table>
-                        </form>
+    <div class="footer">&copy; 2026 AssentTag Systems</div>
 
-                        <br><br>
-                        <div align="left" style="background-color: #f0faff; padding: 15px; border: 1px solid #ddefed;">
-                            <font size="2">
-                                <strong>Your Recent Feedback:</strong><br><br>
-                                <em>No feedback sent yet.</em>
-                            </font>
-                        </div>
+    <script>
+        const ratingBoxes = document.querySelectorAll('.rating-box');
+        ratingBoxes.forEach(box => {
+            const input = box.querySelector('input');
+            input.addEventListener('change', () => {
+                ratingBoxes.forEach(b => b.classList.remove('selected'));
+                if(input.checked) box.classList.add('selected');
+            });
+        });
 
-                    </font>
-                </td>
-            </tr>
-        </table>
-    </center>
-
-    <br><br>
-    <font face="Arial" size="1" color="#999999">
-        <center>&copy; 2026 AssentTag Systems</center>
-    </font>
-
+        // Intercept form submission to show SweetAlert success message then redirect/reload
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Optional: submit via Ajax or standard submit and let django redirect
+            // Since Django will refresh the identical page unless redirected, we'll use an alert then submit.
+            // Using a hidden frame or fetch is cleaner but this is safe for Django.
+            
+            const formData = new FormData(form);
+            fetch(window.location.href, {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            }).then(() => {
+                Swal.fire({
+                    title: 'Feedback Sent!',
+                    text: 'Thank you for your valuable feedback.',
+                    icon: 'success',
+                    background: '#111', color: '#fff',
+                    confirmButtonColor: '#FF00FF'
+                }).then(() => {
+                    window.location.href = '/index/index3/';
+                });
+            });
+        });
+    </script>
 </body>
-
 </html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AssentTag - User Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/assets/style.css">
+</head>
+
+<body>
+
+    <!-- User Background Animation -->
+    <div class="user-bg-container">
+        <img src="/static/assets/user_bg.jpg" alt="User Background" class="user-bg-image">
+    </div>
+    <nav class="glass-nav" style="display: flex; justify-content: space-between; align-items: center; padding: 0 5%; height: 80px;">
+        <div class="logo" style="display: flex; align-items: center; gap: 10px;">
+            <img src="/static/assets/logo.svg" alt="AssentTag Logo" style="width: 35px; filter: drop-shadow(0 0 5px var(--neon-blue));" onerror="this.style.display='none'">
+            <span class="logo-text" style="font-weight: 800; font-size: 1.2rem; color: #fff;">AssentTag User Module</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <a href="/register/profile/">
+                    <img src="{% if current_user.photo %}/static/{{ current_user.photo }}{% else %}/static/assets/user_icon.svg{% endif %}" style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #00f3ff; object-fit: cover; box-shadow: 0 0 10px rgba(0,243,255,0.3);" onerror="this.onerror=null; this.src='/static/assets/user_icon.svg';">
+                </a>
+                <span style="font-weight: 800; color: #fff; font-size: 1rem;">{{ current_user.first_name|default:"User" }}</span>
+            </div>
+            <a href="/index/index3/" style="border: 1px solid #00f3ff; color: #00f3ff; padding: 8px 20px; border-radius: 6px; font-weight: 800; font-size: 0.85rem; text-decoration: none; text-transform: uppercase; transition: 0.3s;" onmouseover="this.style.background='rgba(0,243,255,0.1)'" onmouseout="this.style.background='transparent'">BACK &rarr;</a>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main>
+        <div class="admin-content-card"> <!-- Reusing card styles for consistency -->
+
+            <h1 class="admin-title-border">Welcome User</h1>
+            <p>Access your personal security dashboard and manage your profile settings.</p>
+
+            <br>
+            <hr>
+            <br>
+
+            <h3 class="admin-subtitle">User Features</h3>
+
+            <!-- Features Grid -->
+            <div class="features"
+                style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px; text-align: left;">
+                <div class="feature-card">
+                    <div class="icon-box colored-1">📋</div>
+                    <h3>User registration with security image capture</h3>
+                    <p>Register securely with facial topology capture.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-box colored-2">🔑</div>
+                    <h3>User login and logout</h3>
+                    <p>Secure session management and authentication.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-box colored-3">📸</div>
+                    <h3>Upload security image</h3>
+                    <p>Mandatory security image required for posting photos.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-box colored-4">📤</div>
+                    <h3>Upload photos to the platform</h3>
+                    <p>Share your moments with military-grade protection.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-box colored-5">🧠</div>
+                    <h3>Automatic face detection and recognition</h3>
+                    <p>Privacy-aware AI identification technology.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-box colored-6">🔔</div>
+                    <h3>Receive notifications when tagged</h3>
+                    <p>Instant alerts when you appear in platform media.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-box colored-1">🛡️</div>
+                    <h3>Select access control preferences</h3>
+                    <p>Choose between Public and Private visibility modes.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-box colored-2">🌫️</div>
+                    <h3>Automatic face blurring</h3>
+                    <p>Blurring active when Private access is selected.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-box colored-3">👤</div>
+                    <h3>View and manage personal profile</h3>
+                    <p>Complete control over your account settings.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-box colored-4">🖼️</div>
+                    <h3>View uploaded photos</h3>
+                    <p>Access your personal secure media vault anytime.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon-box colored-5">🚩</div>
+                    <h3>Report inappropriate photos or misuse</h3>
+                    <p>Help keep the platform safe and respectful.</p>
+                </div>
+            </div>
+
+            <hr>
+            <br>
+
+            <!-- Action Buttons -->
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+                <a href="/complaint/complaint"><button class="btn-magenta-cyan">Post Complaint</button></a>
+                <a href="/complaint/view_replies/"><button class="btn-magenta-cyan">VIEW REPLY BY ADMIN</button></a>
+                <a href="/feedback/feedback"><button class="btn-magenta-cyan">Post Feedback</button></a>
+                <a href="/login/login"><button class="btn-warning-red">Logout</button></a>
+            </div>
+
+            <br><br>
+            <p class="copyright">&copy; 2026 AssentTag Systems</p>
+        </div>
+    </main>
+
+</body>
+
+</html>

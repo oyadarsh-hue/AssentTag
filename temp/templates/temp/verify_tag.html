@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Biometric Tag Verification - AssentTag</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/assets/style.css">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #1a0b2e 0%, #000 100%);
+        }
+        .verify-card {
+            background: rgba(22, 22, 24, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 210, 211, 0.3);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(0, 210, 211, 0.1);
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+        .webcam-container {
+            position: relative;
+            width: 320px;
+            height: 240px;
+            margin: 20px auto;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid var(--neon-cyan);
+            background: #000;
+        }
+        #videoElement {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+        }
+        .scan-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+        }
+        .scan-line {
+            width: 100%;
+            height: 2px;
+            background: var(--neon-cyan);
+            box-shadow: 0 0 15px var(--neon-cyan);
+            position: absolute;
+            top: 0;
+            animation: scan 2s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: 0; }
+            50% { top: 100%; }
+            100% { top: 0; }
+        }
+        .actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        .status-msg {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            min-height: 20px;
+            font-weight: 600;
+        }
+        .success { color: #00FF00; text-shadow: 0 0 10px #00FF00; }
+        .error { color: #FF0055; text-shadow: 0 0 10px #FF0055; }
+    </style>
+</head>
+<body>
+
+    <div class="verify-card">
+        <h2 style="margin-top:0; color:var(--neon-cyan);">Authentication Required</h2>
+        <p style="color:var(--text-secondary); font-size:0.9rem;">
+            Please position your face in the frame to prove your identity before managing this tag.
+        </p>
+        
+        <div class="webcam-container">
+            <video id="videoElement" autoplay playsinline></video>
+            <canvas id="canvasElement" style="display:none;"></canvas>
+            <div class="scan-overlay"><div class="scan-line"></div></div>
+        </div>
+        
+        <div class="status-msg" id="statusMessage">Initializing camera...</div>
+        
+        <div class="actions" id="authActions">
+            <button class="btn-magenta-cyan" id="verifyBtn" style="padding:12px 24px; font-size:1rem;">Authenticate Identity</button>
+            <a href="/index/index4/" class="btn-solar-flare" style="padding:12px 24px; font-size:1rem; opacity:0.8;">Cancel</a>
+        </div>
+        
+        <div class="actions" id="decisionActions" style="display:none;">
+            <a href="/image/approve-tag/{{ perm_id }}/" class="btn-magenta-cyan" style="background:linear-gradient(45deg, #00FF00, #008800);">Approve Tag</a>
+            <a href="/image/reject-tag/{{ perm_id }}/" class="btn-solar-flare">Reject Tag</a>
+        </div>
+    </div>
+    
+    <!-- CSRF Token for AJAX -->
+    {% csrf_token %}
+
+    <script>
+        const video = document.getElementById('videoElement');
+        const canvas = document.getElementById('canvasElement');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const statusMsg = document.getElementById('statusMessage');
+        const authActions = document.getElementById('authActions');
+        const decisionActions = document.getElementById('decisionActions');
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+                .then(function(stream) {
+                    video.srcObject = stream;
+                    statusMsg.textContent = "Camera active. Ready for scan.";
+                    statusMsg.className = "status-msg";
+                })
+                .catch(function(error) {
+                    statusMsg.textContent = "Camera access denied. Cannot verify identity.";
+                    statusMsg.className = "status-msg error";
+                    verifyBtn.disabled = true;
+                });
+        }
+
+        verifyBtn.addEventListener('click', function() {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const dataURL = canvas.toDataURL('image/jpeg', 0.85);
+            
+            statusMsg.textContent = "Analyzing biometrics...";
+            statusMsg.className = "status-msg";
+            verifyBtn.innerHTML = "Processing...";
+            verifyBtn.disabled = true;
+            
+            const formData = new FormData();
+            formData.append('live_photo', dataURL);
+            
+            fetch('/image/verify-live-face/{{ perm_id }}/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    statusMsg.textContent = "Identity Verified ✓";
+                    statusMsg.className = "status-msg success";
+                    
+                    // Hide auth, show decision
+                    authActions.style.display = 'none';
+                    decisionActions.style.display = 'flex';
+                    
+                    // Stop webcam
+                    const stream = video.srcObject;
+                    if(stream) {
+                        const tracks = stream.getTracks();
+                        tracks.forEach(track => track.stop());
+                    }
+                } else {
+                    statusMsg.textContent = data.message || "Verification Failed. Unrecognized face.";
+                    statusMsg.className = "status-msg error";
+                    verifyBtn.innerHTML = "Try Again";
+                    verifyBtn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                statusMsg.textContent = "Network error during verification.";
+                statusMsg.className = "status-msg error";
+                verifyBtn.innerHTML = "Try Again";
+                verifyBtn.disabled = false;
+            });
+        });
+    </script>
+</body>
+</html>

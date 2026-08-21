@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AssentTag - Messages</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --neon-blue: #00f3ff; --neon-purple: #bc13fe; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: url('/static/assets/user_bg.jpg') center/cover fixed; color: #fff; margin:0; padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+        .glass-nav { 
+            background: rgba(10,10,14,0.9); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0 4%; 
+            display: flex; justify-content: space-between; align-items: center; height: 80px; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+        }
+        
+        .nav-left { display: flex; align-items: center; gap: 12px; }
+        .logo-img { width: 35px; animation: pulseGlow 3s infinite alternate; filter: drop-shadow(0 0 5px var(--neon-blue)); }
+        @keyframes pulseGlow { 0% { filter: drop-shadow(0 0 5px var(--neon-blue)); transform: scale(1); } 100% { filter: drop-shadow(0 0 15px var(--neon-blue)); transform: scale(1.05); } }
+        .logo-text { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.2rem; color: #fff; text-transform: uppercase; letter-spacing: 1px;}
+
+        .nav-right { display: flex; align-items: center; gap: 20px; }
+        .nav-btn { background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 8px 16px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: 0.3s; }
+        .nav-btn:hover { background: rgba(0,243,255,0.1); box-shadow: 0 0 10px rgba(0,243,255,0.2); }
+        .profile-wrap { display: flex; align-items: center; gap: 10px; }
+        .profile-name { font-size: 0.85rem; font-weight: 700; color: #fff; }
+        .avatar-circle { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--neon-blue); object-fit: cover; }
+
+        .inbox-card {
+            background: #161b22; 
+            border-radius: 12px; width: 100%; max-width: 600px;
+            border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            max-height: 75vh; overflow-y: auto; margin-top: 60px;
+        }
+
+        .card-header { padding: 20px 25px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 1.1rem; font-weight: 800; color: #fff; background: #0d1117; }
+
+        .contact-item { display: flex; align-items: center; justify-content: space-between; padding: 20px 30px; border-bottom: 1px solid rgba(255,255,255,0.1); transition: background 0.3s; }
+        .contact-item:last-child { border-bottom: none; }
+        .contact-item:hover { background: rgba(255,255,255,0.1); }
+        
+        .contact-info { display: flex; align-items: center; gap: 18px; }
+        .avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--neon-purple); }
+        
+        .contact-name { font-size: 1rem; font-weight: 700; color: #fff; display: block; margin-bottom: 3px; }
+        .contact-handle { font-size: 0.75rem; color: #aaa; }
+        
+        .btn-chat { color: var(--neon-blue); text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: 0.3s; }
+        .btn-chat:hover { text-shadow: 0 0 10px rgba(0,243,255,0.5); }
+    </style>
+</head>
+<body>
+    <nav class="glass-nav">
+        <div class="nav-left">
+            <img src="/static/assets/logo.svg" class="logo-img" onerror="this.style.display='none'">
+            <div class="logo-text">AssentTag Message</div>
+        </div>
+        <div class="nav-right" style="display:flex; align-items:center; gap:20px;">
+            <a href="/index/index3/" class="nav-btn" style="color:var(--neon-blue); text-decoration:none; font-weight:600; padding:8px 15px; border:1px solid var(--neon-blue); border-radius:5px; transition:0.3s;" onmouseover="this.style.background='rgba(0, 243, 255, 0.1)'" onmouseout="this.style.background='transparent'">Back &rarr;</a>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span class="profile-name" style="font-weight: 700; color: #fff; font-size: 0.9rem;">{{ current_user.first_name }}</span>
+                <a href="/register/profile/"><img src="{% if current_user.photo %}/media/{{ current_user.photo }}{% else %}/static/assets/user_icon.svg{% endif %}" class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--neon-blue); object-fit: cover;" onerror="this.onerror=null; this.src='/static/assets/user_icon.svg';"></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="inbox-card">
+        <div class="card-header">Your Mutual Friends</div>
+        
+        {% for u in mutual_users %}
+        <div class="contact-item">
+            <div class="contact-info">
+                <img class="avatar" src="/media/{{ u.photo }}" onerror="this.onerror=null; this.src='/static/assets/user_icon.svg';">
+                <div>
+                    <span class="contact-name">{{ u.first_name }} {{ u.last_name }}</span>
+                    <span class="contact-handle">@{{ u.first_name|lower|default:"user" }}</span>
+                </div>
+            </div>
+            <a href="/login/chat/{{ u.register_id }}/" class="btn-chat" style="display:flex; align-items:center; gap:8px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="filter: drop-shadow(0 0 3px var(--neon-blue));">
+                    <path d="M12 2L4 5V11C4 16.1 7.4 20.8 12 22C16.6 20.8 20 16.1 20 11V5L12 2ZM12 18C10.9 18 10 17.1 10 16C10 14.9 10.9 14 12 14C13.1 14 14 14.9 14 16C14 17.1 13.1 18 12 18ZM15 12H9V8H15V12Z" fill="var(--neon-blue)"/>
+                </svg>
+                OPEN COMMS
+            </a>
+        </div>
+        {% endfor %}
+        
+        {% if not mutual_users %}
+        <div style="padding: 60px 30px; text-align: center; color: #aaa;">
+            You have no mutual followers to privately message.
+        </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>

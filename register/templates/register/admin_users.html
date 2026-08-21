@@ -207,7 +207,7 @@
                 </font>
             </td>
             <td align="right">
-                <a href="admin-dashboard.html"><button>Back to Admin Home</button></a>
+                <a href="/index/index2"><button>Back to Admin Home</button></a>
             </td>
         </tr>
     </table>
@@ -265,7 +265,7 @@
                                     <td>{{ j.password }}</td>
                                     <td>{{ j.confirm }}</td>
                                     <td>{{ j.country }}</td>
-                                    <td>{{ j.photo }}</td>
+                                    <td><img src="/static/{{ j.photo }}" width="200" height="200"></td>
                                     <td style="white-space: nowrap;">
                                         <a href="/register/accept/{{ j.register_id }}"
                                             class="btn-action btn-accept">accept</a>

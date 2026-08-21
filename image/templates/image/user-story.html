@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AssentTag - Create Neon Silhouette Story</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <style>
+        :root { --neon-blue: #00f3ff; --magenta: #ff00ff; }
+        body { background: #050505; color: #fff; font-family: 'Inter', sans-serif; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .glass-card { background: rgba(15,15,20,0.9); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 40px; box-shadow: 0 0 50px rgba(0,0,0,0.8), inset 0 0 20px rgba(255,0,255,0.05); text-align: center; max-width: 600px; width: 100%; }
+        h1 { font-family: 'Orbitron', sans-serif; color: var(--magenta); font-size: 2rem; margin-bottom: 10px; text-shadow: 0 0 15px rgba(255,0,255,0.5); }
+        p { color: #aaa; margin-bottom: 30px; font-size: 0.95rem; }
+        #videoElement { width: 100%; border-radius: 20px; border: 2px solid var(--neon-blue); box-shadow: 0 0 30px rgba(0,243,255,0.2); background: #000; margin-bottom: 20px; transform: scaleX(-1); }
+        .capture-btn { background: linear-gradient(135deg, var(--neon-blue), var(--magenta)); border: none; padding: 15px 30px; border-radius: 30px; font-family: 'Orbitron', sans-serif; font-size: 1.1rem; font-weight: 800; color: #fff; cursor: pointer; transition: 0.3s; width: 100%; text-transform: uppercase; letter-spacing: 2px; }
+        .capture-btn:hover { box-shadow: 0 0 20px rgba(0, 243, 255, 0.4), 0 0 40px rgba(255, 0, 255, 0.4); transform: translateY(-2px); }
+        .back-btn { margin-top: 20px; color: #888; text-decoration: none; font-size: 0.9rem; transition: 0.3s; display: inline-block; }
+        .back-btn:hover { color: #fff; text-shadow: 0 0 10px #fff; }
+    </style>
+</head>
+<body>
+    <div class="glass-card">
+        <h1>NEON SILHOUETTE</h1>
+        <p><i class="fas fa-lock" style="color:var(--neon-blue);"></i> Frame-Only Story. Backgrounds are strictly dropped. Only your Biometric face & shoulders will be visible.</p>
+        
+        {% if msg %}
+        <div style="background: rgba(255,51,51,0.1); border: 1px solid rgba(255,51,51,0.5); color: #ff3333; padding: 15px; border-radius: 12px; margin-bottom: 20px; font-weight: 600;">
+            {{ msg }}
+        </div>
+        {% endif %}
+
+        <form action="/image/add_story/" method="POST" id="storyForm">
+            {% csrf_token %}
+            <video autoplay="true" id="videoElement"></video>
+            <canvas id="canvas" style="display:none;"></canvas>
+            <input type="hidden" name="live_photo" id="live_photo_data" required>
+            
+            <button type="button" class="capture-btn" id="capturePostBtn" onclick="captureAndSubmit()"><i class="fas fa-camera-retro"></i> Capture & Post</button>
+        </form>
+        
+        <a href="/index/index3/" class="back-btn">&larr; Return to Dashboard</a>
+    </div>
+
+    <script>
+        let video = document.querySelector("#videoElement");
+        let canvas = document.querySelector("#canvas");
+        let ctx = canvas.getContext('2d');
+
+        if (navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function (stream) { video.srcObject = stream; })
+                .catch(function (error) { console.log("Something went wrong!"); });
+        }
+
+        function captureAndSubmit() {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            // Mirror image correctly
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            let dataURI = canvas.toDataURL('image/jpeg', 0.95);
+            document.getElementById('live_photo_data').value = dataURI;
+            
+            const btn = document.getElementById('capturePostBtn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ENCRYPTING FRAME...';
+            btn.style.opacity = '0.7';
+            btn.style.pointerEvents = 'none';
+            
+            document.getElementById('storyForm').submit();
+        }
+    </script>
+</body>
+</html>

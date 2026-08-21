@@ -5,12 +5,12 @@ from django.db import models
 
 
 class Login(models.Model):
-    u_id = models.AutoField(primary_key=True)
+    login_id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=45)
     password = models.CharField(max_length=45)
     type = models.CharField(max_length=45)
-
+    u_id = models.IntegerField()
     class Meta:
-        managed = False
+        #managed = False
         db_table = 'login'
 

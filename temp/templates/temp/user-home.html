@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>AssentTag - User Home</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/assets/style.css?v=1845">
     <style>
         /* Modern Reset and Base Styles - Dark Mode */
         :root {
@@ -192,25 +193,42 @@
 
 <body bgcolor="#f4f4f4" text="#333333" link="#0000EE" vlink="#551A8B">
 
-    <!-- Header Table -->
-    <table width="100%" border="0" cellpadding="10" bgcolor="#ffffff">
-        <tr>
-            <td align="left">
-                <font size="6" face="Arial, sans-serif" color="#222222">
-                    <strong>AssentTag User Module</strong>
-                </font>
-            </td>
-            <td align="right">
-                <a href="index.html"><button>Back to Main</button></a>
-                <a href="login.html"><button>Login</button></a>
-                <a href="register.html"><button>Signup</button></a>
-            </td>
-        </tr>
-    </table>
+    <!-- 4K ANIMATED BACKGROUND -->
+    <div class="user-bg-container">
+        <img src="/static/assets/user_bg.jpg" alt="User Background" class="user-bg-image">
+    </div>
 
-    <hr color="#dddddd" size="1">
+    <!-- GLASS NAVIGATION -->
+    <nav class="glass-nav" style="margin-bottom: 30px;">
+        <div class="logo">
+            <span class="logo-text">AssentTag</span>
+        </div>
 
-    <br>
+        <div class="nav-controls">
+            <a href="/index/index4/" class="nav-btn btn-notification">
+                🔔 Notify
+            </a>
+            <a href="/image/image/" class="nav-btn btn-upload">
+                📸 Upload
+            </a>
+            <a href="/register/individual-user" class="nav-btn btn-profile">
+                👤 Profile
+                <div class="user-avatar" style="width:24px; height:24px; border-radius:50%; overflow:hidden; display:inline-block; vertical-align:middle; margin-left:5px;">
+                    {% if current_user.photo %}
+                    <img src="/static/{{ current_user.photo }}" alt="User" style="width:100%; height:100%; object-fit:cover;">
+                    {% else %}
+                    U
+                    {% endif %}
+                </div>
+            </a>
+            <a href="/index/index3/" class="nav-btn btn-user-module">
+                📊 Feed
+            </a>
+            <a href="/index/index/" class="nav-btn btn-logout">
+                ⏻ Logout
+            </a>
+        </div>
+    </nav>
 
     <!-- Main Content Container -->
     <center>

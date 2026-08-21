@@ -1,0 +1,135 @@
+\chapter{SYSTEM ANALYSIS}
+
+The System Analysis phase involves studying the existing social media photo-sharing environment, identifying the limitations in current platforms, and defining the specific technological requirements of the proposed system. The objective of this phase is to architect a secure and privacy-aware social media platform capable of preventing fake identities, detecting duplicate accounts via biometric descriptors, and ensuring consent-based facial visibility completely through dynamic server processing.
+
+\section{Requirements Analysis}
+
+Requirements analysis focuses on identifying the needs and expectations from the proposed system. The AssentTag system is designed to provide highly secure user registration through live biometric verification, prevent fake and duplicate proxy accounts, instantly extract 128-dimensional facial descriptors to recognize individuals in uploaded images, absolutely verify the physical presence of the uploader in group photographs, and enforce zero-delay privacy protection through internal-RAM consent-based blurring mechanisms.
+
+\section{Existing System}
+
+Current social media platforms allow users to upload photos and tag other individuals without any strict biological identity verification mechanisms. Users can simply create multiple accounts using different email addresses or phone numbers, leading directly to fake identities, bot swarms, and human impersonation.
+
+Furthermore, once a photo is uploaded, individuals appearing in the background or foreground of the image often have zero direct control over how their faces are displayed globally. Existing platforms typically provide privacy controls at the post-level (e.g., "Friends Only") rather than at the individual face-level. 
+
+Although some platforms provide tagging notifications, they do not verify whether the individual uploading the media is actually physically present in the photograph. This structural flaw creates massive potential for privacy violations, deep-fakes, and the non-consensual distribution of personal images.
+
+\section{Limitations of Existing System}
+
+The existing global photo-sharing systems suffer from critical security limitations:
+
+\begin{itemize}
+\item Absolute lack of biometric identity verification during initial registration.
+\item Unchecked possibility of creating duplicate, proxy, or fake accounts.
+\item No automated deep-learning recognition to identify all individuals in uploaded images.
+\item No gatekeeper verification that the uploader is physically present in their own uploaded photo.
+\item Complete lack of affirmative user consent before displaying tagged faces globally.
+\item Massive risk of privacy violations due to unauthorized, non-consensual viral tagging.
+\end{itemize}
+
+These escalating limitations highlight the absolute necessity for a secure architecture that deeply integrates strict biometric verification, highly intelligent facial recognition, and storage-optimized consent-based visibility control.
+
+\section{Proposed System}
+
+The proposed system, \textit{AssentTag}, is a highly secure social media platform mathematically designed to enforce identity authenticity and absolute privacy protection in media sharing. The system integrates real-time biometric validation, database-wide duplicate account detection, ResNet-based face recognition, uploader presence gating, and dynamic consent-driven tagging mechanisms.
+
+The system operates across multiple distinct security stages.
+
+During user registration, the user provides personal credentials, uploads a static profile photo, and is forced to capture a live face image using a connected webcam. To instantly prevent server storage bloat, this live biometric data is processed entirely dynamically within the internal RAM.
+
+The system performs facial detection on the captured live stream and mathematically compares it against the uploaded static photo using an extraction algorithm to verify biological identity. If the calculated Euclidean distances between the faces do not match, the registration request is permanently rejected as a fake proxy attempt.
+
+After successful mathematical verification, the system triggers duplicate account detection. It converts the verified face into a 128-dimensional numerical block and compares it against the massive unified database of all facial data belonging to already registered users. If any identical biometric signature is found, the registration request is rejected. 
+
+Once registration is completed successfully, the heavily encrypted 128-dimensional descriptor, not just the image, is securely stored as the foundational reference biometric identity for that user.
+
+After authenticated login, verified users are allowed to upload group photographs.
+
+During a photo upload, the system processes the media using an advanced Convolutional Neural Network (CNN) recognition pipeline specifically powered by Dlib’s ResNet architecture and 68-point shape predictors. The unified algorithmic backend analyzes the uploaded image matrix and locates all facial boundaries present within the photograph.
+
+After mapping all facial regions, the system acts as a biometric gatekeeper: it verifies whether the uploader themselves appears anywhere in the uploaded photograph. The detected faces in the matrix are compared strictly with the uploader's registered 128-dimensional descriptor. If the uploader's face is not mathematically detected in the uploaded photograph, the system completely rejects the upload to rapidly prevent the non-consensual sharing of third-party images.
+
+Upon finding the uploader, the system extracts the deep 128D features from all other detected faces in the image. Using these highly accurate floating-point metrics, the system calculates proximity thresholds to identify matching registered friends or individuals who appear in the uploaded photograph.
+
+Following successful identification, the uploader is allowed to officially tag the recognized individuals. A secure notification is subsequently routed to the corresponding users requesting permission to publicly reveal their geometric face in the shared photograph.
+
+To ensure absolute privacy protection, the faces of all tagged individuals (and unknown strangers) are immediately subjected to algorithmic Gaussian Blurring. Crucially, this blurring process occurs dynamically, on-the-fly, entirely within the server's internal memory. By serving manipulated byte streams directly to the frontend client, the system avoids generating and saving permanent duplicated "\_blur.jpg" files in the physical storage directories. This RAM-based execution ensures zero-delay privacy deployment.
+
+When a tagged user opens their notification panel to approve the pending tag, the database updates their specific permission state. 
+
+Because the image serving is fully dynamic, the very next time a client requests that photo, the underlying system recognizes the newly granted consent. The CNN bypasses the Gaussian blur module for that specific facial coordinate block, and the face essentially becomes visible in the shared image in real-time.
+
+If the user rejects the request, the permission state locks, and the region remains permanently blurred dynamically, ensuring flawless privacy protection.
+
+This advanced, multi-layered deep learning mechanism violently strengthens identity authentication and guarantees that users maintain absolute, granular control over exactly how their biometric data appears in shared global images.
+
+\subsection{Advantages of Proposed System}
+
+\begin{itemize}
+\item Flawless fake account prevention through live RAM-based biometric verification.
+\item Database-wide duplicate account prevention using 128D facial proximity comparison.
+\item Strict biometric verification gating that the uploader actively appears in the uploaded media.
+\item Lightning-fast face recognition using the Dlib ResNet CNN pipeline.
+\item Granular, strictly consent-based tagging and face-level visibility control.
+\item Enhanced, zero-delay privacy protection through on-the-fly Server-Side Gaussian Blur.
+\item Massive physical server storage optimization by relying entirely on dynamic memory image processing rather than duplicating obscured files.
+\end{itemize}
+
+\section{Functional Requirements}
+
+Functional requirements scientifically define the specific programmatic operations the system must perform to strictly satisfy the overarching objectives.
+
+\subsection{User Registration}
+The system shall allow users to register by securely providing personal details, uploading a foundational profile photo, and capturing a live streamed face image using a webcam.
+
+\subsection{RAM-Based Face Verification During Registration}
+The system shall detect the live captured face dynamically in its internal memory and calculate the Euclidean distance against the uploaded profile photo to verify the biological authenticity of the registering user.
+
+\subsection{Duplicate Biometric Prevention}
+The system shall continuously compare the freshly captured 128D facial descriptor with the massively stored matrix of existing users to algorithmically prevent duplicate proxy account creation.
+
+\subsection{User Authentication}
+The system shall allow verified, registered users to log in securely using AES-encrypted credential frameworks.
+
+\subsection{Uploader Presence Verification}
+The system shall mathematically verify via shape prediction that the active uploader's face unquestionably appears within the uploaded photograph before accepting the media file.
+
+\subsection{CNN Face Recognition in Uploaded Images}
+The system shall deeply analyze uploaded matrices using the Dlib ResNet CNN pipeline and identify background individuals using 128-dimensional biometric vectors.
+
+\subsection{Consent-Based Tagging}
+The system shall algorithmically notify detected users and mandate explicit database permission before revealing their unencrypted faces globally.
+
+\subsection{Dynamic Memory Privacy Protection}
+The system shall apply precise Gaussian Blur mapping to the coordinates of users who have not granted permission, executing this executing entirely in server RAM to avoid physical duplication and storage bloat.
+
+\subsection{Administrative Oversight}
+The administrative module shall strictly monitor registered user metrics, manage user complaints, dynamically review feedback logs, and supervise system biological activities through an encrypted dashboard.
+
+\section{Non-Functional Requirements}
+
+\subsection{Performance Requirements}
+The system must execute Convolutional Neural Network (CNN) face recognition and dynamic internal RAM byte-stream manipulation with maximum efficiency to ensure entirely smooth HTTP execution during registration and heavy photo query loads.
+
+\subsection{Security Requirements}
+User 128D biometric array data and unaltered base tracking images must be stored utilizing operating system-level segregation, and database authentication matrices must prevent unauthorized root access.
+
+\subsection{Reliability Requirements}
+The Python application server must execute continuously without memory-leak crashes and consistently maintain highly stable throughput.
+
+\subsection{Usability Requirements
+The frontend HTML/Tailwind interface must dynamically adapt and remain deeply user-friendly, allowing non-technical individuals to easily register, upload, and comprehensively manage their facial permission states.
+
+\subsection{Scalability Requirements}
+The backend architecture must support dynamically scaling numbers of matrix queries, user log-ons, and memory-based Gaussian manipulation demands without computational bottlenecking.
+
+\section{Feasibility Study}
+
+\subsection{Technical Feasibility}
+The developed system heavily utilizes deeply proven technologies such as high-level Python, the Django MVT framework, OpenCV matrix streaming, and Dlib's ResNet architecture to solidly implement high-speed biometric verification, demonstrating complete capability.
+
+\subsection{Operational Feasibility}
+The system operates flawlessly through an intuitive web-based platform execution that specifically requires zero deep technical user training to interact securely.
+
+\subsection{Economic Feasibility}
+The system brilliantly relies exclusively on widely supported open-source deep learning models and database tools (MySQL), combined with a massive disk-storage saving RAM-based architecture, rendering the enterprise implementation incredibly cost-effective for scaled deployment.

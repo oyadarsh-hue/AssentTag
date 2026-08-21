@@ -1,0 +1,14 @@
+<html>
+  <body>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="file" name="photo" />
+      <input type="file" name="qr" />
+      <input type="submit" value="Upload" />
+    </form>
+    {% if uploaded_file_url %}
+    <img src="/media/{{photo}}" />
+    <img src="/media/{{uploaded_file_url}}" />
+    {% endif %}
+  </body>
+</html>

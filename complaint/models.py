@@ -1,5 +1,5 @@
 from django.db import models
-
+from register.models import Register
 # Create your models here.
 
 class Complaint(models.Model):
@@ -7,10 +7,11 @@ class Complaint(models.Model):
     date = models.DateField()
     time = models.TimeField()
     complaint = models.CharField(max_length=200)
-    u_id = models.IntegerField()
+    # register_id = models.IntegerField()
+    register=models.ForeignKey(Register,on_delete=models.CASCADE)
     subject = models.CharField(max_length=45)
     urgency = models.CharField(max_length=45)
     reply = models.CharField(max_length=45)
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'complaint'

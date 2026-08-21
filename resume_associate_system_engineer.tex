@@ -1,0 +1,182 @@
+%=========================================
+% ATS-Friendly Resume - 100% Parse Rate
+% Author : Adarsh S
+% Optimized for Associate System Engineer (Infrastructure & Security)
+% Style: Clean, Professional, Upright (Strictly Upright Text - No Curved/Italic Words)
+% Natural & Balanced Strictly Two-Page Layout
+%=========================================
+
+\documentclass[letterpaper,10pt]{article}
+
+\usepackage{latexsym}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\usepackage[letterpaper, margin=0.5in]{geometry}
+
+\input{glyphtounicode}
+
+% ATS-Friendly Font Setup (Using Upright/Straight Text)
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Section formatting - Clean, professional underline style
+\titleformat{\section}{\bfseries\raggedright\large}{}{0em}{}[\vspace{-4pt}]
+\titlespacing*{\section}{0pt}{10pt}{6pt}
+
+% Global tight lists settings using enumitem
+\setlist[itemize]{leftmargin=0.15in, noitemsep, topsep=2pt, parsep=1pt, partopsep=0pt, itemsep=2pt}
+
+% ATS parsability configuration
+\pdfgentounicode=1
+
+%=========================================
+%%%%%%  RESUME STARTS HERE  %%%%%%%%%%%%%%%%%
+%=========================================
+
+\begin{document}
+
+%===== HEADING - CENTERED & UPRIGHT =====
+\begin{center}
+\textbf{\LARGE ADARSH S} \\
+\vspace{4pt}
+\textbf{Associate System Engineer $|$ Specialist Programmer} \\
+\vspace{4pt}
++91-6238966276 $|$ oyadarsh@gmail.com $|$ linkedin.com/in/adarshs-031869355 $|$ Kozhikode, Kerala, India
+\end{center}
+
+\vspace{6pt}
+
+%===== PROFESSIONAL SUMMARY =====
+\section*{Professional Summary}
+\hrule
+\vspace{4pt}
+
+Results-driven Master of Computer Applications (MCA) graduate (Class of 2026) with a strong analytical and problem-solving mindset, seeking to leverage a solid foundation in systems engineering, cloud computing, and infrastructure automation. Eager to contribute as an Associate System Engineer in infrastructure and security domains. Possesses basic hands-on understanding of Linux operating systems, essential networking concepts (IP, DNS, HTTP/HTTPS, firewalls), and command-line usage for system troubleshooting. Proficient in basic scripting (Python, Bash, Shell) and containerized workflows (Docker, Kubernetes). Demonstrates excellent communication and teamwork skills, a strong willingness to learn, and a commitment to maintaining robust, secure, and highly reliable computer systems and infrastructure.
+
+%===== TECHNICAL SKILLS =====
+\section*{Technical Skills}
+\hrule
+\vspace{4pt}
+
+\textbf{Systems \& Linux:} Linux Operating Systems (Ubuntu, Debian), Shell Scripting (Bash), Command-Line Interface (CLI), System Troubleshooting \\
+\textbf{Networking \& Security:} Networking Concepts (IP Addressing, DNS, HTTP/HTTPS, Firewalls), Network Security, Session Management, Secure APIs \\
+\textbf{Cloud \& Infrastructure:} Cloud Computing, Infrastructure Automation, Docker Containerization, Kubernetes, Terraform, CI/CD Pipelines \\
+\textbf{Programming \& Scripting:} Python, JavaScript, C, Java, SQL, PHP, R, HTML5, CSS3, Tailwind CSS \\
+\textbf{Databases \& Tools:} MySQL, PostgreSQL, MongoDB, Git, GitHub Actions, Jenkins, Linux Commands \\
+\textbf{Soft Skills:} Strong Analytical & Problem-Solving Mindset, Technical Troubleshooting, Communication, Collaboration & Teamwork
+
+%===== PROFESSIONAL EXPERIENCE =====
+\section*{Professional Experience}
+\hrule
+\vspace{4pt}
+
+\textbf{Bluegen Solutions} $|$ Software Development Intern \hfill December 2025 -- March 2026 \\
+Kozhikode, Kerala, India (On-site)
+\begin{itemize}
+\item Developed and maintained enterprise-level backend applications using Python, Django, and Linux OS, focusing on high availability and system reliability.
+\item Optimized complex database schemas and structures with MySQL, utilizing command-line troubleshooting to achieve a 40\% improvement in query latency.
+\item Developed, documented, and tested secure RESTful APIs (HTTP/HTTPS) utilizing robust authorization headers, server-side validation, and firewalls.
+\item Managed application servers on Linux environments, diagnosing and resolving runtime system errors using command-line troubleshooting tools.
+\end{itemize}
+
+\vspace{4pt}
+
+\textbf{The Skybrisk} $|$ ReactJS Development Intern \hfill February 2026 -- March 2026 \\
+Remote
+\begin{itemize}
+\item Engineered highly responsive, modular frontend systems using React.js, collaborating closely in a cross-functional team using Git.
+\item Interacted with REST APIs using HTTP protocols, managing states globally with Redux, and ensuring seamless client-server communications.
+\item Designed responsive web interfaces with Tailwind CSS and modern web standards, translating client requirements into robust UI components.
+\item Demonstrated strong communication and teamwork skills, participating in agile standups, troubleshooting UI bugs, and optimizing web performance.
+\end{itemize}
+
+\vspace{4pt}
+
+\textbf{CODTECH IT Solutions} $|$ DevOps Intern \hfill February 2026 -- March 2026 \\
+Telangana, India (Remote)
+\begin{itemize}
+\item Configured, automated, and maintained CI/CD pipelines with Jenkins and GitHub Actions, streamlining software deployments.
+\item Built and orchestrated containerized environments with Docker, ensuring configuration management and environment consistency across stages.
+\item Developed automated shell scripts (Bash/Shell) on Linux systems to automate infrastructure provisioning, monitoring, and regular backups.
+\item Troubleshooted system configuration issues, container network routing (IP, DNS), and deployment failures to reduce average deployment time by 30\%.
+\end{itemize}
+
+%===== ACADEMIC PROJECTS =====
+\section*{Academic Projects}
+\hrule
+\vspace{4pt}
+
+\textbf{AssentTag} \hfill December 2025 -- March 2026 \\
+Technologies: Python, Django, OpenCV, MySQL, CNN, Dlib, HTML5, CSS, JavaScript, Bash, Linux
+\begin{itemize}
+\item Developed a secure, privacy-aware photo sharing ecosystem incorporating face-level consent controls and secure cryptographic access.
+\item Implemented a CNN-based facial recognition engine using Dlib's ResNet for automated face detection and Gaussian Blur anonymization.
+\item Engineered a robust identity verification system using Siamese Neural Networks, running on secure Linux servers with optimized system configurations.
+\item Set up local server infrastructure, configured networking protocols, and implemented strict security policies to protect user uploads.
+\end{itemize}
+
+\vspace{4pt}
+
+\textbf{Character Recognition from Old Malayalam Palm Leaf Manuscripts} \hfill September 2025 -- December 2025 \\
+Technologies: Python, CNN, Transformer, OpenCV, OCR, Matplotlib, Linux, Shell Scripting
+\begin{itemize}
+\item Engineered an automated OCR system on Linux to recognize and transcribe handwritten script from degraded palm leaf manuscripts.
+\item Developed deep learning models using CNN architectures and Python scripting, monitoring training performance via custom command-line tools.
+\item Visualized accuracy trends and epoch performance, achieving a 95\% manuscript recognition accuracy in converting raw images into machine-readable Unicode.
+\end{itemize}
+
+%===== EDUCATION =====
+\section*{Education}
+\hrule
+\vspace{4pt}
+
+\textbf{Master of Computer Applications} \hfill September 2024 -- May 2026 \\
+Government Engineering College, Thrissur \hfill \textbf{CGPA: 7.05/10.0}
+
+\vspace{4pt}
+
+\textbf{Bachelor of Science in Computer Science} \hfill July 2019 -- March 2022 \\
+College of Applied Science IHRD, Thamarassery \hfill \textbf{CGPA: 6.61/10.0}
+
+\vspace{4pt}
+
+\textbf{Higher Secondary Education - Biology Stream} \hfill June 2017 -- March 2019 \\
+Government Higher Secondary School, Thamarassery \hfill \textbf{Percentage: 79.9\%}
+
+\vspace{4pt}
+
+\textbf{High School Education} \hfill June 2016 -- March 2017 \\
+MGM Higher Secondary School, Engapuzha \hfill \textbf{Percentage: 98.8\%}
+
+%===== CERTIFICATIONS & ACHIEVEMENTS =====
+\section*{Certifications \& Achievements}
+\hrule
+\vspace{4pt}
+
+\begin{itemize}
+\item \textbf{Certifications:} Deep Learning with Keras (Simplilearn), Google AI Certifications Gemini, Microsoft Excel Advanced Analytics, Programming in Java (NPTEL IIT), SQL Basic (HackerRank), Data Analysis Using Python (IBM).
+\item \textbf{Hackathons:} Participated in the Ideas to Impact Challenge 2024, demonstrating excellent problem-solving, analytical mindset, and teamwork skills.
+\item \textbf{Academic Focus:} Active member of system security and open-source infrastructure clubs during post-graduate studies.
+\end{itemize}
+
+%=========================================
+\end{document}

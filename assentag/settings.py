@@ -10,8 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
-import  pymysql
+import pymysql
 pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,7 +28,7 @@ SECRET_KEY = 'django-insecure-#j*nfa%$dgfl(wxj!c@ovo*#eh5^n4s95c18@1ov8@wi#06*$6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -44,7 +45,9 @@ INSTALLED_APPS = [
     'image.apps.ImageConfig',
     'login.apps.LoginConfig',
     'register.apps.RegisterConfig',
-    'temp.apps.TempConfig'
+    'temp.apps.TempConfig',
+    'generate.apps.GenerateConfig',
+    'varify.apps.VarifyConfig',
 ]
 
 MIDDLEWARE = [
@@ -62,7 +65,7 @@ ROOT_URLCONF = 'assentag.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -84,11 +87,11 @@ WSGI_APPLICATION = 'assentag.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'assettag',
+        'NAME': 'assentnew',
         'USER':'root',
-        'PASSWORD':'Jesus@2025',
-        'HOST':'localhost',
-        'PORT':''
+        'PASSWORD':'root',
+        'HOST':'127.0.0.1',
+        'PORT':'3307'
     }
 }
 
@@ -117,19 +120,55 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
+USE_L10N = True
 
 USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
+import os
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+import mimetypes
+mimetypes.add_type("text/css",".css",True)
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+#https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'django_cache'),
+    }
+}
+
+# --- ASSENTTAG LIVE SMTP EMAIL GATEWAY ---
+# To activate real-world internet email delivery, use the setup_email.py script.
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+# Load sensitive credentials safely from the hidden .env file
+env_path = os.path.join(BASE_DIR, '.env')
+EMAIL_HOST_USER = 'YOUR_EMAIL@gmail.com'
+EMAIL_HOST_PASSWORD = 'YOUR_16_CHAR_APP_PASSWORD'
+
+if os.path.exists(env_path):
+    with open(env_path, 'r') as f:
+        for line in f:
+            if '=' in line:
+                key, val = line.strip().split('=', 1)
+                if key == 'EMAIL_HOST_USER':
+                    EMAIL_HOST_USER = val
+                elif key == 'EMAIL_HOST_PASSWORD':
+                    EMAIL_HOST_PASSWORD = val

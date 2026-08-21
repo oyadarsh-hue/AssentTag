@@ -1,0 +1,109 @@
+\chapter{SYSTEM DESIGN}
+The System Design phase outlines the structural and functional architecture of AssentTag, translating the complex privacy and biometric requirements into detailed, interdependent modules and secure data flows. This chapter establishes the technical blueprint of the application, detailing how user inputs, facial recognition algorithms, and dynamic rendering processes interact seamlessly.
+
+\section{System Architecture}
+Fig. 5.1 illustrates the comprehensive architecture of the proposed system. This model represents the core functional pipeline, showcasing the secure, low-latency integration between the interactive client frontend, the Django-based MVC backend, the computationally intensive Dlib ResNet Face Recognition engine, and the dynamic memory image processing buffer. 
+
+The architecture emphasizes a strict decoupling of permanent storage from visual logic; raw user images are intelligently processed, whereas obfuscated visuals are generated entirely on-the-fly inside volatile server RAM, ensuring unauthorized access to localized cache is impossible.
+
+% --- SYSTEM ARCHITECTURE IMAGE FIX ---
+\clearpage 
+
+\begin{figure}[p] 
+    \centering
+    \makebox[\textwidth][c]{ \includegraphics[width=1.40\textwidth,keepaspectratio]{AssentTagS.drawio.png} }
+    \vspace{1cm} 
+    \caption{System Architecture Diagram}
+    \label{fig:sys_arch}
+\end{figure}
+
+\clearpage 
+% -------------------------------------
+
+\section{Data Flow Diagram}
+The following sections present the Data Flow Diagrams (DFD) of the proposed system. They explicitly map the lifecycle of biometric descriptors, asynchronous notifications, and image byte streams, completely separating the conditional logic applying to \textbf{Uploader Users} from the privacy constraints surrounding \textbf{Tagged Users (Consent Givers)}.
+
+\subsection{DFD Level 0}
+\vspace{-1.5em}
+
+\begin{figure}[htbp]
+    \centering
+    \makebox[\textwidth][c]{\includegraphics[width=1.1\linewidth]{AssentTag2.drawio.png}}
+    \caption{Data Flow Diagram Level 0}
+    \label{fig:dfd0}
+\end{figure}
+
+Figure 5.2 displays the DFD Level 0 (Context Diagram) of the core system. It abstracts the entire complex AssentTag ecosystem into a single unified process interacting strictly with three primary external entities: the \textbf{Uploader User}, the \textbf{Tagged User (Consent Target)}, and the \textbf{Administrator}.
+
+The \textbf{Uploader User} serves as the primary data ingress, pushing live biometric capture matrices and multi-person group photos into the system. In return, they receive real-time validation statuses and interactive feedback regarding the upload's success. Simultaneously, the system automatically routes entirely distinct outputs—specifically isolated \textit{Consent Request Notifications}—directly to the identified \textbf{Tagged User}. 
+
+The \textbf{Tagged User} then securely responds by submitting their cryptographic live biometric approval (Approve/Reject), which the system absorbs. Finally, the system actively queries this shifting ecosystem state to dynamically output the Rendered Visual Feed (Blurred or Clear HTTP streams) to all standard \textbf{Viewing Users} in real-time.
+
+\subsection{DFD Level 1}
+
+Figure 5.3 provides the expanded DFD Level 1, detailing the strict breakdown of the major internal sub-processes involved in transforming physical image uploads into computationally privatized feeds. 
+
+These core processes strictly enforce data isolation across chronological stages:
+
+% We use \afterpage so LaTeX doesn't stop typing text. It waits for the 
+% CURRENT page to fill up, and puts the image securely on the NEXT page.
+\afterpage{
+    \clearpage 
+    \begin{figure}[p] 
+        \centering
+        \makebox[\textwidth][c]{ \includegraphics[width=0.97\paperwidth,height=0.9\paperheight,keepaspectratio]{ADFD.drawio.png} }
+        \caption{Data Flow Diagram Level 1}
+        \label{fig:dfd1}
+    \end{figure}
+    \clearpage 
+}
+
+% Put your bullet points here! They will seamlessly fill up the blank space under the heading!
+\begin{itemize}
+    \item \textbf{Process 1.0 (Live Biometric Authenticator):} Processes incoming webcam frames during the user Registration phase. It utilizes HaarCascades to isolate the primary face, extracts the 128D geometric descriptors securely into an array, and stores only this mathematical baseline tensor in the database.
+    \item \textbf{Process 2.0 (Upload \& Uploader-Verification Gatekeeper):} When an \textbf{Uploader User} submits a group photo, this process mathematically verifies that the Uploader's own biometric signature is genuinely present within the submitted frame before allowing the upload to proceed.
+    \item \textbf{Process 3.0 (CNN Face Recognition \& Tag Extraction):} Upon passing the gatekeeper, this deep-learning module extracts all other background faces via ResNet. It executes proximity math against the baseline database to identify registered friends within the photo while marking unregistered strangers as 'Unknown'.
+    \item \textbf{Process 4.0 (Consent \& Notification Manager):} This process independently handles interactions for the \textbf{Tagged Users}. It generates immutable pending privacy requests from the Tag Extraction output, routes localized queries specifically to the targeted individual, and absorbs their final biometric approval decision directly back into the core SQLite constraint tables.
+    \item \textbf{Process 5.0 (Dynamic RAM Gaussian Blur Rendering):} This terminal process intercepts HTTP payload requests from any viewing User traversing the feed. It instantly queries the Consent database, maps mathematical bounding coordinates natively hidden within EXIF metadata, and applies localized algorithmic Gaussian obfuscation uniquely per viewer. The final byte stream is rendered dynamically from server RAM without writing physical derivatives to the disk.
+\end{itemize}
+
+\section{List of Modules}
+
+The proposed system is designed using a mathematically strict, MVC-based modular architecture to ensure flawless database integrity, extensive vertical scalability, and highly secure biometric data isolation. 
+
+The application logic has been decomposed into the following core, decoupled modules:
+
+\begin{itemize}
+    \item Registration \& Duplicate Defense Module
+    \item Live Biometric Verification Module
+    \item Uploader-Verification Gatekeeper Module
+    \item CNN (ResNet) Facial Recognition \& Extraction Module
+    \item Consent Notification (Tagged User) Routing Module
+    \item Dynamic RAM (Server-Side) Privacy Blurring Module
+    \item Interactive Dashboard \& Asynchronous Feed Module
+    \item Superuser Administration \& Metrics Module
+\end{itemize}
+
+\subsection{Registration \& Duplicate Defense Module}
+This foundational module manages secure biometric account creation. It systematically prevents the generation of fake profiles by demanding and comparing a live webcam video stream against an uploaded static government ID or profile photo. To prevent malicious bot-swarms and server bloating, the live image tensors are processed entirely within a temporary volatile buffer (RAM). Before any insertion commands are passed to the MySQL structure, the incoming face is mathematically cross-verified iteratively against the entire unified database to block Duplicate Account generation autonomously.
+
+\subsection{Live Biometric Verification Module}
+Functioning as a secure HTTP gateway interface that triggers local webcam captures, this module enables password-less validation for critical permissions. It intercepts base64-encoded URL strings natively from the client browser, converts them immediately to multi-dimensional OpenCV bounding tensors, and outputs the final 128D mathematical Euclidean array utilizing highly optimized, pure Python numerical computations.
+
+\subsection{Uploader-Verification Gatekeeper Module}
+Activated explicitly at the inception of a media upload event, this sub-system guarantees platform integrity. It scans the pending image matrix to guarantee the \textbf{Uploader User} is physically detected inside the frame they are attempting to share. If the system calculates an identity mismatch via Euclidean distance metrics, the upload cycle is forcibly terminated instantly. This mechanism acts as an impenetrable shield against spam attacks, phishing, and non-consensual sharing by third parties.
+
+\subsection{CNN (ResNet) Facial Recognition Module}
+This module represents the algorithmic core of the platform, utilizing a heavily trained Dlib 128D deep-learning neural network. It performs extremely fast inference on multi-person, high-resolution uploaded frames. The application securely bounds every detected face, calculates advanced multidimensional proximity metrics, matches and assigns registered friends to overlapping metadata layers, and automatically hard-codes unregistered strangers as 'Unknown'. This guarantees complete background anonymity for individuals not natively part of the platform ecosystem.
+
+\subsection{Consent Notification Routing Module}
+This asynchronous communication router separately handles localized logic for targeted \textbf{Tagged Users}. Once the CNN mechanism successfully assigns a mathematical tag, this module automatically instantiates 'Pending Permission' database schemas. It pushes a distinct notification feed component strictly to the targeted user's localized dashboard, waiting for them to issue cryptographic 'Approve' or 'Reject' biometric overrides affecting the global visibility of their facial geometry on that specific post.
+
+\subsection{Dynamic RAM (Server-Side) Privacy Blurring Module}
+Representing the core technological breakthrough of the privacy system, this module abandons standard web paradigms. Rather than generating and permanently saving duplicated, blurred derivatives (e.g., "\_blur.jpg") inside physical server storage drives, this module intercepts physical image byte streams entirely on-the-fly inside the Local Server Engine RAM. It reads the specific Viewer's relationship to the Consent Module's database state and dynamically overlays heavy mathematical Gaussian masking explicitly over the pixel coordinates of non-consenting users. Once the response completes, the blurred instance is destroyed, making storage-level breaches computationally impossible.
+
+\subsection{Interactive Dashboard \& AJAX Feed Module}
+Directly responsible for continuous frontend interactivity, this module implements highly responsive Asynchronous JavaScript and XML (AJAX) endpoints. It organically updates the main client media feed—including fluid like-counters, multi-layered threaded commenting, and dynamic image coordinate rendering queries—without triggering heavy full-page browser DOM reloads. This guarantees the complex security calculations do not severely degrade user experience (UX) latency.
+
+\subsection{Superuser Administration Module}
+Reserved exclusively for authenticated core administrators, this module generates dense overview panels required for system health. It empowers administrative operators to directly accept or terminate highly suspicious user accounts caught in registration review queues. Furthermore, it aggregates complex platform usage metrics and provides routing mechanisms to interact systematically with user complaint logs, ensuring ecosystem harmony and enforcing community guidelines.

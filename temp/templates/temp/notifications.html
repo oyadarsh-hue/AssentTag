@@ -1,0 +1,379 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AssentTag - Notifications</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-purple: #bc13fe;
+            --magenta: #ff00ff;
+            --warning-red: #ff4b2b;
+            --bg-dark: #050505;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #8b949e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* Background */
+        .user-bg-container {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .user-bg-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.4);
+            animation: zoom 20s infinite alternate;
+        }
+
+        .secure-content-media {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        @keyframes imageFadeIn {
+            from {
+                opacity: 0;
+                filter: blur(10px);
+            }
+
+            to {
+                opacity: 1;
+                filter: blur(0px);
+            }
+        }
+
+        @keyframes zoom {
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.1);
+            }
+        }
+
+        /* Navbar */
+        .glass-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-img {
+            height: 35px;
+            width: auto;
+        }
+
+        .logo-text {
+            font-family: 'Orbitron';
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        /* Main */
+        main {
+            padding: 3rem 5%;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        /* Card */
+        .notification-card {
+            background: rgba(22, 27, 34, 0.9);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .notification-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .notification-header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .notification-time {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .secure-card-image {
+            width: 100%;
+            border-radius: 12px;
+            margin-top: 10px;
+        }
+
+        /* Buttons */
+        .action-buttons {
+            margin-top: 15px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-approve {
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .btn-reject {
+            background: linear-gradient(135deg, var(--warning-red), #8b0000);
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .highlight {
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-btn {
+            color: var(--neon-blue);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background-color: rgba(0, 243, 255, 0.1);
+        }
+
+        .avatar-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #bc13fe, #ff00ff);
+            border: 2px solid #00f3ff;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 0 15px rgba(188, 19, 254, 0.4);
+            overflow: hidden;
+            color: white;
+            object-fit: cover;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="user-bg-container">
+        <img src="/static/assets/user_bg.jpg" class="user-bg-image" onerror="this.src='/static/assets/back.jpg'">
+    </div>
+
+    <!-- Nav Integration matching requirements -->
+    <nav class="glass-nav">
+        <div class="logo">
+            <img src="/static/assets/logo.svg" style="width: 35px; filter: drop-shadow(0 0 5px var(--neon-blue));" onerror="this.style.display='none'">
+            <h2>ASSENTTAG <span class="highlight">NOTIFICATIONS</span></h2>
+        </div>
+        <div style="display:flex; align-items:center; gap:20px;">
+            <a href="/index/index3/" class="nav-btn">Dashboard &rarr;</a>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-weight: 700; color: #fff; font-size: 0.9rem;">{{ current_user.first_name }}</span>
+                <a href="/register/profile/">
+                    <img src="{% if current_user.photo %}/media/{{ current_user.photo }}{% else %}/static/assets/default.jpg{% endif %}" class="avatar-circle" onerror="this.src='/static/assets/default.jpg'">
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+
+        <h2 style="margin-bottom:2rem;">🔔 Pending Tag Requests</h2>
+
+        {% if u %}
+        {% for i in u %}
+        <div class="notification-card">
+
+            <div class="notification-header">
+                {% if i.image.register.photo %}
+                <img src="/static/{{ i.image.register.photo }}" alt="profile"
+                    onerror="this.onerror=null; this.src='/static/assets/user_icon.svg';">
+                {% else %}
+                <img src="/static/assets/user_icon.svg" alt="profile">
+                {% endif %}
+
+                <div>
+                    <div class="notification-title">
+                        {{ i.image.register.first_name }} tagged you in a photo
+                    </div>
+                    <div class="notification-time">
+                        {{ i.image.date }} - {{ i.image.time }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons" style="margin-bottom: 12px; margin-top: 0;">
+                <a href="/image/review-tag/{{ i.per_id }}/" class="btn-approve"
+                    style="width: 100%; text-align: center;">Face Verification to Respond</a>
+            </div>
+
+            <div class="image-blur-wrapper"
+                style="position: relative; display: inline-block; max-height: 800px; max-width: 100%;">
+                <img src="/image/content/notif/{{ i.image_id }}/{{ current_user.register_id }}/?t={% now 'U' %}"
+                    alt="Notification Graphic" class="secure-content-media"
+                    style="margin-top:0; max-width: 100%; max-height: 800px; display: block; animation: imageFadeIn 0.5s ease-out forwards;"
+                    onerror="this.onerror=null; this.src='/static/{{ i.image.photo }}'">
+            </div>
+
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty-state">
+            🎉 No pending tag requests.
+        </div>
+        {% endif %}
+
+        <h2 style="margin-top:3rem; margin-bottom:2rem;">🛡️ Follow Requests</h2>
+
+        {% if follow_requests %}
+        {% for req in follow_requests %}
+        <div class="notification-card" style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="notification-header" style="margin-bottom:0;">
+                <img src="/static/{{ req.requester_user.photo }}" alt="profile" onerror="this.onerror=null; this.src='/static/assets/user_icon.svg';">
+                <div>
+                    <div class="notification-title">
+                        <strong>{{ req.requester_user.first_name }} {{ req.requester_user.last_name }}</strong> wants to follow you.
+                    </div>
+                    <div class="notification-time">{{ req.created_at|date:"M d, Y" }} at {{ req.created_at|time:"h:i A" }}</div>
+                </div>
+            </div>
+            <div class="action-buttons" style="margin-top:0;">
+                <a href="/login/accept_follow/{{ req.request_id }}/" class="btn-approve">Approve</a>
+                <a href="/login/reject_follow/{{ req.request_id }}/" class="btn-reject">Decline</a>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty-state">
+            No pending follow requests.
+        </div>
+        {% endif %}
+
+        <h2 style="margin-top:3rem; margin-bottom:2rem;">👤 New Followers</h2>
+
+        {% if followers %}
+        {% for f in followers %}
+        <div class="notification-card" style="display:flex; justify-content:space-between; align-items:center;">
+
+            <div class="notification-header" style="margin-bottom:0;">
+                {% if f.follower_user.photo %}
+                <img src="/image/content/profile/{{ f.follower_user.register_id }}/" alt="profile"
+                    onerror="this.onerror=null; this.src='/static/assets/default_user.png';">
+                {% else %}
+                <img src="{% static 'assets/default_user.png' %}" alt="profile">
+                {% endif %}
+
+                <div>
+                    <div class="notification-title">
+                        <div class="notification-text">
+                            <strong>{{ f.follower_user.first_name }} {{ f.follower_user.last_name }}</strong>
+                            Started following you at <span style="color:var(--neon-blue); font-weight:700;">{{ f.created_at|time:"H:i"|default:"various times" }}</span> on {{ f.created_at|date:"M d, Y"|default:"recently" }}.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons" style="margin-top:0;">
+                <a href="/index/index3" class="btn-approve"
+                    style="background:var(--glass-border); color:var(--text-primary);">View Feed</a>
+            </div>
+
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty-state">
+            No recent followers.
+        </div>
+        {% endif %}
+
+    </main>
+
+</body>
+
+</html>

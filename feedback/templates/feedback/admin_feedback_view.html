@@ -1,252 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>AssentTag - User Feedback</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
     <style>
-        /* Modern Reset and Base Styles - Dark Mode */
-        :root {
-            --bg-color: #000000;
-            --card-bg: #0a0a0a;
-            --text-main: #ffffff;
-            --text-secondary: #a3a3a3;
-            --border-color: #333333;
+        :root { --bg-dark: #0a0a0c; --neon-blue: #00f3ff; --magenta: #ff00ff; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: #fff; margin:0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+
+        .top-nav {
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0 4%;
+            display: flex; justify-content: space-between; align-items: center; height: 80px; width: 100%; box-sizing: border-box; position: sticky; top: 0; z-index: 1000;
         }
 
-        * {
-            box-sizing: border-box;
+        .logo-box { display: flex; align-items: center; gap: 15px; }
+        .logo-text { font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: 1px; color: #fff; text-transform: uppercase; }
+
+        .btn-orange {
+            background: linear-gradient(135deg, #FFD700 0%, #FF4500 100%); border: none; padding: 10px 20px; 
+            color: #000; font-weight: 800; font-size: 0.8rem; border-radius: 4px; cursor: pointer; text-decoration: none; transition: 0.3s;
+        }
+        .btn-orange:hover { transform: translateY(-2px); box-shadow: 0 0 15px rgba(255,69,0,0.5); }
+
+        .details-card { margin-top: 40px; margin-bottom: 60px; display: flex; flex-direction: column; gap: 20px; }
+        .card-header h2 { font-size: 1.8rem; margin: 0 0 5px 0; border-left: 4px solid var(--magenta); padding-left: 15px; }
+        .card-header p { font-size: 0.85rem; color: #888; padding-left: 15px; margin: 0; }
+
+        .table-container {
+            border-radius: 8px; overflow: hidden; background: #161b22; padding: 20px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color) !important;
-            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000000 100%);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-            min-height: 100vh;
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        thead { border-bottom: 2px solid var(--magenta); }
+        th { 
+            padding: 15px 10px; color: #fff; font-size: 0.65rem; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 0.5px;
         }
 
-        /* Overriding the deprecated bgcolor/text attributes */
-        body[bgcolor] {
-            background-color: var(--bg-color) !important;
-            color: var(--text-main) !important;
-        }
-
-        /* Header Styling - Dark */
-        table[width="100%"] {
-            background: #111111 !important;
-            border-bottom: 1px solid #333;
-            padding: 1rem 2rem;
-            width: 100%;
-            border-spacing: 0;
-        }
-
-        font[size="6"] {
-            font-size: 1.5rem !important;
-            font-weight: 800;
-            color: #ffffff !important;
-            letter-spacing: -0.025em;
-            text-transform: uppercase;
-            background: linear-gradient(to right, #fff, #888);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Button Styling - Unique & Vibrant */
-        button {
-            border: none;
-            padding: 10px 24px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Inter', sans-serif;
-            text-transform: uppercase;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        /* Secondary "Back" Button - "Solar Flare" */
-        table[width="100%"] button {
-            background: linear-gradient(135deg, #FFD700 0%, #FF4500 100%);
-            /* Gold to Orange Red */
-            color: #000000;
-            box-shadow: 0 0 10px rgba(255, 69, 0, 0.4);
-        }
-
-        table[width="100%"] button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        hr {
-            border: 0;
-            height: 1px;
-            background: #333;
-            margin: 0;
-        }
-
-        /* Main Content Container Styling - Dark Card */
-        center>table {
-            background: #111111 !important;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-            margin-top: 3rem;
-            width: 1000px !important;
-            /* Wider for the table */
-            border: 1px solid #333 !important;
-            max-width: 95%;
-        }
-
-        h2 {
-            font-size: 1.5rem;
-            color: #ffffff;
-            margin-bottom: 0.5rem;
-            border-left: 4px solid #00FFFF;
-            /* Cyan accent */
-            padding-left: 12px;
-            display: inline-block;
-        }
-
-        p {
-            color: #a3a3a3;
-            margin-top: 0;
-        }
-
-        /* Structured Data Table Styling */
-        table[border="1"] {
-            width: 100%;
-            border-collapse: collapse;
-            border: 1px solid #333;
-            margin-top: 2rem;
-            background-color: #1a1a1a;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        table[border="1"] th {
-            background: #222;
-            color: #fff;
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 2px solid #FF00FF;
-            /* Neon pink accent line */
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 0.05em;
-        }
-
-        table[border="1"] td {
-            padding: 1rem;
-            border-bottom: 1px solid #333;
-            color: #ccc;
-            font-size: 0.95rem;
-        }
-
-        table[border="1"] tr:last-child td {
-            border-bottom: none;
-        }
-
-        table[border="1"] tr:hover td {
-            background-color: #2a2a2a;
-            color: #fff;
-        }
-
-        /* Rating Star Styling */
-        .rating-star {
-            color: #FFD700;
-            /* Gold */
-            font-size: 1.1rem;
-        }
-
-        /* Footer */
-        font[color="#999999"] {
-            color: #444 !important;
-            font-weight: 500;
-        }
+        tbody tr { border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s; }
+        tbody tr:hover { background: rgba(255,255,255,0.02); }
+        
+        td { padding: 15px 10px; color: #ccc; font-size: 0.75rem; font-weight: 500; vertical-align: middle; }
+        
+        .rating-star { color: #FFD700; font-size: 1.2rem; }
     </style>
 </head>
+<body>
 
-<body bgcolor="#f4f4f4" text="#333333">
+    <nav class="top-nav">
+        <div class="logo-box">
+            <span class="logo-text">USER FEEDBACK</span>
+        </div>
+        <a href="/index/index2/" class="btn-orange">BACK TO ADMIN HOME</a>
+    </nav>
 
-    <!-- Header Table -->
-    <table width="100%" border="0" cellpadding="10" bgcolor="#ffffff">
-        <tr>
-            <td align="left">
-                <font size="6" face="Arial, sans-serif" color="#222222">
-                    <strong>User Feedback</strong>
-                </font>
-            </td>
-            <td align="right">
-                <a href="admin-dashboard.html"><button>Back to Admin Home</button></a>
-            </td>
-        </tr>
-    </table>
+    <div class="details-card" style="max-width: 1400px; width: 95%;">
+        <div class="card-header">
+            <h2>User Feedback & Reviews</h2>
+            <p>See what users are saying about the platform.</p>
+        </div>
 
-    <hr color="#dddddd" size="1">
-
-    <br><br>
-
-    <!-- Main Content -->
-    <center>
-        <table width="1000" border="0" cellpadding="20" bgcolor="#ffffff">
-            <tr>
-                <td align="center">
-                    <font face="Arial, sans-serif">
-
-                        <div style="text-align: left; padding: 0 1rem;">
-                            <h2>User Feedback & Reviews</h2>
-                            <p>See what users are saying about the platform.</p>
-                        </div>
-
-                        <!-- Structured Table -->
-                        <div style="padding: 10px; overflow-x: auto;">
-                            <table border="1">
-                                <tr>
-                                    <th>f_id</th>
-                                    <th>feedback</th>
-                                    <th>date</th>
-                                    <th>time</th>
-                                    <th>u_id</th>
-                                    <th>topic</th>
-                                    <th>rating</th>
-                                </tr>
-
-                                {% for j in a %}
-                                <tr>
-                                    <td>{{ j.f_id }}</td>
-                                    <td>{{ j.feedback }}</td>
-                                    <td>{{ j.date }}</td>
-                                    <td>{{ j.time }}</td>
-                                    <td>{{ j.u_id }}</td>
-                                    <td>{{ j.topic }}</td>
-                                    <td><span class="rating-star">★</span> {{ j.rating }}/5</td>
-                                </tr>
-                                {% endfor %}
-                            </table>
-                        </div>
-
-                    </font>
-                </td>
-            </tr>
-        </table>
-    </center>
-
-    <br><br>
-    <font face="Arial" size="1" color="#999999">
-        <center>&copy; 2026 AssentTag Systems</center>
-    </font>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>FEEDBACK ID</th>
+                        <th>DATE</th>
+                        <th>TIME</th>
+                        <th>USER</th>
+                        <th>TOPIC</th>
+                        <th>FEEDBACK</th>
+                        <th>RATING</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for j in a %}
+                    <tr>
+                        <td style="color:var(--magenta); font-weight:800;">#{{ j.f_id }}</td>
+                        <td>{{ j.date|date:"F j, Y" }}</td>
+                        <td>{{ j.time|time:"g:i a" }}</td>
+                        <td>{{ j.register.first_name }} {{ j.register.last_name }}</td>
+                        <td><span style="color:var(--neon-blue); font-weight:700;">{{ j.topic }}</span></td>
+                        <td>{{ j.feedback }}</td>
+                        <td style="font-weight: 800; font-size:1.1rem;"><span class="rating-star">★</span> {{ j.rating }}<span style="font-size:0.7rem; color:#888;">/5</span></td>
+                    </tr>
+                    {% endfor %}
+                    {% if not a %}
+                    <tr>
+                        <td colspan="7" style="text-align:center; padding: 40px; color:#888;">No feedback records found.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 </body>
-
 </html>

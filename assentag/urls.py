@@ -16,7 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from temp.views import add_index
+from django.conf import settings
+from django.conf.urls.static import static
 
+
+from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,5 +31,11 @@ urlpatterns = [
      path('login/',include('login.url')),
      path('register/',include('register.url')),
      path('index/',include('temp.url')),
-
+     path('', add_index, name='root_index'),
+     path('generate/',include('generate.url')),
+     path('verify/',include('varify.url')),
+     path('favicon.ico', RedirectView.as_view(url='/static/assets/logo.svg', permanent=True)),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

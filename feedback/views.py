@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from feedback.models import Feedback
+from register.models import Register
 import datetime
+
 # Create your views here.
 def add_feedback(request):
     ob=Feedback.objects.all()
@@ -10,6 +12,11 @@ def add_feedback(request):
     return render(request,"feedback/admin_feedback_view.html",context)
 
 def add_feedback1(request):
+    ss = request.session.get('u_id')
+    if not ss:
+        return redirect('/login/login/')
+    current_user = Register.objects.get(register_id=ss)
+    
     if request.method == 'POST':
         obj = Feedback()
         obj.date = datetime.datetime.today()
@@ -17,8 +24,8 @@ def add_feedback1(request):
         obj.feedback=request.POST.get('comments')
         obj.topic=request.POST.get('topic')
         obj.rating=request.POST.get('rating')
-        obj.u_id=1
+        obj.register_id=ss
         obj.save()
-    return render(request,"feedback/user_feedback.html")
+    return render(request,"feedback/user_feedback.html", {'current_user': current_user})
 
 

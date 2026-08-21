@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AssentTag Admin Module</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-purple: #bc13fe;
+            --magenta: #ff00ff;
+            --bg-dark: #050505;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body {
+            background-color: var(--bg-dark); color: #fff; min-height: 100vh;
+            background: linear-gradient(rgba(10,10,15,0.7), rgba(10,10,15,0.7)), url('/static/assets/admin_bg.jpg') center/cover fixed;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        .top-nav {
+            width: 100%; height: 60px; background: rgba(10,10,10,0.9);
+            border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0 4%;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo-box { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.1rem; }
+        .logo-box span { color: #5c9be6; }
+
+        .btn-orange {
+            background: #ffaa00; border: none; padding: 6px 16px; color: #000; font-weight: 800; font-size: 0.75rem; border-radius: 4px; cursor: pointer; text-decoration: none;
+        }
+
+        .admin-card {
+            background: rgba(15,15,18,0.95); backdrop-filter: blur(25px); border-radius: 12px;
+            width: 100%; max-width: 600px; padding: 40px; margin: 40px 0;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8); display: flex; flex-direction: column; align-items: center;
+        }
+
+        .card-header { text-align: center; margin-bottom: 30px; }
+        .card-header h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 5px; }
+        .card-header p { font-size: 0.75rem; color: #aaa; }
+
+        .section-title {
+            font-size: 0.85rem; font-weight: 800; text-align: center; margin-bottom: 25px;
+            position: relative; padding-bottom: 8px;
+        }
+        .section-title::after {
+            content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 60px; height: 2px; background: var(--magenta);
+        }
+
+        .grid-caps {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; margin-bottom: 40px;
+        }
+
+        .cap-block {
+            background: #0a0a0c; border: 1px solid rgba(255,255,255,0.05); border-radius: 12px;
+            padding: 20px; text-decoration: none; color: #fff; transition: 0.3s;
+        }
+        .cap-block:hover { background: #111; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.1); }
+        .cap-icon { width: 35px; height: 35px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-bottom: 15px; background: rgba(255,255,255,0.05); }
+        .cap-title { font-size: 0.85rem; font-weight: 800; margin-bottom: 8px; line-height: 1.3; }
+        .cap-desc { font-size: 0.65rem; color: #888; line-height: 1.4; }
+
+        .bottom-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 30px; }
+        
+        .btn-neon {
+            padding: 10px 15px; font-weight: 900; font-size: 0.75rem; border: none; border-radius: 4px;
+            cursor: pointer; text-decoration: none; text-transform: uppercase; color: #000;
+        }
+        .btn-purple { background: var(--magenta); box-shadow: 0 0 15px rgba(255,0,255,0.4); }
+        .btn-cyan { background: var(--neon-blue); box-shadow: 0 0 15px rgba(0,243,255,0.4); }
+        .btn-red { background: #ff3300; box-shadow: 0 0 15px rgba(255,51,0,0.4); color: #fff; }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <div class="logo-box">
+            <svg width="24" height="24" viewBox="0 0 100 100" fill="none"><rect x="10" y="10" width="25" height="25" stroke="#ff3366" stroke-width="8" fill="none"/><rect x="65" y="10" width="25" height="25" stroke="#ff3366" stroke-width="8" fill="none"/><rect x="10" y="65" width="25" height="25" stroke="#ff3366" stroke-width="8" fill="none"/><circle cx="50" cy="50" r="10" fill="#00f3ff"/></svg>
+            AssentTag <span>Admin Module</span>
+        </div>
+        <a href="/login/login/" class="btn-orange">BACK TO MAIN</a>
+    </nav>
+
+    <div class="admin-card">
+        <div class="card-header">
+            <h2>Welcome Administrator</h2>
+            <p>Restricted access for system administrators only.</p>
+        </div>
+
+        <div class="section-title">Admin Capabilities</div>
+
+        <div class="grid-caps">
+            <a href="#" class="cap-block">
+                <div class="cap-icon" style="color: #ffaa00;"><i class="fas fa-lock"></i></div>
+                <div class="cap-title">Admin login</div>
+                <div class="cap-desc">Secure restricted access for platform administrators.</div>
+            </a>
+            <a href="/register/individual-user/" class="cap-block">
+                <div class="cap-icon" style="color: #8a2be2;"><i class="fas fa-user-friends"></i></div>
+                <div class="cap-title">View and manage registered users</div>
+                <div class="cap-desc">Oversee all accounts and user registration data.</div>
+            </a>
+            <a href="#" class="cap-block">
+                <div class="cap-icon" style="color: #00ff88;"><i class="fas fa-check-square"></i></div>
+                <div class="cap-title">Verify registered user</div>
+                <div class="cap-desc">Validation protocols for system security levels.</div>
+            </a>
+            <a href="/image/view/" class="cap-block">
+                <div class="cap-icon" style="color: #ccc;"><i class="fas fa-camera"></i></div>
+                <div class="cap-title">Monitor uploaded photos</div>
+                <div class="cap-desc">Real-time oversight of all platform media uploads.</div>
+            </a>
+            <a href="#" class="cap-block">
+                <div class="cap-icon" style="color: #ff66b2;"><i class="fas fa-brain"></i></div>
+                <div class="cap-title">View face recognition and tagging logs</div>
+                <div class="cap-desc">Detailed audit logs for all AI recognition events.</div>
+            </a>
+            <a href="#" class="cap-block">
+                <div class="cap-icon" style="color: #ff3333;"><i class="fas fa-ban"></i></div>
+                <div class="cap-title">Detect and block fake or duplicate accounts</div>
+                <div class="cap-desc">Advanced fraud prevention and account integrity.</div>
+            </a>
+            <a href="#" class="cap-block">
+                <div class="cap-icon" style="color: #3388ff;"><i class="fas fa-shield-alt"></i></div>
+                <div class="cap-title">Manage security images database</div>
+                <div class="cap-desc">Curate the core biometric security image repository.</div>
+            </a>
+            <a href="#" class="cap-block">
+                <div class="cap-icon" style="color: #ff5555;"><i class="fas fa-eye"></i></div>
+                <div class="cap-title">View access control decisions</div>
+                <div class="cap-desc">Monitor public/private privacy selections (public/private).</div>
+            </a>
+        </div>
+
+        <div class="bottom-actions">
+            <a href="/register/individual-user/" class="btn-neon btn-purple">VIEW REGISTERED USERS</a>
+            <a href="/image/view/" class="btn-neon btn-cyan">MONITOR PHOTOS</a>
+            <a href="/complaint/view/" class="btn-neon btn-purple">VIEW COMPLAINTS</a>
+            <a href="/feedback/view/" class="btn-neon btn-cyan">VIEW FEEDBACK</a>
+            <a href="/login/login/" class="btn-neon btn-red">ADMIN LOGOUT</a>
+        </div>
+    </div>
+
+</body>
+</html>

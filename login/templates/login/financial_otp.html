@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AssentTag - Authentic Verification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root { --neon-blue: #00f3ff; --magenta: #ff00ff; --red-alert: #ff1155; }
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; background: #050508; color: #fff; 
+            margin:0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+        
+        /* Animated Background Gradients to simulate secure vault */
+        .bg-glow {
+            position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(255, 17, 85, 0.15) 0%, transparent 70%);
+            top: 50%; left: 50%; transform: translate(-50%, -50%); animation: pulseBg 4s infinite alternate; pointer-events: none;
+        }
+        @keyframes pulseBg { 0% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.9); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); } }
+
+        .otp-card {
+            background: rgba(15, 15, 20, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,17,85,0.3);
+            border-radius: 24px; padding: 3rem 2.5rem; width: 100%; max-width: 480px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.9), inset 0 0 0 1px rgba(255,255,255,0.05);
+            text-align: center; position: relative; z-index: 10;
+        }
+
+        .icon-circle {
+            width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 1.5rem;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,17,85,0.1); border: 2px solid var(--red-alert);
+            box-shadow: 0 0 20px rgba(255,17,85,0.4); font-size: 2rem; color: var(--red-alert);
+            animation: warningPulse 2s infinite;
+        }
+        @keyframes warningPulse { 0% { box-shadow: 0 0 0 0 rgba(255,17,85,0.4); } 70% { box-shadow: 0 0 0 20px rgba(255,17,85,0); } 100% { box-shadow: 0 0 0 0 rgba(255,17,85,0); } }
+
+        h2 { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; color: #fff; letter-spacing: 1px; text-transform: uppercase; }
+        p.subtitle { font-size: 0.9rem; color: #aaa; margin-bottom: 2rem; line-height: 1.6; }
+        
+        .number-box { 
+            background: rgba(0,0,0,0.5); border-radius: 8px; padding: 12px; margin-bottom: 2rem;
+            border: 1px dashed rgba(255,255,255,0.2); font-family: 'Orbitron', monospace; color: var(--neon-blue); font-size: 1.1rem; letter-spacing: 2px;
+        }
+
+        .form-group { text-align: left; margin-bottom: 1.5rem; }
+        .form-group label { font-size: 0.75rem; color: #bbb; font-weight: 800; text-transform: uppercase; display: block; margin-bottom: 8px; letter-spacing: 1px;}
+        .form-group input {
+            background: #0a0a0e; border: 1px solid #333; width: 100%; text-align: center; letter-spacing: 8px;
+            color: #fff; padding: 16px; border-radius: 12px; font-family: 'Orbitron', monospace; font-size: 1.5rem; font-weight: 700;
+            transition: 0.3s; outline: none;
+        }
+        .form-group input:focus { border-color: var(--neon-blue); box-shadow: inset 0 0 10px rgba(0,243,255,0.2), 0 0 15px rgba(0,243,255,0.2); }
+
+        .btn-submit {
+            background: linear-gradient(90deg, #ff1155, #cc0033); border: none; padding: 18px; color: #fff;
+            font-weight: 900; font-size: 1rem; border-radius: 12px; cursor: pointer; text-transform: uppercase; width: 100%;
+            letter-spacing: 1px; box-shadow: 0 10px 25px rgba(255,17,85,0.4); transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .btn-submit:hover { filter: brightness(1.2); box-shadow: 0 15px 35px rgba(255,17,85,0.6); transform: translateY(-2px); }
+
+        .btn-cancel {
+            background: transparent; color: #888; border: none; font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+            margin-top: 1.5rem; cursor: pointer; text-decoration: none; display: inline-block; transition: 0.3s;
+        }
+        .btn-cancel:hover { color: #fff; }
+
+        .secure-badge { margin-top: 2rem; font-size: 0.7rem; color: #555; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .secure-badge i { color: var(--neon-blue); }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+
+    <div class="otp-card">
+        <div class="icon-circle">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        
+        <h2>Security Check</h2>
+        <p class="subtitle">We intercepted a high-risk financial keyword in your message stream. To authorize this transfer, we've sent a Secure 2FA Token to your registered Email Address.</p>
+        
+        <div class="number-box">
+            <i class="fas fa-envelope" style="color:#fff; margin-right:10px;"></i>
+            {{ email|slice:"0:4" }}****@{{ email_domain }}
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>ENTER 6-DIGIT OTP</label>
+                <input type="text" name="otp" maxlength="6" pattern="\d{6}" placeholder="------" required autocomplete="off">
+            </div>
+            
+            <button type="submit" class="btn-submit"><i class="fas fa-unlock-alt"></i> AUTHORIZE TRANSFER</button>
+        </form>
+
+        <a href="/index/index3/" class="btn-cancel">Cancel & Return to Dashboard</a>
+        
+        <div class="secure-badge">
+            <i class="fas fa-lock"></i> AES-256 Authentic Interceptor
+        </div>
+    </div>
+
+    {% if msg %}
+    <script>
+        Swal.fire({ title: 'Authorization Failed', text: '{{ msg }}', icon: '{{ msg_type|default:"error" }}', background: '#11131a', color: '#fff', confirmButtonColor: '#ff1155' });
+    </script>
+    {% endif %}
+</body>
+</html>
