@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="demo-adapter.js"></script>
+    <meta charset="UTF-8">
+    <title>Biometric Tag Verification - AssentTag</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="static/assets/style.css">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #1a0b2e 0%, #000 100%);
+        }
+        .verify-card {
+            background: rgba(22, 22, 24, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 210, 211, 0.3);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(0, 210, 211, 0.1);
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+        .webcam-container {
+            position: relative;
+            width: 320px;
+            height: 240px;
+            margin: 20px auto;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid var(--neon-cyan);
+            background: #000;
+        }
+        #videoElement {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+        }
+        .scan-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+        }
+        .scan-line {
+            width: 100%;
+            height: 2px;
+            background: var(--neon-cyan);
+            box-shadow: 0 0 15px var(--neon-cyan);
+            position: absolute;
+            top: 0;
+            animation: scan 2s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: 0; }
+            50% { top: 100%; }
+            100% { top: 0; }
+        }
+        .actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        .status-msg {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            min-height: 20px;
+            font-weight: 600;
+        }
+        .success { color: #00FF00; text-shadow: 0 0 10px #00FF00; }
+        .error { color: #FF0055; text-shadow: 0 0 10px #FF0055; }
+    </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="static/assets/assenttag-logo.png">
+<link rel="stylesheet" href="static/css/visual-experience.css?v=9">
+<script src="static/js/visual-experience.js?v=9" defer></script>
+
+
+
+<script src="static/js/success-notices.js?v=1" defer></script>
+
+<link rel="stylesheet" href="demo-banner.css"></head>
+<body class="at-experience" data-at-scene="verification" data-at-photo="static/assets/photo-notification.webp">
+<a href="demo.html" class="at-brand-header" style="position:absolute;top:0;left:0;right:0;"><img src="static/assets/assenttag-logo.png" alt="AssentTag" class="logo-img at-brand-mark" width="42" height="42"><span>AssentTag</span></a>
+
+    <div class="verify-card">
+        <h2 style="margin-top:0; color:var(--neon-cyan);">Authentication Required</h2>
+        <p style="color:var(--text-secondary); font-size:0.9rem;">
+            Please position your face in the frame to prove your identity before managing this tag.
+        </p>
+
+        <div class="webcam-container">
+            <video id="videoElement" autoplay playsinline></video>
+            <canvas id="canvasElement" style="display:none;"></canvas>
+            <div class="scan-overlay"><div class="scan-line"></div></div>
+        </div>
+
+        <div class="status-msg" id="statusMessage">UI preview · Camera and identity verification are disabled.</div>
+
+        <div class="actions" id="authActions">
+            <button class="btn-magenta-cyan" id="verifyBtn" style="padding:12px 24px; font-size:1rem;">Authenticate Identity</button>
+            <a href="notifications.html" class="btn-solar-flare" style="padding:12px 24px; font-size:1rem; opacity:0.8;">Cancel</a>
+        </div>
+
+        <div class="actions" id="decisionActions" style="display:none;">
+            <a href="#demo-action-image-approve-tag-1" class="btn-magenta-cyan" style="background:linear-gradient(45deg, #00FF00, #008800);">Approve Tag</a>
+            <a href="#demo-action-image-reject-tag-1" class="btn-solar-flare">Reject Tag</a>
+        </div>
+    </div>
+
+    <!-- CSRF Token for AJAX -->
+
+
+
+<div class="demo-notice" role="note">UI preview · Sample data <a href="demo.html">Dashboard ↗</a><button type="button" aria-label="Dismiss demo notice" onclick="this.parentElement.remove()">×</button></div></body>
+</html>

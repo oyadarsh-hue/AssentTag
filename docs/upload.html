@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="demo-adapter.js"></script>
+    <meta charset="UTF-8">
+    <title>Upload Media - AssentTag</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --magenta: #ff00ff;
+            --orange: #ff6600;
+            --bg-dark: #050505;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            background-color: var(--bg-dark); color: #fff; height: 100vh;
+            background: linear-gradient(rgba(5,5,10,0.85), rgba(5,5,10,0.85)), url('static/assets/user_bg.jpg') center/cover fixed;
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+
+        /* Top Navigation Bar */
+        .top-nav {
+            width: 100%; height: 80px; background: rgba(10,10,10,0.9);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex; justify-content: space-between; align-items: center; padding: 0 5%;
+            flex-shrink: 0;
+        }
+
+        .logo-box { display: flex; align-items: center; gap: 12px; }
+        .logo-text { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; }
+
+        .nav-right-block { display: flex; align-items: center; gap: 20px; }
+        .avatar-circle { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--neon-blue); object-fit: cover; }
+
+        .btn-orange {
+            background: var(--orange); border: none; padding: 10px 20px; color: #000;
+            font-weight: 800; font-size: 0.85rem; border-radius: 6px; cursor: pointer;
+            text-transform: uppercase; text-decoration: none;
+        }
+        .btn-orange:hover { box-shadow: 0 0 15px rgba(255,102,0,0.5); }
+
+        /* Unified Container layout removing body scroll */
+        .page-content { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; }
+
+        .upload-card {
+            background: rgba(15,15,18,0.95); backdrop-filter: blur(25px);
+            border: 1px solid rgba(255,255,255,0.05); border-radius: 12px;
+            width: 100%; max-width: 900px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            display: flex;
+            height: 100%; max-height: 550px; overflow: hidden;
+        }
+
+        .card-left {
+            flex: 1; padding: 40px; border-right: 1px solid rgba(255,255,255,0.05);
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        .card-right {
+            flex: 1; padding: 40px; display: flex; flex-direction: column; justify-content: center;
+        }
+
+        .card-header { margin-bottom: 25px; }
+        .card-header h2 { font-size: 1.6rem; font-weight: 800; border-left: 3px solid var(--magenta); padding-left: 12px; margin-bottom: 8px; }
+        .card-header p { font-size: 0.85rem; color: #888; padding-left: 15px; }
+
+        .step-label { font-size: 0.75rem; font-weight: 800; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; display: block; }
+
+        .form-section { padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .form-section:last-of-type { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+        /* File Input */
+        .file-upload-wrapper {
+            background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+            display: flex; align-items: center; height: 50px; overflow: hidden; width: 100%;
+        }
+        .custom-file-upload {
+            background: rgba(255,255,255,0.1); padding: 0 20px; height: 100%; display: flex; align-items: center;
+            font-size: 0.85rem; font-weight: 700; color: #fff; cursor: pointer; border-right: 1px solid rgba(255,255,255,0.1);
+            transition: 0.3s; white-space: nowrap;
+        }
+        .custom-file-upload:hover { background: rgba(255,255,255,0.2); }
+        .file-name-display { padding: 0 15px; font-size: 0.85rem; color: #aaa; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        input[type="file"] { display: none; }
+
+        .tag-block select { width: 100%; background: #000; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 6px; max-height: 100px; font-size: 0.85rem; }
+
+        /* Webcam Area (Right Side) */
+        .btn-capture {
+            background: #b34700; border: none; padding: 15px; width: 100%; color: #000;
+            font-weight: 800; font-size: 0.9rem; border-radius: 6px; cursor: not-allowed; text-transform: uppercase;
+            opacity: 0.5; transition: 0.3s;
+        }
+        .btn-capture.active { background: var(--orange); cursor: pointer; opacity: 1; }
+        .btn-capture.active:hover { box-shadow: 0 0 15px rgba(255,102,0,0.4); }
+
+        #camera-wrapper { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; margin-top: 20px; display: none; }
+        video, canvas { width: 100%; max-height: 480px; object-fit: cover; border-radius: 8px; border: 2px solid var(--neon-blue); background: #000; }
+        canvas { border-color: var(--magenta); display: none; }
+
+        .btn-snap {
+            background: var(--neon-blue); border: none; padding: 10px 20px; font-weight: 700; position: absolute; bottom: 10px;
+            border-radius: 4px; cursor: pointer; color: #000; left: 50%; transform: translateX(-50%); box-shadow: 0 0 10px rgba(0,0,0,0.8);
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            background: linear-gradient(90deg, #b026ff, #00f3ff); border: none; padding: 16px; width: 100%;
+            color: #fff; font-weight: 900; font-size: 1rem; border-radius: 8px; cursor: pointer; text-transform: uppercase;
+            box-shadow: 0 5px 20px rgba(176,38,255,0.4); margin-top: 15px;
+        }
+        .btn-submit:hover { filter: brightness(1.2); }
+        .btn-upload:hover { box-shadow: 0 0 15px rgba(0,243,255,0.4); filter: brightness(1.2); }
+    </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="static/assets/assenttag-logo.png">
+<link rel="stylesheet" href="static/css/visual-experience.css?v=9">
+<script src="static/js/visual-experience.js?v=9" defer></script>
+
+
+
+<script src="static/js/success-notices.js?v=1" defer></script>
+
+<link rel="stylesheet" href="demo-banner.css"></head>
+<body class="at-experience" data-at-scene="upload" data-at-photo="static/assets/page-upload.webp">
+
+    <nav class="top-nav">
+        <div class="logo-box">
+            <img src="static/assets/assenttag-logo.png" style="width: 35px; animation: pulseGlow 3s infinite alternate; filter: drop-shadow(0 0 5px var(--neon-blue));" onerror="this.style.display='none'">
+            <div class="logo-text" style="color: #fff;">UPLOAD MEDIA</div>
+        </div>
+        <div class="nav-right-block">
+            <a href="demo.html" class="btn-orange" style="background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue);">Back &rarr;</a>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 0.85rem; font-weight: 700; color: #fff; margin-left: 10px;">Jamie</span>
+                <a href="profile.html">
+                    <img src="static/assets/user_icon.svg" class="avatar-circle" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-content">
+        <div class="upload-card">
+
+            <form enctype="multipart/form-data" id="uploadForm" style="display:flex; width:100%;" method="dialog" novalidate data-demo-form>
+
+
+                <div class="card-left">
+                    <section class="at-page-photo" aria-label="Give your moment a place." data-workflow-image="static/assets/page-upload.webp">
+    <img src="static/assets/page-upload.webp" alt="A photographer composing a tagged photo upload on a tablet at a studio desk" width="1536" height="1024" decoding="async">
+    <div class="at-page-photo-copy"><p class="at-eyebrow">AssentTag</p><h2>Give your moment a place.</h2><p>Share a photo with the people who made it special.</p></div>
+</section>
+
+                    <div class="card-header">
+                        <h2>Upload Media</h2>
+                        <p>Process your media securely using facial recognition.</p>
+                    </div>
+
+                    <div class="form-section">
+                        <span class="step-label">1. Select Target File</span>
+                        <div class="file-upload-wrapper">
+                            <label for="media-input" class="custom-file-upload">Choose File</label>
+                            <span class="file-name-display" id="file-name">No file chosen</span>
+                            <input type="file" name="media" id="media-input" required>
+                        </div>
+                    </div>
+
+                    <div class="form-section tag-block" style="flex:1;">
+                        <span class="step-label">2. Tag Friends (Optional)</span>
+
+                        <select name="tagged_friends" multiple style="height: 100px;">
+
+                            <option value="2">Maya River</option>
+
+                            <option value="3">Alex Stone</option>
+
+                        </select>
+
+                    </div>
+                </div>
+
+                <div class="card-right" style="background: rgba(0,0,0,0.3);">
+                    <div class="form-section" style="border:none; margin:0; padding:0; height:100%; display:flex; flex-direction:column;">
+                        <span class="step-label">3. Verification Security</span>
+                        <button type="button" id="start-camera-btn" class="btn-capture">Grant WebCam Access</button>
+
+                        <div id="camera-wrapper">
+                            <video id="video-stream" autoplay></video>
+                            <button type="button" id="snap-btn" class="btn-snap">Capture Frame</button>
+                            <canvas id="canvas" width="640" height="480"></canvas>
+                        </div>
+
+                        <input type="hidden" name="live_photo" id="live_photo_input">
+
+                        <div style="flex:1;"></div>
+                        <button type="submit" class="btn-submit">START SECURE UPLOAD</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+        const mediaInput = document.getElementById('media-input');
+        const fileNameDisplay = document.getElementById('file-name');
+        const startCameraBtn = document.getElementById('start-camera-btn');
+        const cameraWrapper = document.getElementById('camera-wrapper');
+        const videoStream = document.getElementById('video-stream');
+        const snapBtn = document.getElementById('snap-btn');
+        const canvas = document.getElementById('canvas');
+        const livePhotoInput = document.getElementById('live_photo_input');
+
+        mediaInput.addEventListener('change', function () {
+            if (this.files && this.files.length > 0) {
+                fileNameDisplay.textContent = this.files[0].name;
+                startCameraBtn.classList.add('active');
+                startCameraBtn.disabled = false;
+                startCameraBtn.textContent = "Start Verification Camera";
+            }
+        });
+
+        startCameraBtn.addEventListener('click', async () => {
+            if(!startCameraBtn.classList.contains('active')) return;
+            startCameraBtn.style.display = 'none';
+            cameraWrapper.style.display = 'flex';
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                videoStream.srcObject = stream;
+            } catch (err) { alert("Webcam access denied."); }
+        });
+
+        snapBtn.addEventListener('click', () => {
+            const context = canvas.getContext('2d');
+            context.drawImage(videoStream, 0, 0, canvas.width, canvas.height);
+            canvas.style.display = 'block';
+            videoStream.style.display = 'none';
+            snapBtn.style.display = 'none';
+
+            const stream = videoStream.srcObject;
+            if (stream) stream.getTracks().forEach(track => track.stop());
+
+            livePhotoInput.value = canvas.toDataURL('image/jpeg');
+        });
+
+        const msg = "";
+        const msgType = "error";
+        const redirectUrl = "";
+        if (msg && msgType !== 'success') {
+            Swal.fire({
+                title: msgType === "success" ? "Success!" : "Notice",
+                text: msg,
+                icon: msgType,
+                confirmButtonColor: '#FF00FF',
+                background: '#111', color: '#fff'
+            }).then(() => { if (redirectUrl) window.location.href = redirectUrl; });
+        }
+    </script>
+<div class="demo-notice" role="note">UI preview · Sample data <a href="demo.html">Dashboard ↗</a><button type="button" aria-label="Dismiss demo notice" onclick="this.parentElement.remove()">×</button></div></body>
+</html>

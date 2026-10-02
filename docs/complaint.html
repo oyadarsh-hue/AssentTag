@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="demo-adapter.js"></script>
+    <meta charset="UTF-8">
+    <title>AssentTag - Post Complaint</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #050505; --neon-blue: #00f3ff; --magenta: #ff00ff; --text-main: #ffffff; --text-secondary: #999999; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-y: auto;}
+
+        .user-bg-container { position: fixed; top: -50%; left: -50%; width: 200%; height: 200%; z-index: -1; pointer-events: none; overflow: hidden; background: #050505; }
+        .user-bg-image { width: 100%; height: 100%; object-fit: cover; animation: rotateBG 120s linear infinite; opacity: 0.3; mix-blend-mode: screen; filter: hue-rotate(20deg) contrast(1.2); }
+        @keyframes rotateBG { 0% { transform: rotate(0deg) scale(1.2); } 100% { transform: rotate(360deg) scale(1.2); } }
+
+        .glass-nav {
+            background: rgba(10,10,14,0.9); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0 4%;
+            display: flex; justify-content: space-between; align-items: center; height: 80px; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+        }
+
+        .nav-left { display: flex; align-items: center; gap: 12px; }
+        .logo-img { width: 35px; animation: pulseGlow 3s infinite alternate; filter: drop-shadow(0 0 5px var(--neon-blue)); }
+        @keyframes pulseGlow { 0% { filter: drop-shadow(0 0 5px var(--neon-blue)); transform: scale(1); } 100% { filter: drop-shadow(0 0 15px var(--neon-blue)); transform: scale(1.05); } }
+        .logo-text { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.2rem; color: #fff; text-transform: uppercase; letter-spacing: 1px;}
+
+        .nav-right { display: flex; align-items: center; gap: 20px; }
+        .nav-btn { background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 8px 16px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: 0.3s; }
+        .nav-btn:hover { background: rgba(0,243,255,0.1); box-shadow: 0 0 10px rgba(0,243,255,0.2); }
+        .profile-wrap { display: flex; align-items: center; gap: 10px; }
+        .profile-name { font-size: 0.85rem; font-weight: 700; color: #fff; }
+        .avatar-circle { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--neon-blue); object-fit: cover; }
+
+        .main-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 120px 20px 60px; }
+
+        .card-wrapper { display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 650px; }
+        .feedback-card { background: rgba(15,15,18,0.85); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 3rem; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
+
+        .title { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 0.3rem; margin-top: 10px; border-left: 3px solid #ff4500; padding-left: 10px; display: inline-block; }
+        .subtitle { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 2rem; }
+
+        .divider-fade { width: 100%; height: 1px; background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent); margin-bottom: 2rem; }
+
+        .form-group { display: flex; align-items: flex-start; margin-bottom: 1.5rem; text-align: left; }
+        .form-label { width: 130px; font-size: 0.8rem; font-weight: 800; color: #fff; text-transform: uppercase; padding-top: 15px; }
+        .form-control { flex: 1; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 15px; border-radius: 6px; font-family: 'Inter',sans-serif; font-size: 0.9rem; transition: 0.3s; }
+        .form-control:focus { outline: none; border-color: var(--neon-blue); box-shadow: 0 0 10px rgba(0,243,255,0.1); }
+
+        select.form-control { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em; cursor: pointer; }
+        textarea.form-control { resize: vertical; min-height: 120px; }
+
+        .btn-submit { background: linear-gradient(135deg, #FF4500, #ff00ff); color: #fff; border: none; padding: 14px 28px; font-size: 0.85rem; font-weight: 800; border-radius: 6px; cursor: pointer; margin-top: 1rem; text-transform: uppercase; transition: 0.3s; width: 100%; }
+        .btn-submit:hover { filter: brightness(1.2); box-shadow: 0 0 20px rgba(255,69,0,0.4); }
+
+        .recent-card { background: rgba(15,15,18,0.85); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 2rem; border-left: 3px solid #ff4500; text-align: left; }
+        .recent-title { font-size: 0.8rem; font-weight: 800; color: #fff; text-transform: uppercase; margin-bottom: 20px; }
+        .recent-msg { font-size: 0.85rem; color: var(--text-secondary); font-style: italic; }
+
+        .footer-tag { text-align: center; color: #444; font-size: 0.75rem; width: 100%; margin-top: 30px; }
+    </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="static/assets/assenttag-logo.png">
+<link rel="stylesheet" href="static/css/visual-experience.css?v=9">
+<script src="static/js/visual-experience.js?v=9" defer></script>
+
+
+
+<script src="static/js/success-notices.js?v=1" defer></script>
+
+<link rel="stylesheet" href="demo-banner.css"></head>
+<body class="at-experience" data-at-scene="support" data-at-photo="static/assets/page-support.webp">
+
+    <div class="user-bg-container">
+        <img src="static/assets/user_bg.jpg" class="user-bg-image" onerror="this.src='static/assets/user_icon.svg'">
+    </div>
+
+    <nav class="glass-nav">
+        <div class="nav-left">
+            <img src="static/assets/assenttag-logo.png" class="logo-img at-brand-mark" onerror="this.style.display='none'">
+            <div class="logo-text">AssentTag Complaint</div>
+        </div>
+        <div class="nav-right">
+            <a href="demo.html" class="nav-btn">Back &rarr;</a>
+            <div class="profile-wrap">
+                <span class="profile-name">Jamie</span>
+                <a href="profile.html"><img src="static/assets/user_icon.svg" class="avatar-circle" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';"></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="card-wrapper">
+            <form class="feedback-card" method="dialog" novalidate data-demo-form>
+                <section class="at-page-photo" aria-label="Your privacy concern matters." data-workflow-image="static/assets/page-support.webp">
+    <img src="static/assets/page-support.webp" alt="A woman reporting a privacy concern from a calm home workspace" width="1536" height="1024" decoding="async">
+    <div class="at-page-photo-copy"><p class="at-eyebrow">AssentTag</p><h2>Your privacy concern matters.</h2><p>Tell us what happened so it can be reviewed.</p></div>
+</section>
+
+
+                <h1 class="title">Report an Issue</h1>
+                <p class="subtitle">Securely log your incident or complaint below.</p>
+
+                <div class="divider-fade"></div>
+
+                <div class="form-group">
+                    <label class="form-label">Subject:</label>
+                    <input type="text" name="subject" class="form-control" placeholder="Brief subject..." required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description:</label>
+                    <textarea name="description" class="form-control" placeholder="Describe the incident or problem in detail..." required></textarea>
+                </div>
+
+                <div class="form-group" style="align-items: center;">
+                    <label class="form-label">Urgency:</label>
+                    <select name="urgency" class="form-control" required>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-submit">Submit Complaint</button>
+            </form>
+
+            <div class="recent-card">
+                <div class="recent-title">Your Recent Complaints:</div>
+                <div class="recent-msg">No active complaints logged in the system.</div>
+            </div>
+
+            <div class="footer-tag">&copy; 2026 AssentTag Systems</div>
+        </div>
+    </div>
+<div class="demo-notice" role="note">UI preview · Sample data <a href="demo.html">Dashboard ↗</a><button type="button" aria-label="Dismiss demo notice" onclick="this.parentElement.remove()">×</button></div></body>
+</html>

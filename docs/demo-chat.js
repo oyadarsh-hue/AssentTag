@@ -12,11 +12,13 @@
   const messages = [];
   body.replaceChildren();
   function add(text, mine, seconds = 0) {
-    const row = document.createElement('div');
-    row.style.cssText = `max-width:80%;width:fit-content;margin:14px ${mine ? '0 14px auto':'auto 14px 0'};padding:14px 18px;border-radius:18px;background:${mine?'#254b48':'#263148'};color:#f0f7ff;overflow-wrap:anywhere`;
-    const content = document.createElement('p'); content.textContent = text; content.style.margin = '0 0 6px';
-    const meta = document.createElement('small'); meta.style.color = '#bdccd9';
-    row.append(content, meta); body.append(row);
+    const row = document.createElement('article'); row.className = 'msg-container '+(mine?'sent':'recv');
+    const box = document.createElement('div'); box.className = 'msg-box';
+    const content = document.createElement('span'); content.className = 'message-content'; content.textContent = text;
+    const footer = document.createElement('footer'); footer.className = 'message-meta';
+    const time = document.createElement('time'); time.textContent = new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'});
+    const meta = document.createElement('span'); meta.className = 'message-countdown';
+    footer.append(time,meta);box.append(content,footer);row.append(box);body.append(row);
     messages.push({row, meta, expires:seconds ? Date.now()+seconds*1000 : 0});
     body.scrollTop = body.scrollHeight; tick();
   }

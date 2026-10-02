@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+<script src="demo-adapter.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AssentTag - Secure Digital Identity</title>
@@ -502,12 +503,12 @@
 
 <script src="static/js/success-notices.js?v=1" defer></script>
 
-<link rel="stylesheet" href="demo-banner.css"><meta name="description" content="Explore AssentTag: a consent-based face privacy project. Interactive UI demo with social feed, privacy controls and disappearing messages."><meta property="og:title" content="AssentTag — Your face. Your choice."><meta property="og:description" content="Explore the interactive UI demo of a consent-based face privacy and social sharing project."><meta property="og:image" content="https://oyadarsh-hue.github.io/AssentTag/static/assets/photo-index-hero-v2.webp"></head>
+<link rel="stylesheet" href="demo-banner.css"></head>
 
 <body class="at-experience" data-at-scene="index">
 
     <div class="user-bg-container">
-        <img src="static/assets/user_bg.jpg" class="user-bg-image" onerror="this.src='static/assets/back.jpg'">
+        <img src="static/assets/user_bg.jpg" class="user-bg-image" onerror="this.src='static/assets/user_icon.svg'">
     </div>
 
     <nav class="glass-nav">
@@ -521,20 +522,20 @@
                 onclick="document.body.classList.toggle('light-mode'); try { localStorage.setItem('assentTheme', document.body.classList.contains('light-mode') ? 'light' : 'dark'); } catch(e){}">
                 <i class="far fa-sun"></i>
             </button>
-            <a href="demo.html#login" class="btn-outline">Login</a>
-            <a href="demo.html#register" class="btn-solid">Sign Up</a>
+            <a href="login.html" class="btn-outline">Login</a>
+            <a href="register.html" class="btn-solid">Sign Up</a>
         </div>
     </nav>
 
     <section class="hero-section" data-workflow-image="static/assets/photo-index-hero-v2.webp">
         <div class="hero-content">
-            <div class="badge">CONSENT-FIRST SHARING</div>
+            <div class="badge">MILITARY-GRADE SECURITY</div>
             <h1 class="hero-title">
                 Secure your digital<br>
                 <span class="highlight">identity.</span>
             </h1>
-            <div style="margin:20px 0"><a href="demo.html#feed" class="btn-solid">Explore the UI demo ↗</a></div><p class="hero-desc">
-                Advanced facial recognition with granular privacy controls. A project that puts you in charge of
+            <p class="hero-desc">
+                Advanced facial recognition with granular privacy controls. The only platform that puts you in charge of
                 your biometric data.
             </p>
         </div>
@@ -553,7 +554,7 @@
         <div class="feature-box">
             <div class="fb-icon-holder ic-purple"><i class="fas fa-id-card"></i></div>
             <h3>Identity Engine</h3>
-            <p>Face-based identity verification. Log in with a glance, securing your account with unique facial
+            <p>Military-grade biometric authentication. Log in with a glance, securing your account with unique facial
                 topology.</p>
         </div>
         <div class="feature-box">
@@ -565,12 +566,14 @@
         <div class="feature-box">
             <div class="fb-icon-holder ic-orange"><i class="fas fa-bolt"></i></div>
             <h3>Security Core</h3>
-            <p>Explore account verification, privacy decisions, and activity notifications in the interactive UI demo.</p>
+            <p>Real-time threat monitoring, device management, and audit logs. Your data is encrypted at rest and in
+                transit.</p>
         </div>
         <div class="feature-box">
             <div class="fb-icon-holder ic-yellow"><i class="fas fa-lock"></i></div>
             <h3>Media Vault</h3>
-            <p>Secure storage designed exclusively for your biometric vectors. Explore how consent shapes the sharing experience.</p>
+            <p>Secure storage designed exclusively for your biometric vectors. Tamper-evident algorithms lock your
+                records permanently.</p>
         </div>
         <div class="feature-box">
             <div class="fb-icon-holder ic-violet"><i class="fas fa-server"></i></div>
@@ -580,8 +583,9 @@
         </div>
         <div class="feature-box">
             <div class="fb-icon-holder ic-dark"><i class="fas fa-plug"></i></div>
-            <h3>Private Conversations</h3>
-            <p>Stay connected with mutual friends and choose how long new messages stay with disappearing-message timers.</p>
+            <h3>Developer API</h3>
+            <p>Seamlessly integrate the AssentTag engine into your third-party infrastructure. Highly documented
+                interoperable limits.</p>
         </div>
     </section>
 
@@ -700,20 +704,20 @@
         <div class="at-workflow-finale">
             <p class="at-eyebrow">Your face. Your choice.</p>
             <h2>Share freely. Stay in control.</h2>
-            <a href="demo.html#register" class="btn-solid">Create your identity <span aria-hidden="true">↗</span></a>
+            <a href="register.html" class="btn-solid">Create your identity <span aria-hidden="true">↗</span></a>
         </div>
     </section>
     <!-- Site footer -->
     <footer class="dummy-footer">
         <a href="#about">About Core</a>
-        <a href="demo.html#register">Create Your Identity</a>
-        <a href="demo.html#login">Sign In</a>
+        <a href="register.html">Create Your Identity</a>
+        <a href="login.html">Sign In</a>
     </footer>
 
     <!-- Ensuring Theme State Initialization doesn't block DOM parsing -->
     <script>
         try { if (localStorage.getItem('assentTheme') === 'light') { document.body.classList.add('light-mode'); } } catch (e) { }
     </script>
-<div class="demo-notice">UI demo · Fictional sample data <a href="demo.html#feed">Explore the app ↗</a></div></body>
+<div class="demo-notice" role="note">UI preview · Sample data <a href="demo.html">Dashboard ↗</a><button type="button" aria-label="Dismiss demo notice" onclick="this.parentElement.remove()">×</button></div></body>
 
 </html>

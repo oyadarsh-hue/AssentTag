@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200" width="400" height="200">
+    <defs>
+        <fill id="dotColor" value="#00D2D3"/>
+    </defs>
+
+    <!-- Abstract "Dot" World Map (Equirectangular approximation) -->
+    <g fill="#00D2D3" opacity="0.4">
+        <!-- North America -->
+        <circle cx="50" cy="50" r="1.5"/><circle cx="55" cy="48" r="1.5"/><circle cx="60" cy="50" r="1.5"/>
+        <circle cx="58" cy="55" r="1.5"/><circle cx="65" cy="52" r="1.5"/><circle cx="70" cy="48" r="1.5"/>
+        <circle cx="45" cy="45" r="1.5"/><circle cx="52" cy="40" r="1.5"/><circle cx="80" cy="45" r="1.5"/>
+        <circle cx="60" cy="60" r="1.5"/><circle cx="65" cy="65" r="1.5"/><circle cx="70" cy="70" r="1.5"/>
+
+        <!-- South America -->
+        <circle cx="80" cy="100" r="1.5"/><circle cx="85" cy="105" r="1.5"/><circle cx="90" cy="110" r="1.5"/>
+        <circle cx="95" cy="120" r="1.5"/><circle cx="90" cy="130" r="1.5"/><circle cx="85" cy="125" r="1.5"/>
+        <circle cx="82" cy="115" r="1.5"/><circle cx="95" cy="105" r="1.5"/><circle cx="100" cy="100" r="1.5"/>
+
+        <!-- Europe / Africa -->
+        <circle cx="180" cy="50" r="1.5"/><circle cx="185" cy="45" r="1.5"/><circle cx="190" cy="50" r="1.5"/>
+        <circle cx="180" cy="60" r="1.5"/><circle cx="185" cy="70" r="1.5"/><circle cx="180" cy="80" r="1.5"/>
+        <circle cx="190" cy="90" r="1.5"/><circle cx="200" cy="100" r="1.5"/><circle cx="210" cy="110" r="1.5"/>
+        <circle cx="200" cy="120" r="1.5"/><circle cx="190" cy="130" r="1.5"/><circle cx="205" cy="125" r="1.5"/>
+
+        <!-- Asia -->
+        <circle cx="240" cy="40" r="1.5"/><circle cx="250" cy="45" r="1.5"/><circle cx="260" cy="40" r="1.5"/>
+        <circle cx="245" cy="55" r="1.5"/><circle cx="255" cy="60" r="1.5"/><circle cx="270" cy="50" r="1.5"/>
+        <circle cx="280" cy="60" r="1.5"/><circle cx="290" cy="55" r="1.5"/><circle cx="260" cy="70" r="1.5"/>
+        <circle cx="250" cy="75" r="1.5"/><circle cx="270" cy="80" r="1.5"/><circle cx="285" cy="70" r="1.5"/>
+
+        <!-- Australia -->
+        <circle cx="300" cy="120" r="1.5"/><circle cx="310" cy="125" r="1.5"/><circle cx="320" cy="120" r="1.5"/>
+        <circle cx="305" cy="130" r="1.5"/><circle cx="315" cy="135" r="1.5"/><circle cx="320" cy="130" r="1.5"/>
+    </g>
+
+    <!-- Grid Lines (Longitude/Latitude) to make it look techy -->
+    <path d="M0 50 L400 50" stroke="#00D2D3" stroke-width="0.5" opacity="0.2" />
+    <path d="M0 100 L400 100" stroke="#00D2D3" stroke-width="0.5" opacity="0.3" /> <!-- Equator -->
+    <path d="M0 150 L400 150" stroke="#00D2D3" stroke-width="0.5" opacity="0.2" />
+
+    <path d="M100 0 L100 200" stroke="#00D2D3" stroke-width="0.5" opacity="0.2" />
+    <path d="M200 0 L200 200" stroke="#00D2D3" stroke-width="0.5" opacity="0.2" />
+    <path d="M300 0 L300 200" stroke="#00D2D3" stroke-width="0.5" opacity="0.2" />
+
+    <!-- Random Data Blips -->
+    <rect x="50" y="50" width="2" height="2" fill="white" opacity="0.8"/>
+    <rect x="250" y="60" width="2" height="2" fill="white" opacity="0.8"/>
+    <rect x="310" y="130" width="2" height="2" fill="white" opacity="0.8"/>
+</svg>

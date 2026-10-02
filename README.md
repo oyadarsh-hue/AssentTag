@@ -11,7 +11,7 @@
 
 Share this link on LinkedIn or open it on any device. The GitHub Pages showcase includes the landing page, sign-in and registration previews, feed, stories, consent requests, profile, sample posting, inbox, and disappearing-message UI. It uses fictional sample data and temporary browser-only interactions; login, email OTP, face recognition, real uploads, and real messaging require the local Django application.
 
-The public site is built from `docs/`. Rebuild it with `python tools/build_ui_demo.py` (Django required); this exporter reads only templates and allowlisted design assets, never the database or uploaded user photos. GitHub Pages publishes `main` → `/docs`.
+The public site uses the **original project templates, layouts and animations**, including the dashboard scroll transitions, 3D Explore and profile Time-Stream. It is built into `docs/`. Rebuild it with `python tools/build_ui_demo.py` (Django required); this exporter reads only templates and allowlisted design assets, never the database or uploaded user photos. GitHub Pages publishes `main` → `/docs`.
 
 ## Open the full project UI locally
 

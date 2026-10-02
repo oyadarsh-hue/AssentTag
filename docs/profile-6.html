@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="demo-adapter.js"></script>
+    <meta charset="UTF-8">
+    <title>AssentTag - Taylor's Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root { --neon-blue: #00f3ff; --neon-purple: #bc13fe; --magenta: #ff00ff; --bg-dark: #050505; --glass-border: rgba(255, 255, 255, 0.1); }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-dark) url('static/assets/user_bg.jpg') center/cover fixed; color: #ffffff; min-height: 100vh; display: flex; flex-direction: column;}
+
+        /* Navbar matching Image 4 (Dashboard Navbar) */
+        .glass-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--glass-border);
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+        }
+
+        .logo { display: flex; align-items: center; gap: 10px; }
+        .logo-img { height: 35px; width: auto; filter: drop-shadow(0 0 5px var(--neon-blue)); }
+        .logo-text { font-family: 'Orbitron'; font-weight: 700; font-size: 1.5rem; letter-spacing: 2px; color: #fff; }
+        .logo-text span { color: var(--neon-purple); }
+
+        .nav-btn { color: var(--neon-blue); text-decoration: none; font-weight: 600; padding: 8px 15px; border-radius: 5px; transition: background-color 0.3s ease; }
+        .nav-btn:hover { background-color: rgba(0, 243, 255, 0.1); }
+
+        .avatar-circle-nav { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--neon-blue); object-fit: cover; }
+
+        .main-content { margin-top: 100px; padding: 20px 8%; width: 100%; max-width: 1200px; align-self: center; display: flex; flex-direction: column; }
+
+        /* Profile Layout */
+        .profile-header { display: flex; align-items: center; justify-content: space-between; background: rgba(18, 20, 28, 0.95); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 50px; box-shadow: 0 30px 60px rgba(0,0,0,0.8); margin-bottom: 40px; }
+
+        .profile-info { flex: 1; }
+        .profile-title { font-size: 3.5rem; font-family: 'Orbitron', sans-serif; font-weight: 900; background: linear-gradient(90deg, #fff, #aaa); -webkit-background-clip: text; color: transparent; margin-bottom: 5px; line-height: 1.1; letter-spacing: -1px;}
+        .profile-handle { font-size: 1.2rem; color: var(--neon-blue); font-weight: 700; margin-bottom: 25px; letter-spacing: 0.5px;}
+        .profile-bio { font-size: 1rem; color: #ddd; max-width: 600px; line-height: 1.6; margin-bottom: 35px; }
+
+        .stats-row { display: flex; gap: 40px; margin-bottom: 35px; }
+        .stat-item { display: flex; flex-direction: column; align-items: flex-start; background: transparent; border: none; cursor: pointer; text-align: left; }
+        .stat-val { font-size: 2.2rem; font-weight: 900; color: var(--neon-blue); line-height: 1;}
+        .stat-divider { height: 3px; background: var(--magenta); width: 100%; margin: 8px 0; box-shadow: 0 0 10px var(--magenta); }
+        .stat-label { font-size: 0.85rem; color: #8b949e; text-transform: uppercase; font-weight: 800; letter-spacing: 2px; }
+
+        .action-row { display: flex; gap: 15px; }
+        .btn-action { padding: 12px 25px; border-radius: 8px; font-weight: 800; text-transform: uppercase; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: 0.3s; border: none; cursor: pointer; font-size: 0.9rem;}
+        .btn-follow { background: linear-gradient(135deg, var(--magenta), #a200a2); color: #fff; box-shadow: 0 10px 20px rgba(255,0,255,0.2); }
+        .btn-follow:hover { filter: brightness(1.2); box-shadow: 0 15px 30px rgba(255,0,255,0.4); transform: translateY(-2px);}
+        .btn-unfollow { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+        .btn-unfollow:hover { background: rgba(255,51,51,0.2); color: #ff3333; border-color: #ff3333; }
+        .btn-requested { background: rgba(255,255,255,0.05); color: #ccc; border: 1px solid rgba(255,255,255,0.2); pointer-events: none; }
+        .btn-chat { background: transparent; color: var(--neon-blue); border: 2px solid var(--neon-blue); }
+        .btn-chat:hover { background: rgba(0,243,255,0.1); box-shadow: inset 0 0 15px rgba(0,243,255,0.2); }
+
+        /* Profile Image Circle on Right */
+        .profile-avatar-container { margin-left: 50px; flex-shrink: 0; }
+        .profile-avatar { width: 250px; height: 250px; border-radius: 50%; object-fit: cover; border: 4px solid var(--neon-purple); padding: 5px; box-shadow: 0 0 40px rgba(188,19,254,0.5), inset 0 0 20px rgba(0,243,255,0.5); background: linear-gradient(135deg, var(--neon-blue), var(--magenta)); transition: transform 0.5s;}
+        .profile-avatar:hover { transform: scale(1.05); box-shadow: 0 0 60px rgba(188,19,254,0.8), inset 0 0 30px rgba(0,243,255,0.8); }
+
+        /* Grid */
+        .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .post-item { width: 100%; aspect-ratio: 1; border-radius: 12px; overflow: hidden; position: relative; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: 0.3s; }
+        .post-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; background: #050505;}
+        .post-item:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,243,255,0.2); border-color: rgba(0,243,255,0.3); }
+        .post-item:hover img { transform: scale(1.05); }
+
+        .private-state { text-align: center; padding: 100px 20px; background: rgba(18, 20, 28, 0.9); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .private-state i { font-size: 5rem; color: #333; margin-bottom: 25px; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));}
+        .private-state h3 { font-size: 1.8rem; color: #fff; margin-bottom: 10px; font-weight: 800;}
+        .private-state p { color: #888; font-size: 1.1rem;}
+
+        /* Modals for Followers */
+        .modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); z-index: 2000; display: flex; justify-content: center; align-items: center; }
+        .modal-content { background: #111; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; width: 100%; max-width: 450px; max-height: 80vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.9); animation: modalGlow 2s infinite alternate;}
+        @keyframes modalGlow { 0% { box-shadow: 0 0 20px rgba(188, 19, 254, 0.2); } 100% { box-shadow: 0 0 40px rgba(188, 19, 254, 0.4); } }
+        .modal-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { margin: 0; font-size: 1.2rem; font-weight: 800; }
+        .btn-close { background: transparent; border: none; color: #888; font-size: 1.5rem; cursor: pointer; transition: 0.3s; }
+        .btn-close:hover { color: #fff; transform: scale(1.1); }
+        .modal-body { padding: 20px; overflow-y: auto; flex: 1; }
+        .user-list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .user-list-item:last-child { border-bottom: none; }
+        .user-info-row { display: flex; align-items: center; gap: 15px; text-decoration: none; color: #fff; }
+        .user-info-row img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--neon-blue); }
+        .user-info-text { display: flex; flex-direction: column; }
+        .user-name-bold { font-weight: 700; font-size: 0.95rem; }
+        .user-handle-sub { font-size: 0.8rem; color: #888; }
+        .btn-mutual { background: rgba(255,255,255,0.1); padding: 6px 15px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #fff; border: none; }
+
+        /* Biometric Time-Stream UI */
+        #timestream-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #0a0a14 0%, #000 100%);
+            z-index: 2000; display: none; overflow: hidden; perspective: 1000px;
+        }
+        .stream-viewport {
+            width: 100%; height: 100%; perspective: 1500px; transform-style: preserve-3d;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .bio-vault-card {
+            position: absolute; width: 300px; height: 300px; border-radius: 20px;
+            background: rgba(10,10,14,0.8); border: 2px solid var(--neon-blue);
+            transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer;
+            transform-style: preserve-3d; box-shadow: 0 0 30px rgba(0,243,255,0.2);
+        }
+        .vault-img { width: 100%; height: 100%; object-fit: cover; border-radius: 18px; filter: blur(20px); transition: 0.8s; opacity: 0.3; }
+        .vault-lock {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 80px; height: 80px; background: rgba(0,0,0,0.8); border: 2px solid var(--magenta);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            display: flex; align-items: center; justify-content: center; z-index: 10;
+            color: var(--magenta); font-size: 1.5rem; transition: 0.3s;
+        }
+
+        .bio-key {
+            position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%);
+            width: 70px; height: 70px; border-radius: 50%; background: var(--neon-blue);
+            display: flex; align-items: center; justify-content: center; font-size: 1.8rem;
+            color: #000; cursor: grab; z-index: 3000; box-shadow: 0 0 25px var(--neon-blue);
+            touch-action: none;
+        }
+        .bio-key:active { cursor: grabbing; scale: 0.9; }
+
+        .hud-telemetry {
+            position: absolute; top: 20px; color: rgba(0,243,255,0.4); font-family: 'Orbitron', monospace;
+            font-size: 0.65rem; pointer-events: none; z-index: 2500;
+        }
+        .tele-left { left: 20px; text-align: left; }
+        .tele-right { right: 20px; text-align: right; }
+        .tele-line { margin-bottom: 5px; opacity: 0; animation: teleFade 4s infinite; }
+        @keyframes teleFade { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+
+        .btn-activate-stream {
+            background: rgba(188,19,254,0.1); border: 1px solid var(--neon-purple); color: var(--neon-purple);
+            padding: 8px 15px; border-radius: 6px; font-weight: 800; font-family: 'Orbitron';
+            text-transform: uppercase; cursor: pointer; transition: 0.3s;
+            display: inline-flex; align-items: center; gap: 8px; font-size: 0.8rem;
+        }
+        .btn-activate-stream:hover { background: var(--neon-purple); color: #fff; box-shadow: 0 0 20px rgba(188,19,254,0.4); }
+
+        .btn-exit-stream {
+            position: absolute; top: 30px; right: 50%; transform: translateX(50%);
+            color: #aaa; text-decoration: none; font-weight: 800; font-size: 0.8rem;
+            z-index: 3000; padding: 10px 20px; border: 1px solid #333; border-radius: 20px;
+            background: rgba(0,0,0,0.5); transition: 0.3s;
+        }
+        .btn-exit-stream:hover { color: #fff; background: rgba(255,51,51,0.2); border-color: #ff3333; }
+
+        .handshake-status {
+            position: absolute; bottom: 160px; left: 50%; transform: translateX(-50%);
+            font-family: 'Orbitron'; font-size: 0.9rem; color: var(--neon-blue);
+            opacity: 0; transition: 0.3s; letter-spacing: 2px;
+        }
+    </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="static/assets/assenttag-logo.png">
+<link rel="stylesheet" href="static/css/visual-experience.css?v=9">
+<script src="static/js/visual-experience.js?v=9" defer></script>
+
+
+
+<script src="static/js/success-notices.js?v=1" defer></script>
+
+<link rel="stylesheet" href="demo-banner.css"></head>
+<body class="at-experience" data-at-scene="public-profile" data-at-photo="static/assets/photo-consent.webp">
+
+    <div id="timestream-overlay">
+        <div class="hud-telemetry tele-left" id="tele-left"></div>
+        <div class="hud-telemetry tele-right" id="tele-right"></div>
+        <a href="#" class="btn-exit-stream" onclick="toggleTimeStream()">EXIT SECURE STREAM &times;</a>
+
+        <div class="stream-viewport" id="stream-viewport">
+
+            <div class="bio-vault-card">
+                <div class="vault-lock"><i class="fas fa-fingerprint"></i></div>
+                <img src="static/assets/photo-index-hero-v2.webp" class="vault-img">
+            </div>
+
+            <div class="bio-vault-card">
+                <div class="vault-lock"><i class="fas fa-fingerprint"></i></div>
+                <img src="static/assets/page-dashboard-moments.webp" class="vault-img">
+            </div>
+
+            <div class="bio-vault-card">
+                <div class="vault-lock"><i class="fas fa-fingerprint"></i></div>
+                <img src="static/assets/photo-consent.webp" class="vault-img">
+            </div>
+
+            <div class="bio-vault-card">
+                <div class="vault-lock"><i class="fas fa-fingerprint"></i></div>
+                <img src="static/assets/page-stories.webp" class="vault-img">
+            </div>
+
+        </div>
+
+        <div class="handshake-status" id="handshake-status">INITIATING BIOMETRIC HANDSHAKE...</div>
+        <div class="bio-key" id="bio-key" draggable="true"><i class="fas fa-fingerprint"></i></div>
+    </div>
+
+    <nav class="glass-nav">
+        <div class="logo">
+            <img src="static/assets/assenttag-logo.png" class="logo-img at-brand-mark" onerror="this.style.display='none'">
+            <h2 class="logo-text">ASSENT<span>TAG</span></h2>
+        </div>
+        <div style="display:flex; align-items:center; gap:20px;">
+            <a href="demo.html" class="nav-btn">Dashboard &rarr;</a>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-weight: 700; color: #fff; font-size: 0.9rem;">Jamie</span>
+                <img src="static/assets/user_icon.svg" class="avatar-circle-nav" onerror="this.src='static/assets/user_icon.svg'">
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="profile-header">
+            <div class="profile-info">
+                <h1 class="profile-title">Taylor Sky</h1>
+                <div class="profile-handle">@taylorsky</div>
+                <div class="profile-bio">Fictional profile for the public UI preview.</div>
+
+                <div class="stats-row">
+                    <div class="stat-item" style="pointer-events: none;">
+                        <span class="stat-val"></span>
+                        <div class="stat-divider"></div>
+                        <span class="stat-label">POSTS</span>
+                    </div>
+                    <!-- Follower Clickable Stat -->
+                    <button class="stat-item" onclick="document.getElementById('followersModal').style.display='flex'">
+                        <span class="stat-val">3</span>
+                        <div class="stat-divider"></div>
+                        <span class="stat-label">FOLLOWERS</span>
+                    </button>
+                    <!-- Following Clickable Stat -->
+                    <button class="stat-item" onclick="document.getElementById('followingModal').style.display='flex'">
+                        <span class="stat-val">2</span>
+                        <div class="stat-divider"></div>
+                        <span class="stat-label">FOLLOWING</span>
+                    </button>
+                </div>
+
+                <div class="action-row">
+
+
+                            <a href="#demo-action-login-unfollow-6" class="btn-action btn-unfollow"><i class="fas fa-user-minus"></i> UNFOLLOW</a>
+
+                        <a href="chat-6.html" class="btn-action btn-chat"><i class="fas fa-comment-dots"></i> MESSAGE</a>
+
+                    <button class="btn-activate-stream" onclick="toggleTimeStream()"><i class="fas fa-project-diagram"></i> TIME-STREAM</button>
+                </div>
+            </div>
+
+            <div class="profile-avatar-container">
+                <img src="static/assets/user_icon.svg" class="profile-avatar" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
+            </div>
+        </div>
+
+
+            <div class="posts-grid">
+
+                <div class="post-item" style="position:relative; background:#0a0a0c; border:1px solid rgba(255,255,255,0.05); overflow:hidden; min-height:250px; display:flex;">
+
+
+
+                        <img src="static/assets/photo-index-hero-v2.webp" onerror="this.src='static/assets/user_icon.svg'" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;">
+
+                </div>
+
+                <div class="post-item" style="position:relative; background:#0a0a0c; border:1px solid rgba(255,255,255,0.05); overflow:hidden; min-height:250px; display:flex;">
+
+
+
+                        <img src="static/assets/page-dashboard-moments.webp" onerror="this.src='static/assets/user_icon.svg'" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;">
+
+                </div>
+
+                <div class="post-item" style="position:relative; background:#0a0a0c; border:1px solid rgba(255,255,255,0.05); overflow:hidden; min-height:250px; display:flex;">
+
+
+
+                        <img src="static/assets/photo-consent.webp" onerror="this.src='static/assets/user_icon.svg'" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;">
+
+                </div>
+
+                <div class="post-item" style="position:relative; background:#0a0a0c; border:1px solid rgba(255,255,255,0.05); overflow:hidden; min-height:250px; display:flex;">
+
+
+
+                        <img src="static/assets/page-stories.webp" onerror="this.src='static/assets/user_icon.svg'" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0;">
+
+                </div>
+
+            </div>
+
+    </div>
+
+    <!-- Followers Modal -->
+    <div id="followersModal" class="modal-backdrop" style="display:none;" onclick="if(event.target===this) this.style.display='none'">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Followers</h3>
+                <button class="btn-close" onclick="document.getElementById('followersModal').style.display='none'"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="user-list-item">
+                    <a href="profile-2.html" class="user-info-row">
+                        <img src="static/assets/user_icon.svg" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
+                        <div class="user-info-text">
+                            <span class="user-name-bold">Maya River</span>
+                            <span class="user-handle-sub">@mayariver</span>
+                        </div>
+                    </a>
+                    <button class="btn-mutual" onclick="window.location.href='profile-2.html'">View</button>
+                </div>
+
+                <div class="user-list-item">
+                    <a href="profile-3.html" class="user-info-row">
+                        <img src="static/assets/user_icon.svg" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
+                        <div class="user-info-text">
+                            <span class="user-name-bold">Alex Stone</span>
+                            <span class="user-handle-sub">@alexstone</span>
+                        </div>
+                    </a>
+                    <button class="btn-mutual" onclick="window.location.href='profile-3.html'">View</button>
+                </div>
+
+                <div class="user-list-item">
+                    <a href="profile-4.html" class="user-info-row">
+                        <img src="static/assets/user_icon.svg" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
+                        <div class="user-info-text">
+                            <span class="user-name-bold">Robin Kay</span>
+                            <span class="user-handle-sub">@robinkay</span>
+                        </div>
+                    </a>
+                    <button class="btn-mutual" onclick="window.location.href='profile-4.html'">View</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Following Modal -->
+    <div id="followingModal" class="modal-backdrop" style="display:none;" onclick="if(event.target===this) this.style.display='none'">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Following</h3>
+                <button class="btn-close" onclick="document.getElementById('followingModal').style.display='none'"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="user-list-item">
+                    <a href="profile-2.html" class="user-info-row">
+                        <img src="static/assets/user_icon.svg" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
+                        <div class="user-info-text">
+                            <span class="user-name-bold">Maya River</span>
+                            <span class="user-handle-sub">@mayariver</span>
+                        </div>
+                    </a>
+                    <button class="btn-mutual" onclick="window.location.href='profile-2.html'">View</button>
+                </div>
+
+                <div class="user-list-item">
+                    <a href="profile-3.html" class="user-info-row">
+                        <img src="static/assets/user_icon.svg" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
+                        <div class="user-info-text">
+                            <span class="user-name-bold">Alex Stone</span>
+                            <span class="user-handle-sub">@alexstone</span>
+                        </div>
+                    </a>
+                    <button class="btn-mutual" onclick="window.location.href='profile-3.html'">View</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const viewport = document.getElementById('stream-viewport');
+        const overlay = document.getElementById('timestream-overlay');
+        const key = document.getElementById('bio-key');
+        const statusEl = document.getElementById('handshake-status');
+        let currentZ = 0; let targetZ = 0; let isStreamActive = false;
+
+        function toggleTimeStream() {
+            isStreamActive = !isStreamActive;
+            overlay.style.display = isStreamActive ? 'block' : 'none';
+            if (isStreamActive) {
+                document.body.style.overflow = 'hidden';
+                initStream();
+            } else { document.body.style.overflow = 'auto'; }
+        }
+
+        function initStream() {
+            const cards = document.querySelectorAll('.bio-vault-card');
+            cards.forEach((card, i) => {
+                const z = -i * 800;
+                card.dataset.z = z;
+                card.style.transform = `translate3d(0, 0, ${z}px)`;
+            });
+            runAmbientTelemetry();
+        }
+
+        window.addEventListener('wheel', (e) => {
+            if (!isStreamActive) return;
+            targetZ += e.deltaY * 5;
+            targetZ = Math.min(0, targetZ);
+        });
+
+        function animateStream() {
+            if (isStreamActive) {
+                currentZ += (targetZ - currentZ) * 0.1;
+                const cards = document.querySelectorAll('.bio-vault-card');
+                cards.forEach(card => {
+                    const baseZ = parseInt(card.dataset.z);
+                    const finalZ = baseZ - currentZ;
+                    const opacity = Math.max(0, 1 - Math.abs(finalZ) / 2000);
+                    card.style.opacity = opacity;
+                    card.style.transform = `translate3d(0, 0, ${finalZ}px)`;
+                    card.style.pointerEvents = (finalZ > -400 && finalZ < 400) ? 'auto' : 'none';
+                });
+            }
+            requestAnimationFrame(animateStream);
+        }
+        animateStream();
+
+        let activeCard = null;
+        key.addEventListener('mousedown', (e) => { if (isStreamActive) startDrag(e); });
+        key.addEventListener('touchstart', (e) => { if (isStreamActive) startDrag(e.touches[0]); });
+
+        function startDrag(e) {
+            const move = (moveE) => { drag(moveE.clientX || moveE.touches[0].clientX, moveE.clientY || moveE.touches[0].clientY); };
+            const stop = () => {
+                document.removeEventListener('mousemove', move);
+                document.removeEventListener('mouseup', stop);
+                document.removeEventListener('touchmove', move);
+                document.removeEventListener('touchend', stop);
+                checkHandshake();
+            };
+            document.addEventListener('mousemove', move);
+            document.addEventListener('mouseup', stop);
+            document.addEventListener('touchmove', move);
+            document.addEventListener('touchend', stop);
+        }
+
+        function drag(x, y) {
+            key.style.left = x + 'px';
+            key.style.top = y + 'px';
+            key.style.transform = 'translate(-50%, -50%) scale(1.2)';
+            const targets = document.querySelectorAll('.bio-vault-card');
+            activeCard = null;
+            targets.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom) {
+                    const zString = card.style.transform.split('translate3d(')[1];
+                    if (zString) {
+                        const z = parseFloat(zString.split(',')[2]);
+                        if (z > -400 && z < 400) {
+                            activeCard = card;
+                            card.style.borderColor = 'var(--magenta)';
+                            card.style.boxShadow = '0 0 50px var(--magenta)';
+                        }
+                    }
+                } else {
+                    card.style.borderColor = 'var(--neon-blue)';
+                    card.style.boxShadow = '0 0 30px rgba(0,243,255,0.2)';
+                }
+            });
+        }
+
+        function checkHandshake() {
+            key.style.left = '50%'; key.style.top = ''; key.style.bottom = '80px';
+            key.style.transform = 'translateX(-50%)';
+            if (activeCard) {
+                statusEl.style.opacity = '1';
+                setTimeout(() => {
+                    decryptVault(activeCard);
+                    statusEl.innerText = 'HANDSHAKE VERIFIED: ACCESS GRANTED';
+                    setTimeout(() => { statusEl.style.opacity = '0'; statusEl.innerText = 'INITIATING BIOMETRIC HANDSHAKE...'; }, 2000);
+                }, 1000);
+            }
+        }
+
+        function decryptVault(card) {
+            const img = card.querySelector('.vault-img');
+            const lock = card.querySelector('.vault-lock');
+            img.style.filter = 'blur(0)'; img.style.opacity = '1';
+            lock.style.transform = 'translate(-50%, -50%) scale(0) rotate(180deg)';
+            lock.style.opacity = '0';
+            card.style.borderColor = '#0f0'; card.style.boxShadow = '0 0 50px #0f0';
+            createBloom(card);
+        }
+
+        function createBloom(parent) {
+            for(let i=0; i<20; i++) {
+                const p = document.createElement('div');
+                p.style = `position:absolute;top:50%;left:50%;width:4px;height:4px;background:#00f3ff;border-radius:50%;z-index:500;`;
+                parent.appendChild(p);
+                const tx = (Math.random()-0.5)*400; const ty = (Math.random()-0.5)*400;
+                p.animate([{transform:'translate(-50%,-50%) scale(1)',opacity:1},{transform:`translate(${tx}px,${ty}px) scale(0)`,opacity:0}],{duration:1000,easing:'cubic-bezier(0,0,0,1)'}).onfinish=()=>p.remove();
+            }
+        }
+
+        function confirmDelete(url) {
+            Swal.fire({
+                title: '<span style="font-family:\'Orbitron\', sans-serif; color:#ff3333;">Secure Deletion Protocol</span>',
+                html: "WARNING: This will permanently scrub your securely encrypted asset from the AssentTag server array. This action is <b>irreversible</b>.",
+                icon: 'warning',
+                showCancelButton: true,
+                background: 'rgba(15, 15, 20, 0.95)',
+                color: '#fff',
+                cancelButtonColor: 'rgba(255,51,51,0.2)',
+                confirmButtonColor: 'rgba(0, 243, 255, 0.8)',
+                confirmButtonText: 'Initiate Wipe',
+                cancelButtonText: 'Abort'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Scrubbing Target...',
+                        background: 'rgba(15, 15, 20, 0.95)',
+                        color: '#00f3ff',
+                        showConfirmButton: false,
+                        didOpen: () => { Swal.showLoading() }
+                    });
+                    window.location.href = url;
+                }
+            });
+        }
+
+        function runAmbientTelemetry() {
+            const left = document.getElementById('tele-left');
+            const right = document.getElementById('tele-right');
+            const data = ["SIGNAL: ENCRYPTED", "BIO_SYNC: 99.8%", "NEXUS_LINK: STABLE", "AUTH_TOKEN: VERIFIED", "PACKET_ID: 0x99F1"];
+            setInterval(() => {
+                const lLine = document.createElement('div'); lLine.className = 'tele-line';
+                lLine.innerText = `>> ${data[Math.floor(Math.random()*data.length)]}`;
+                left.prepend(lLine); if(left.children.length > 15) left.lastChild.remove();
+                const rLine = document.createElement('div'); rLine.className = 'tele-line';
+                rLine.innerText = `${(Math.random()*10000).toFixed(0)} [STBL]`;
+                right.prepend(rLine); if(right.children.length > 15) right.lastChild.remove();
+            }, 800);
+        }
+    </script>
+<div class="demo-notice" role="note">UI preview · Sample data <a href="demo.html">Dashboard ↗</a><button type="button" aria-label="Dismiss demo notice" onclick="this.parentElement.remove()">×</button></div></body>
+</html>

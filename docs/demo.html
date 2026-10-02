@@ -1,7 +1,1144 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Explore AssentTag · UI demo</title><meta name="description" content="An interactive preview of AssentTag's social feed, consent controls, messages and profile."><link rel="icon" href="static/assets/assenttag-logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="demo.css"><script src="demo.js" defer></script></head>
-<body><a class="skip" href="#main">Skip to content</a><header><a class="brand" href="index.html"><img src="static/assets/assenttag-logo.png" alt="">ASSENTTAG</a><span class="pill">Interactive UI demo</span><a class="avatar" href="#profile" aria-label="Demo profile">JD</a></header>
-<div class="layout"><aside><p class="eyebrow">YOUR SPACE</p><nav aria-label="Main navigation"><a href="#feed">◈ <span>Home feed</span></a><a href="#explore">◎ <span>Explore</span></a><a href="messages.html">◌ <span>Messages</span><span class="count">2</span></a><a href="#notifications">♧ <span>Consent requests</span></a><a href="#upload">＋ <span>Share a moment</span></a><a href="#profile">▧ <span>My profile</span></a></nav><div class="sidebar-note"><span class="eyebrow">YOUR FACE. YOUR CHOICE.</span><p>A little more control.<br>A lot more peace of mind.</p><a href="index.html#about">See how it works ↗</a></div><a class="source" href="https://github.com/oyadarsh-hue/AssentTag" target="_blank" rel="noopener">View project on GitHub ↗</a></aside>
-<main id="main" tabindex="-1"></main></div><div class="demo-footer">UI preview · Sample people and content · No account or camera required</div><div class="toast" role="status" aria-live="polite" hidden></div>
-<dialog id="story"><button class="close" aria-label="Close story">×</button><img src="static/assets/page-stories.webp" alt="A sample sharing moment"><h2>Small moments. Shared thoughtfully.</h2><p>Story preview · Fictional sample content</p></dialog>
-</body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="demo-adapter.js"></script>
+    <meta charset="UTF-8">
+    <title>AssentTag - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-purple: #bc13fe;
+            --magenta: #ff00ff;
+            --bg-dark: #050505;
+            --glass: rgba(20, 20, 20, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #fff;
+            min-height: 100vh;
+            /* Scrollable body */
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: url('static/assets/user_bg.jpg') center/cover fixed;
+        }
+
+        /* Navigation */
+        .glass-nav {
+            position: sticky; top: 0; left: 0; width: 100%; height: 75px; z-index: 1000;
+            background: rgba(10, 10, 14, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex; justify-content: space-between; align-items: center; padding: 0 4%;
+        }
+        .logo-box { display: flex; align-items: center; gap: 12px; }
+        .logo-img { width: 38px; animation: pulseGlow 3s infinite alternate; }
+        @keyframes pulseGlow { 0% { filter: drop-shadow(0 0 5px var(--neon-blue)); transform: scale(1); } 100% { filter: drop-shadow(0 0 15px var(--neon-blue)); transform: scale(1.05); } }
+        .logo-text { font-family: 'Orbitron', sans-serif; font-size: 1.3rem; font-weight: 700; color: #fff; display: flex; gap: 6px; letter-spacing: 0.5px; }
+        .logo-text .highlight { color: var(--neon-blue); }
+        .logo-text .module { color: var(--magenta); }
+
+        .nav-controls { display:flex; gap:15px; align-items:center; }
+        .pill-btn {
+            background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: #fff; padding: 10px 20px;
+            border-radius: 8px; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.3s;
+            text-transform: uppercase; text-decoration: none; display: flex; align-items: center; gap: 8px;
+        }
+        .pill-btn:hover { background: rgba(0,243,255,0.1); border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0,243,255,0.2); transform: translateY(-2px); color: var(--neon-blue); }
+        .pill-btn.danger { border-color: #ff3333; }
+        .pill-btn.danger:hover { box-shadow: 0 0 15px rgba(255,51,51,0.2); border-color: #ff3333; background: rgba(255,51,51,0.1); color: #ff3333; }
+        .pill-btn i { color: #aaa; transition: 0.3s; }
+        .pill-btn:hover i { color: var(--neon-blue); }
+        .pill-btn.danger i { color: #ff3333; }
+
+        /* Dashboard Grid Layout */
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 320px minmax(500px, 1fr) 350px;
+            gap: 2rem;
+            padding: 2rem 5%;
+            max-width: 1800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .glass-panel {
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            overflow: hidden;
+        }
+
+        /* Top Border Glow */
+        .glass-panel::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--magenta));
+            z-index: 1;
+        }
+
+        .panel-heading {
+            display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem;
+            font-family: 'Orbitron', sans-serif; font-weight: 700; color: #fff; text-transform: uppercase;
+            font-size: 1.1rem; letter-spacing: 1px;
+        }
+
+        /* Stories Panel SCROLLABLE */
+        .stories-container { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; scroll-behavior: smooth; }
+        .story-col { display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 75px; flex-shrink: 0; }
+        .story-avatar-wrap {
+            width: 70px; height: 70px; border-radius: 50%; padding: 3px;
+            background: linear-gradient(135deg, var(--neon-blue), var(--magenta));
+            position: relative; cursor: pointer; transition: transform 0.2s;
+        }
+        .story-avatar-wrap:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--magenta); }
+        .story-avatar { width: 100%; height: 100%; border-radius: 50%; border: 3px solid #111; object-fit: cover; }
+        .story-add { position: absolute; bottom: 0; right: 0; background: var(--neon-blue); color: #000; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 900; border: 3px solid #111; }
+        .story-name { font-size: 0.8rem; color: #ccc; font-weight: 600; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+
+        /* Story Box Interactive Styles (Privacy-First) */
+        .story-box-interactive:hover .story-hover-overlay { opacity: 1 !important; }
+        .story-box-interactive:hover .profile-thumb-static { transform: scale(1.1); filter: blur(2px); }
+
+        .shortcut-item {
+            display: flex; align-items: center; gap: 15px; padding: 12px 15px; border-radius: 12px;
+            cursor: pointer; transition: all 0.3s; margin-bottom: 5px; color: #ddd; font-weight: 600; text-decoration: none;
+        }
+        .shortcut-item:hover {
+            background: rgba(255,255,255,0.05); color: #fff; transform: translateX(5px);
+        }
+        .shortcut-icon {
+            width: 45px; height: 45px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 1.15rem;
+            background: #08080c; /* Hollow minimal center */
+            border: 2px solid transparent; /* Prepare for gradient ring */
+            background-clip: padding-box;
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.1);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: #fff;
+        }
+        .shortcut-item:hover .shortcut-icon {
+            box-shadow: 0 0 0 2px var(--magenta), 0 0 15px var(--magenta);
+            transform: scale(1.05);
+            color: var(--neon-blue);
+        }
+
+        /* Middle Column: Make Post & Feed */
+        .make-post { display: flex; align-items: center; gap: 15px; }
+        .make-post-input { flex: 1; background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); border-radius: 30px; padding: 15px 20px; color: #fff; outline: none; transition: border-color 0.3s; font-size: 0.95rem; }
+        .make-post-input:focus { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0,243,255,0.2); }
+
+        .post-card { background: var(--glass); backdrop-filter: blur(25px); border: 1px solid var(--glass-border); border-radius: 20px; margin-bottom: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); overflow: hidden; }
+        .post-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .post-user-info { display: flex; align-items: center; gap: 15px; }
+        .post-avatar { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--neon-blue); object-fit: cover; }
+        .post-name { font-weight: 800; font-size: 1.1rem; color: #fff; }
+        .post-name span { color: var(--neon-blue); }
+        .post-meta { font-size: 0.8rem; color: #888; margin-top: 3px; }
+
+        .post-image-container { width: 100%; border-radius: 0; overflow: hidden; background: #000; display: flex; align-items: center; justify-content: center; max-height: 800px; margin: 0; }
+        .post-image { width: 100%; max-height: 800px; height: auto; display: block; object-fit: cover; }
+
+        /* SHAPE & SYMBOL ENHANCEMENTS FOR LIKE/COMMENT/SHARE */
+        .post-interaction-bar { display: flex; align-items: center; gap: 20px; padding: 15px 20px 5px; }
+        .interaction-btn { background: transparent; border: none; color: #fff; font-size: 1.8rem; cursor: pointer; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); padding: 0; display: flex; align-items: center; justify-content: center; }
+        .interaction-btn:hover { transform: scale(1.15) translateY(-2px); filter: drop-shadow(0 0 10px rgba(255,255,255,0.4)); }
+        .interaction-btn.like:hover { color: #ff3366; filter: drop-shadow(0 0 15px rgba(255,51,102,0.6)); }
+        .interaction-btn.comment:hover { color: var(--neon-blue); filter: drop-shadow(0 0 15px rgba(0,243,255,0.6)); }
+        .interaction-btn.share:hover { color: var(--neon-purple); filter: drop-shadow(0 0 15px rgba(188,19,254,0.6)); }
+        .likes-count { font-weight: 800; font-size: 1rem; margin-bottom: 5px; display: block; padding: 0 20px; }
+
+        .post-caption { font-size: 0.95rem; line-height: 1.6; color: #ddd; padding: 5px 20px 15px; }
+        .post-caption .author { font-weight: 800; color: #fff; }
+        .post-caption .hashtag { color: var(--magenta); cursor: pointer; font-weight: 600; }
+
+        /* Right Column: Profile & Suggestions */
+        .profile-card { text-align: center; }
+        .profile-card-avatar { width: 110px; height: 110px; border-radius: 50%; border: 3px solid var(--neon-purple); padding: 4px; box-shadow: 0 0 25px rgba(188,19,254,0.5); margin: 0 auto 15px; object-fit: cover; }
+        .profile-name { font-size: 1.4rem; font-weight: 800; font-family: 'Orbitron', sans-serif; letter-spacing: 1px; color: #fff; }
+        .profile-handle { font-size: 0.85rem; color: var(--magenta); margin-bottom: 20px; font-weight: 600; }
+        .profile-stats { display: flex; justify-content: space-around; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); padding: 15px 0; margin-bottom: 20px; }
+        .stat-col { display: flex; flex-direction: column; gap: 5px; }
+        .stat-num { font-size: 1.3rem; font-weight: 900; color: var(--neon-blue); }
+        .stat-label { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+
+        .suggestion-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 10px; border-radius: 12px; transition: background 0.3s; }
+        .suggestion-item:hover { background: rgba(255,255,255,0.05); }
+        .suggestion-user { display: flex; align-items: center; gap: 12px; }
+        .suggestion-avatar { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--magenta); object-fit: cover; }
+        .suggestion-name { font-weight: 800; font-size: 0.9rem; color: #fff; }
+        .suggestion-sub { font-size: 0.75rem; color: #888; }
+        .follow-btn { background: rgba(0,243,255,0.1); border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.3s; text-transform: uppercase; }
+        .follow-btn:hover { background: var(--neon-blue); color: #000; box-shadow: 0 0 15px var(--neon-blue); }
+
+        /* Premium Post Frame Styling */
+        .post-card {
+            background: rgba(15, 15, 20, 0.95); backdrop-filter: blur(25px);
+            border-radius: 20px; margin-bottom: 50px;
+            overflow: hidden; border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.02);
+            width:100%; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .post-card:hover { transform: translateY(-8px); box-shadow: 0 35px 80px rgba(0,0,0,0.9), 0 0 40px rgba(0, 243, 255, 0.15); border-color: rgba(0, 243, 255, 0.2); }
+
+        .post-header {
+            padding: 18px 25px; display: flex; align-items: center; justify-content: space-between;
+            background: linear-gradient(to bottom, rgba(10,10,14,0.9), transparent);
+        }
+        .post-header-left { display: flex; align-items: center; gap: 15px; }
+        .post-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid transparent; background-clip: padding-box; box-shadow: 0 0 0 2px var(--neon-purple); transition: 0.3s;}
+        .post-avatar:hover { box-shadow: 0 0 0 2px var(--neon-blue), 0 0 15px var(--neon-blue); }
+        .post-author { font-weight: 800; font-size: 1.05rem; color: #fff; display:block; text-decoration: none; text-shadow: 0 2px 4px rgba(0,0,0,0.5);}
+        .post-time { font-size: 0.75rem; color: #999; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;}
+        .post-options { color: #888; cursor: pointer; transition: 0.3s; }
+        .post-options:hover { color: #fff; }
+
+        .post-image-container { position: relative; width: 100%; display: flex; justify-content: center; background: #000; overflow: hidden; align-items: center; border-radius: 4px; }
+        .post-image { width: 100%; max-height: 850px; object-fit: contain; display: block; transition: transform 3s ease; background: #050505; }
+        .post-card:hover .post-image { transform: scale(1.02); }
+
+        .post-overlay-tag {
+            position: absolute; top: 20px; right: 20px; left: auto;
+            background: rgba(0,0,0,0.75); backdrop-filter: blur(10px);
+            padding: 8px 16px; border-radius: 30px; font-size: 0.75rem; font-weight: 800;
+            border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            letter-spacing: 1px;
+        }
+
+        .post-interaction-bar { padding: 18px 25px 10px; display: flex; gap: 20px; align-items: center; }
+        .interaction-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 1.2rem; cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .interaction-btn:hover { background: rgba(0, 243, 255, 0.1); border-color: var(--neon-blue); color: var(--neon-blue); transform: scale(1.15) rotate(-5deg); box-shadow: 0 10px 20px rgba(0,243,255,0.2); }
+        .interaction-btn.like:hover { background: rgba(255, 0, 255, 0.1); border-color: var(--magenta); color: var(--magenta); box-shadow: 0 10px 20px rgba(255,0,255,0.2); }
+
+        .likes-count { padding: 0 25px; font-weight: 900; font-size: 1.1rem; margin-bottom: 12px; color: #fff; }
+        .post-caption { padding: 0 25px 25px; font-size: 0.95rem; line-height: 1.6; color: #ddd; }
+        .caption-author { font-weight: 800; color: #fff; margin-right: 8px; text-decoration: none;}
+        .hash-tag { display: inline-block; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); padding: 8px 14px; border-radius: 8px; margin: 4px; font-size: 0.85rem; font-weight: 700; color: #ccc; cursor: pointer; transition: all 0.3s; }
+        .hash-tag:hover { border-color: var(--neon-purple); color: var(--neon-purple); transform: translateY(-2px); background: rgba(188,19,254,0.1); }
+
+        @media (max-width: 1200px) { .dashboard-container { grid-template-columns: 280px 1fr; } .right-column { display: none; } }
+        @media (max-width: 900px) { .dashboard-container { grid-template-columns: 1fr; } .left-column { display: none; } }
+    </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="static/assets/assenttag-logo.png">
+<link rel="stylesheet" href="static/css/visual-experience.css?v=9">
+<script src="static/js/visual-experience.js?v=9" defer></script>
+
+
+
+<script src="static/js/success-notices.js?v=1" defer></script>
+
+<link rel="stylesheet" href="demo-banner.css"></head>
+<body class="at-experience" data-at-scene="dashboard" data-at-photo="static/assets/page-dashboard.webp">
+
+    <nav class="glass-nav">
+        <div class="logo-box">
+            <img src="static/assets/assenttag-logo.png" alt="AssentTag" class="logo-img at-brand-mark" width="42" height="42">
+            <span class="logo-text"><span class="highlight">AssentTag</span> Dashboard</span>
+        </div>
+        <div class="nav-controls">
+            <a href="notifications.html" class="pill-btn"><i class="fas fa-bell"></i> Notify <span style="background:var(--magenta);color:#fff;border-radius:50%;padding:2px 6px;margin-left:5px;">1</span></a>
+            <a href="upload.html" class="pill-btn at-post-action"><i class="fas fa-upload"></i> Upload</a>
+            <a href="profile.html" class="pill-btn"><i class="fas fa-user-astronaut"></i> Profile</a>
+            <a href="module.html" class="pill-btn" style="border-color:var(--neon-blue);"><i class="fas fa-tools"></i> MODULE</a>
+            <a href="login.html" class="pill-btn danger"><i class="fas fa-power-off"></i> Logout</a>
+        </div>
+    </nav>
+
+    <main class="dashboard-container">
+
+        <!-- Left Column -->
+        <div class="left-column">
+            <div class="glass-panel">
+                <div class="panel-heading"><i class="fas fa-bolt" style="color:#ffd700;"></i> Stories</div>
+                <div class="stories-container">
+                    <div class="story-col">
+                        <div class="story-avatar-wrap" style="background:rgba(255,255,255,0.1); cursor:pointer;" onclick="window.location.href='add-story.html'">
+                            <img src="static/assets/user_icon.svg" class="story-avatar" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
+                            <div class="story-add">+</div>
+                        </div>
+                        <span class="story-name">Your story</span>
+                    </div>
+
+                    <div class="story-col">
+                        <div class="story-avatar-wrap story-box-interactive" style="border-radius:18px; cursor:pointer; overflow:hidden; border:2.5px solid var(--neon-blue); width:75px; height:75px; position:relative;" onclick="window.location.href='story.html'">
+                            <!-- Consistently show User Profile Photo to preserve subject identity -->
+                            <img src="static/assets/user_icon.svg" class="profile-thumb-static" style="width:100%; height:100%; object-fit:cover; transition:0.5s;" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
+                            <!-- Secure Hover Reveal (No Content Preview) -->
+                            <div class="story-hover-overlay" style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,243,255,0.15); display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0; transition:0.4s; backdrop-filter:blur(3px);">
+                                <i class="fas fa-play" style="color:#fff; font-size:1.2rem; filter:drop-shadow(0 0 10px var(--neon-blue));"></i>
+                                <span style="font-size:0.6rem; font-weight:900; color:#fff; margin-top:5px; letter-spacing:1px;">VIEW</span>
+                            </div>
+                        </div>
+                        <span class="story-name" style="margin-top:5px; font-weight:700;">Maya</span>
+                    </div>
+
+                    <div class="story-col">
+                        <div class="story-avatar-wrap story-box-interactive" style="border-radius:18px; cursor:pointer; overflow:hidden; border:2.5px solid var(--neon-blue); width:75px; height:75px; position:relative;" onclick="window.location.href='story.html'">
+                            <!-- Consistently show User Profile Photo to preserve subject identity -->
+                            <img src="static/assets/user_icon.svg" class="profile-thumb-static" style="width:100%; height:100%; object-fit:cover; transition:0.5s;" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
+                            <!-- Secure Hover Reveal (No Content Preview) -->
+                            <div class="story-hover-overlay" style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,243,255,0.15); display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0; transition:0.4s; backdrop-filter:blur(3px);">
+                                <i class="fas fa-play" style="color:#fff; font-size:1.2rem; filter:drop-shadow(0 0 10px var(--neon-blue));"></i>
+                                <span style="font-size:0.6rem; font-weight:900; color:#fff; margin-top:5px; letter-spacing:1px;">VIEW</span>
+                            </div>
+                        </div>
+                        <span class="story-name" style="margin-top:5px; font-weight:700;">Alex</span>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="glass-panel">
+                <div class="panel-heading"><i class="fas fa-compass" style="color:var(--neon-blue);"></i> Shortcuts</div>
+                <a href="explore.html" class="shortcut-item">
+                    <div class="shortcut-icon"><i class="fas fa-search"></i></div>
+                    Explore Feed
+                </a>
+                <a href="messages.html" class="shortcut-item">
+                    <div class="shortcut-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 5px var(--neon-purple));">
+                            <path d="M12 2L4 5V11C4 16.1 7.4 20.8 12 22C16.6 20.8 20 16.1 20 11V5L12 2ZM12 18C10.9 18 10 17.1 10 16C10 14.9 10.9 14 12 14C13.1 14 14 14.9 14 16C14 17.1 13.1 18 12 18ZM15 12H9V8H15V12Z" fill="var(--neon-purple)"/>
+                            <path d="M7 23L4 20L10 20L7 23Z" fill="var(--neon-purple)"/>
+                        </svg>
+                    </div>
+                    Secure Comms
+                </a>
+                <a href="profile.html" class="shortcut-item">
+                    <div class="shortcut-icon"><i class="fas fa-image"></i></div>
+                    My Profile
+                </a>
+            </div>
+        </div>
+
+        <!-- Middle Column -->
+        <div class="middle-column">
+            <section class="at-dashboard-welcome" aria-label="Dashboard welcome" data-workflow-image="static/assets/page-dashboard.webp">
+                <div><p class="at-eyebrow">Your AssentTag space</p><h1>Welcome back, Jamie.</h1><p>Your moments, shared on your terms.</p></div>
+                <img src="static/assets/page-dashboard.webp" alt="Friends sharing photographic memories together in a creative studio" width="1536" height="1024">
+            </section>
+            <div class="glass-panel make-post">
+                <img src="static/assets/user_icon.svg" style="width:50px; height:50px; border-radius:50%; border:2px solid var(--neon-blue); object-fit:cover;">
+                <form style="flex:1; display:flex; margin:0 10px;" method="dialog" novalidate data-demo-form>
+
+                    <input type="text" name="text_content" class="make-post-input" placeholder="Drop a Ghost Text... (Encrypted from Shoulder Surfers)" required>
+                    <button type="submit" class="at-compose-submit"><i class="fas fa-paper-plane" aria-hidden="true"></i><span>Post</span></button>
+                </form>
+                <a href="upload.html" class="pill-btn at-post-action"><i class="fas fa-camera" style="color:#fff;"></i> Photo</a>
+            </div>
+
+            <!-- Feed Rendering -->
+
+            <div class="post-card" id="post-1">
+                <div class="post-header">
+                    <div class="post-user-info">
+                        <a href="profile-2.html"><img src="static/assets/user_icon.svg" class="post-avatar" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';"></a>
+                        <div>
+                            <div class="post-name"><a href="profile-2.html" style="color:white; text-decoration:none;"><span>Maya</span> River</a></div>
+                            <div class="post-meta">2026-01-01 • 10:30</div>
+                        </div>
+                    </div>
+                    <!-- Follow/Unfollow/Chat Buttons -->
+                    <div style="display:flex; gap:10px;">
+
+
+                            <a href="#demo-action-login-unfollow-2" style="text-decoration:none;"><button class="pill-btn"><i class="fas fa-user-minus"></i></button></a>
+
+                            <a href="chat-2.html" style="text-decoration:none;"><button class="pill-btn" style="border-color:var(--neon-blue);"><i class="fas fa-comment" style="color:var(--neon-blue);"></i></button></a>
+
+                    </div>
+                </div>
+
+
+                <div class="post-image-container">
+                    <img src="static/assets/photo-index-hero-v2.webp" class="post-image clickable-photo" onclick="openGallery(this.src);" style="cursor: zoom-in;" onerror="this.onerror=null; this.alt='Protected photo is temporarily unavailable'; this.removeAttribute('src');">
+                </div>
+
+
+                <!-- Instagram Parity Interactive Bar -->
+                <div class="post-interaction-bar">
+                    <a class="interaction-btn like" href="#demo-action-image-like-post-1" aria-label="Like post"><i class="far fa-heart" aria-hidden="true"></i><span>Like</span></a>
+                    <button type="button" class="interaction-btn comment" data-comments="comments-1" aria-expanded="false" aria-controls="comments-1"><i class="far fa-comment" aria-hidden="true"></i><span>Comment</span></button>
+                    <button type="button" class="interaction-btn share" onclick="copyShare(new URL('demo.html', location.href).href + '#post-1');" aria-label="Copy post link"><i class="far fa-paper-plane" aria-hidden="true"></i><span>Share</span></button>
+                </div>
+                <div class="likes-count" style="cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='#ff00ff'" onmouseout="this.style.color='#fff'" onclick="viewLikers(1)">12 likes</div>
+
+                <div class="post-caption">
+                    <a href="profile-2.html" class="author" style="text-decoration:none; color:#fff; font-weight: 800;">Maya</a>
+                    A moment shared thoughtfully.
+                    <span style="font-size:0.8rem; color:#888; background:rgba(255,255,255,0.05); padding:2px 6px; border-radius:4px; margin-left:5px;">Public 🌐</span>
+                    <br><br>
+
+                    <span class="hashtag" style="color:var(--neon-blue);">#SharedWithConsent</span>
+
+                </div>
+
+                <section class="at-comments" id="comments-1" aria-label="Post comments" hidden>
+                <h3 class="at-comments-heading">Conversation</h3>
+
+                <p class="at-comments-empty">Start the conversation. Share a thoughtful comment.</p>
+
+
+                <form style="display: flex; border-top: 1px solid rgba(255,255,255,0.1); padding: 15px 20px; background: rgba(0,0,0,0.2);" method="dialog" novalidate data-demo-form>
+
+                    <input type="text" name="comment" maxlength="500" aria-label="Write a comment" id="comment-input-1" placeholder="Add a comment..." style="flex: 1; background: transparent; border: none; color: #fff; font-size: 0.95rem; outline: none; padding-right: 10px;" required>
+                    <button type="submit" style="background: transparent; border: none; color: var(--neon-blue); font-weight: 700; cursor: pointer; text-transform:uppercase; letter-spacing:1px; transition:0.3s; padding:5px 10px; border-radius:4px;">Post</button>
+                </form>
+                </section>
+            </div>
+
+            <section class="at-dashboard-scene at-dashboard-scene--discover" aria-label="A new story around every corner." data-workflow-image="static/assets/dashboard-scroll-discover.webp">
+    <a href="explore.html" class="at-scene-link">
+        <figure class="at-scene-window">
+            <img class="at-scene-photo" src="static/assets/dashboard-scroll-discover.webp" alt="Friends enjoying a sunrise photo walk beside the Kochi waterfront" width="1536" height="1024" loading="lazy" decoding="async">
+            <figcaption class="at-scene-caption">
+                <span class="at-scene-kicker">Your world, thoughtfully shared <span>01</span></span>
+                <h2>A new story around every corner.</h2>
+                <p>Discover moments shared by your community.</p>
+                <span class="at-scene-cta">Explore the feed <span aria-hidden="true">↗</span></span>
+            </figcaption>
+        </figure>
+    </a>
+</section>
+
+
+
+
+            <div class="post-card" id="post-5">
+                <div class="post-header">
+                    <div class="post-user-info">
+                        <a href="profile-2.html"><img src="static/assets/user_icon.svg" class="post-avatar" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';"></a>
+                        <div>
+                            <div class="post-name"><a href="profile-2.html" style="color:white; text-decoration:none;"><span>Maya</span> River</a></div>
+                            <div class="post-meta">2026-01-01 • 10:30</div>
+                        </div>
+                    </div>
+                    <!-- Follow/Unfollow/Chat Buttons -->
+                    <div style="display:flex; gap:10px;">
+
+
+                            <a href="#demo-action-login-unfollow-2" style="text-decoration:none;"><button class="pill-btn"><i class="fas fa-user-minus"></i></button></a>
+
+                            <a href="chat-2.html" style="text-decoration:none;"><button class="pill-btn" style="border-color:var(--neon-blue);"><i class="fas fa-comment" style="color:var(--neon-blue);"></i></button></a>
+
+                    </div>
+                </div>
+
+
+                <div class="post-image-container ghost-text-container" style="background:#050505; min-height: 250px; padding: 40px; text-align:center; position:relative; overflow:hidden;" onmousedown="decryptGhostText(this, 'Your face. Your choice.')" onmouseup="encryptGhostText(this)" onmouseleave="encryptGhostText(this)" ontouchstart="decryptGhostText(this, 'Your face. Your choice.')" ontouchend="encryptGhostText(this)">
+                    <span class="ghost-instruction" style="position:absolute; top:20px; left:20px; font-size:0.75rem; color:var(--neon-purple); font-family:'Inter', sans-serif; font-weight:800; letter-spacing:1px; z-index:10;"><i class="fas fa-fingerprint"></i> SECURE DECRYPT: HOLD TO READ</span>
+                    <h2 class="ghost-text-content" style="color:var(--neon-blue); font-family: 'Orbitron', monospace; word-break: break-word; font-size: 1.8rem; z-index:10; position:relative; text-shadow: 0 0 15px var(--neon-blue); display:flex; align-items:center; justify-content:center; width:100%; height:100%; min-height:170px; user-select:none;" data-len="23">
+                    </h2>
+                </div>
+
+
+                <!-- Instagram Parity Interactive Bar -->
+                <div class="post-interaction-bar">
+                    <a class="interaction-btn like" href="#demo-action-image-like-post-5" aria-label="Like post"><i class="far fa-heart" aria-hidden="true"></i><span>Like</span></a>
+                    <button type="button" class="interaction-btn comment" data-comments="comments-5" aria-expanded="false" aria-controls="comments-5"><i class="far fa-comment" aria-hidden="true"></i><span>Comment</span></button>
+                    <button type="button" class="interaction-btn share" onclick="copyShare(new URL('demo.html', location.href).href + '#post-5');" aria-label="Copy post link"><i class="far fa-paper-plane" aria-hidden="true"></i><span>Share</span></button>
+                </div>
+                <div class="likes-count" style="cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='#ff00ff'" onmouseout="this.style.color='#fff'" onclick="viewLikers(5)">12 likes</div>
+
+                <div class="post-caption">
+                    <a href="profile-2.html" class="author" style="text-decoration:none; color:#fff; font-weight: 800;">Maya</a>
+                    Hold to read this sample Ghost Text.
+                    <span style="font-size:0.8rem; color:#888; background:rgba(255,255,255,0.05); padding:2px 6px; border-radius:4px; margin-left:5px;">Public 🌐</span>
+                    <br><br>
+
+                    <span class="hashtag" style="color:var(--neon-blue);">#SharedWithConsent</span>
+
+                </div>
+
+                <section class="at-comments" id="comments-5" aria-label="Post comments" hidden>
+                <h3 class="at-comments-heading">Conversation</h3>
+
+                <p class="at-comments-empty">Start the conversation. Share a thoughtful comment.</p>
+
+
+                <form style="display: flex; border-top: 1px solid rgba(255,255,255,0.1); padding: 15px 20px; background: rgba(0,0,0,0.2);" method="dialog" novalidate data-demo-form>
+
+                    <input type="text" name="comment" maxlength="500" aria-label="Write a comment" id="comment-input-5" placeholder="Add a comment..." style="flex: 1; background: transparent; border: none; color: #fff; font-size: 0.95rem; outline: none; padding-right: 10px;" required>
+                    <button type="submit" style="background: transparent; border: none; color: var(--neon-blue); font-weight: 700; cursor: pointer; text-transform:uppercase; letter-spacing:1px; transition:0.3s; padding:5px 10px; border-radius:4px;">Post</button>
+                </form>
+                </section>
+            </div>
+
+
+            <section class="at-dashboard-scene at-dashboard-scene--private" aria-label="Your memories. Your space." data-workflow-image="static/assets/dashboard-scroll-private.webp">
+    <a href="upload.html" class="at-scene-link">
+        <figure class="at-scene-window">
+            <img class="at-scene-photo" src="static/assets/dashboard-scroll-private.webp" alt="A traveller privately reviewing her personal photographs on a train" width="1536" height="1024" loading="lazy" decoding="async">
+            <figcaption class="at-scene-caption">
+                <span class="at-scene-kicker">Your world, thoughtfully shared <span>02</span></span>
+                <h2>Your memories. Your space.</h2>
+                <p>Bring your next photo into your personal collection.</p>
+                <span class="at-scene-cta">Share a moment <span aria-hidden="true">↗</span></span>
+            </figcaption>
+        </figure>
+    </a>
+</section>
+
+
+
+            <div class="post-card" id="post-2">
+                <div class="post-header">
+                    <div class="post-user-info">
+                        <a href="profile-3.html"><img src="static/assets/user_icon.svg" class="post-avatar" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';"></a>
+                        <div>
+                            <div class="post-name"><a href="profile-3.html" style="color:white; text-decoration:none;"><span>Alex</span> Stone</a></div>
+                            <div class="post-meta">2026-01-01 • 10:30</div>
+                        </div>
+                    </div>
+                    <!-- Follow/Unfollow/Chat Buttons -->
+                    <div style="display:flex; gap:10px;">
+
+
+                            <a href="#demo-action-login-unfollow-3" style="text-decoration:none;"><button class="pill-btn"><i class="fas fa-user-minus"></i></button></a>
+
+                            <a href="chat-3.html" style="text-decoration:none;"><button class="pill-btn" style="border-color:var(--neon-blue);"><i class="fas fa-comment" style="color:var(--neon-blue);"></i></button></a>
+
+                    </div>
+                </div>
+
+
+                <div class="post-image-container">
+                    <img src="static/assets/page-dashboard-moments.webp" class="post-image clickable-photo" onclick="openGallery(this.src);" style="cursor: zoom-in;" onerror="this.onerror=null; this.alt='Protected photo is temporarily unavailable'; this.removeAttribute('src');">
+                </div>
+
+
+                <!-- Instagram Parity Interactive Bar -->
+                <div class="post-interaction-bar">
+                    <a class="interaction-btn like" href="#demo-action-image-like-post-2" aria-label="Like post"><i class="far fa-heart" aria-hidden="true"></i><span>Like</span></a>
+                    <button type="button" class="interaction-btn comment" data-comments="comments-2" aria-expanded="false" aria-controls="comments-2"><i class="far fa-comment" aria-hidden="true"></i><span>Comment</span></button>
+                    <button type="button" class="interaction-btn share" onclick="copyShare(new URL('demo.html', location.href).href + '#post-2');" aria-label="Copy post link"><i class="far fa-paper-plane" aria-hidden="true"></i><span>Share</span></button>
+                </div>
+                <div class="likes-count" style="cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='#ff00ff'" onmouseout="this.style.color='#fff'" onclick="viewLikers(2)">13 likes</div>
+
+                <div class="post-caption">
+                    <a href="profile-3.html" class="author" style="text-decoration:none; color:#fff; font-weight: 800;">Alex</a>
+                    Small moments with good company.
+                    <span style="font-size:0.8rem; color:#888; background:rgba(255,255,255,0.05); padding:2px 6px; border-radius:4px; margin-left:5px;">Public 🌐</span>
+                    <br><br>
+
+                    <span class="hashtag" style="color:var(--neon-blue);">#SharedWithConsent</span>
+
+                </div>
+
+                <section class="at-comments" id="comments-2" aria-label="Post comments" hidden>
+                <h3 class="at-comments-heading">Conversation</h3>
+
+                <p class="at-comments-empty">Start the conversation. Share a thoughtful comment.</p>
+
+
+                <form style="display: flex; border-top: 1px solid rgba(255,255,255,0.1); padding: 15px 20px; background: rgba(0,0,0,0.2);" method="dialog" novalidate data-demo-form>
+
+                    <input type="text" name="comment" maxlength="500" aria-label="Write a comment" id="comment-input-2" placeholder="Add a comment..." style="flex: 1; background: transparent; border: none; color: #fff; font-size: 0.95rem; outline: none; padding-right: 10px;" required>
+                    <button type="submit" style="background: transparent; border: none; color: var(--neon-blue); font-weight: 700; cursor: pointer; text-transform:uppercase; letter-spacing:1px; transition:0.3s; padding:5px 10px; border-radius:4px;">Post</button>
+                </form>
+                </section>
+            </div>
+
+
+
+            <div class="post-card" id="post-3">
+                <div class="post-header">
+                    <div class="post-user-info">
+                        <a href="profile-4.html"><img src="static/assets/user_icon.svg" class="post-avatar" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';"></a>
+                        <div>
+                            <div class="post-name"><a href="profile-4.html" style="color:white; text-decoration:none;"><span>Robin</span> Kay</a></div>
+                            <div class="post-meta">2026-01-01 • 10:30</div>
+                        </div>
+                    </div>
+                    <!-- Follow/Unfollow/Chat Buttons -->
+                    <div style="display:flex; gap:10px;">
+
+
+                            <a href="#demo-action-login-follow-4" style="text-decoration:none;"><button class="pill-btn"><i class="fas fa-user-plus"></i></button></a>
+
+                            <a href="chat-4.html" style="text-decoration:none;"><button class="pill-btn" style="border-color:var(--neon-blue);"><i class="fas fa-comment" style="color:var(--neon-blue);"></i></button></a>
+
+                    </div>
+                </div>
+
+
+                <div class="post-image-container">
+                    <img src="static/assets/photo-consent.webp" class="post-image clickable-photo" onclick="openGallery(this.src);" style="cursor: zoom-in;" onerror="this.onerror=null; this.alt='Protected photo is temporarily unavailable'; this.removeAttribute('src');">
+                </div>
+
+
+                <!-- Instagram Parity Interactive Bar -->
+                <div class="post-interaction-bar">
+                    <a class="interaction-btn like" href="#demo-action-image-like-post-3" aria-label="Like post"><i class="far fa-heart" aria-hidden="true"></i><span>Like</span></a>
+                    <button type="button" class="interaction-btn comment" data-comments="comments-3" aria-expanded="false" aria-controls="comments-3"><i class="far fa-comment" aria-hidden="true"></i><span>Comment</span></button>
+                    <button type="button" class="interaction-btn share" onclick="copyShare(new URL('demo.html', location.href).href + '#post-3');" aria-label="Copy post link"><i class="far fa-paper-plane" aria-hidden="true"></i><span>Share</span></button>
+                </div>
+                <div class="likes-count" style="cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='#ff00ff'" onmouseout="this.style.color='#fff'" onclick="viewLikers(3)">14 likes</div>
+
+                <div class="post-caption">
+                    <a href="profile-4.html" class="author" style="text-decoration:none; color:#fff; font-weight: 800;">Robin</a>
+                    Every face has a say.
+                    <span style="font-size:0.8rem; color:#888; background:rgba(255,255,255,0.05); padding:2px 6px; border-radius:4px; margin-left:5px;">Public 🌐</span>
+                    <br><br>
+
+                    <span class="hashtag" style="color:var(--neon-blue);">#SharedWithConsent</span>
+
+                </div>
+
+                <section class="at-comments" id="comments-3" aria-label="Post comments" hidden>
+                <h3 class="at-comments-heading">Conversation</h3>
+
+                <p class="at-comments-empty">Start the conversation. Share a thoughtful comment.</p>
+
+
+                <form style="display: flex; border-top: 1px solid rgba(255,255,255,0.1); padding: 15px 20px; background: rgba(0,0,0,0.2);" method="dialog" novalidate data-demo-form>
+
+                    <input type="text" name="comment" maxlength="500" aria-label="Write a comment" id="comment-input-3" placeholder="Add a comment..." style="flex: 1; background: transparent; border: none; color: #fff; font-size: 0.95rem; outline: none; padding-right: 10px;" required>
+                    <button type="submit" style="background: transparent; border: none; color: var(--neon-blue); font-weight: 700; cursor: pointer; text-transform:uppercase; letter-spacing:1px; transition:0.3s; padding:5px 10px; border-radius:4px;">Post</button>
+                </form>
+                </section>
+            </div>
+
+
+
+            <div class="post-card" id="post-4">
+                <div class="post-header">
+                    <div class="post-user-info">
+                        <a href="profile-5.html"><img src="static/assets/user_icon.svg" class="post-avatar" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';"></a>
+                        <div>
+                            <div class="post-name"><a href="profile-5.html" style="color:white; text-decoration:none;"><span>Sam</span> Lee</a></div>
+                            <div class="post-meta">2026-01-01 • 10:30</div>
+                        </div>
+                    </div>
+                    <!-- Follow/Unfollow/Chat Buttons -->
+                    <div style="display:flex; gap:10px;">
+
+
+                            <a href="#demo-action-login-follow-5" style="text-decoration:none;"><button class="pill-btn"><i class="fas fa-user-plus"></i></button></a>
+
+                            <a href="chat-5.html" style="text-decoration:none;"><button class="pill-btn" style="border-color:var(--neon-blue);"><i class="fas fa-comment" style="color:var(--neon-blue);"></i></button></a>
+
+                    </div>
+                </div>
+
+
+                <div class="post-image-container">
+                    <img src="static/assets/page-stories.webp" class="post-image clickable-photo" onclick="openGallery(this.src);" style="cursor: zoom-in;" onerror="this.onerror=null; this.alt='Protected photo is temporarily unavailable'; this.removeAttribute('src');">
+                </div>
+
+
+                <!-- Instagram Parity Interactive Bar -->
+                <div class="post-interaction-bar">
+                    <a class="interaction-btn like" href="#demo-action-image-like-post-4" aria-label="Like post"><i class="far fa-heart" aria-hidden="true"></i><span>Like</span></a>
+                    <button type="button" class="interaction-btn comment" data-comments="comments-4" aria-expanded="false" aria-controls="comments-4"><i class="far fa-comment" aria-hidden="true"></i><span>Comment</span></button>
+                    <button type="button" class="interaction-btn share" onclick="copyShare(new URL('demo.html', location.href).href + '#post-4');" aria-label="Copy post link"><i class="far fa-paper-plane" aria-hidden="true"></i><span>Share</span></button>
+                </div>
+                <div class="likes-count" style="cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='#ff00ff'" onmouseout="this.style.color='#fff'" onclick="viewLikers(4)">15 likes</div>
+
+                <div class="post-caption">
+                    <a href="profile-5.html" class="author" style="text-decoration:none; color:#fff; font-weight: 800;">Sam</a>
+                    A new story every day.
+                    <span style="font-size:0.8rem; color:#888; background:rgba(255,255,255,0.05); padding:2px 6px; border-radius:4px; margin-left:5px;">Public 🌐</span>
+                    <br><br>
+
+                    <span class="hashtag" style="color:var(--neon-blue);">#SharedWithConsent</span>
+
+                </div>
+
+                <section class="at-comments" id="comments-4" aria-label="Post comments" hidden>
+                <h3 class="at-comments-heading">Conversation</h3>
+
+                <p class="at-comments-empty">Start the conversation. Share a thoughtful comment.</p>
+
+
+                <form style="display: flex; border-top: 1px solid rgba(255,255,255,0.1); padding: 15px 20px; background: rgba(0,0,0,0.2);" method="dialog" novalidate data-demo-form>
+
+                    <input type="text" name="comment" maxlength="500" aria-label="Write a comment" id="comment-input-4" placeholder="Add a comment..." style="flex: 1; background: transparent; border: none; color: #fff; font-size: 0.95rem; outline: none; padding-right: 10px;" required>
+                    <button type="submit" style="background: transparent; border: none; color: var(--neon-blue); font-weight: 700; cursor: pointer; text-transform:uppercase; letter-spacing:1px; transition:0.3s; padding:5px 10px; border-radius:4px;">Post</button>
+                </form>
+                </section>
+            </div>
+
+
+
+            <section class="at-dashboard-scene at-dashboard-scene--consent" aria-label="A good photo starts with everyone's yes." data-workflow-image="static/assets/dashboard-scroll-consent.webp">
+    <a href="notifications.html" class="at-scene-link">
+        <figure class="at-scene-window">
+            <img class="at-scene-photo" src="static/assets/dashboard-scroll-consent.webp" alt="Two friends reviewing a group photograph together in a botanical garden" width="1536" height="1024" loading="lazy" decoding="async">
+            <figcaption class="at-scene-caption">
+                <span class="at-scene-kicker">Your world, thoughtfully shared <span>03</span></span>
+                <h2>A good photo starts with everyone's yes.</h2>
+                <p>Review where you are tagged and choose what you share.</p>
+                <span class="at-scene-cta">Review your tags <span aria-hidden="true">↗</span></span>
+            </figcaption>
+        </figure>
+    </a>
+</section>
+
+            <section class="at-dashboard-pathways" aria-label="More ways to share">
+                <p class="at-eyebrow">Beyond the feed</p>
+                <h2>Good moments. Thoughtful sharing.</h2>
+                <a class="at-pathway" href="upload.html" data-workflow-image="static/assets/page-dashboard-moments.webp">
+                    <img src="static/assets/page-dashboard-moments.webp" alt="Friends sharing a photographic memory while hiking in the Kerala hills" width="1536" height="1024" loading="lazy">
+                    <div><h3>Make room for your next moment.</h3><p>Share a photo with your community. <span aria-hidden="true">↗</span></p></div>
+                </a>
+                <a class="at-pathway" href="notifications.html" data-workflow-image="static/assets/page-dashboard-connections.webp">
+                    <img src="static/assets/page-dashboard-connections.webp" alt="Friends choosing which personal photographs to share together on a rooftop terrace" width="1536" height="1024" loading="lazy">
+                    <div><h3>Sharing starts with a choice.</h3><p>Review the moments where you are tagged. <span aria-hidden="true">↗</span></p></div>
+                </a>
+            </section>
+        </div>
+
+        <!-- Right Column -->
+        <div class="right-column">
+            <div class="glass-panel profile-card">
+                <img src="static/assets/user_icon.svg" class="profile-card-avatar">
+                <div class="profile-name">Jamie</div>
+                <div class="profile-handle">@jamie@example.com</div>
+
+                <div class="profile-stats" style="flex-direction:row; justify-content:space-around; gap:15px; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); padding: 15px 10px; margin-bottom: 20px;">
+                    <div class="stat-col" style="align-items:center;">
+                        <span class="stat-num" style="font-size: 2.2rem; color: var(--neon-blue); line-height: 1;">4</span>
+                        <div style="height: 3px; background: var(--magenta); width: 100%; margin: 8px 0; box-shadow: 0 0 10px var(--magenta);"></div>
+                        <span class="stat-label" style="font-size: 0.8rem; color: #8b949e; font-weight: 800; letter-spacing: 1px;">POSTS</span>
+                    </div>
+                    <div class="stat-col" style="cursor:pointer; align-items:center;" onclick="document.getElementById('followersModal').style.display='flex'">
+                        <span class="stat-num" style="font-size: 2.2rem; color: var(--neon-blue); line-height: 1;">3</span>
+                        <div style="height: 3px; background: var(--magenta); width: 100%; margin: 8px 0; box-shadow: 0 0 10px var(--magenta);"></div>
+                        <span class="stat-label" style="font-size: 0.8rem; color: #8b949e; font-weight: 800; letter-spacing: 1px;">FOLLOWERS</span>
+                    </div>
+                    <div class="stat-col" style="cursor:pointer; align-items:center;" onclick="document.getElementById('followingModal').style.display='flex'">
+                        <span class="stat-num" style="font-size: 2.2rem; color: var(--neon-blue); line-height: 1;">2</span>
+                        <div style="height: 3px; background: var(--magenta); width: 100%; margin: 8px 0; box-shadow: 0 0 10px var(--magenta);"></div>
+                        <span class="stat-label" style="font-size: 0.8rem; color: #8b949e; font-weight: 800; letter-spacing: 1px;">FOLLOWING</span>
+                    </div>
+                </div>
+                <a href="profile.html" style="text-decoration:none;"><div class="pill-btn" style="width:100%; justify-content:center; padding:12px; background:linear-gradient(135deg, rgba(188,19,254,0.2), rgba(0,243,255,0.2)); border-color:var(--neon-purple); cursor:pointer; margin-bottom: 10px;"><i class="fas fa-user" style="color:var(--neon-purple);"></i> View Full Profile</div></a>
+                <div class="pill-btn" style="width:100%; justify-content:center; padding:12px; background:rgba(255,165,0,0.1); border-color:#ffa500; color:#ffa500; cursor:pointer; margin-bottom: 10px;" onclick="deactivateAccount()"><i class="fas fa-power-off"></i> HIBERNATE ACCOUNT</div>
+                <div class="pill-btn danger" style="width:100%; justify-content:center; padding:12px; background:linear-gradient(135deg, rgba(255,51,51,0.2), rgba(255,0,0,0.1)); border-color:#ff3333; cursor:pointer;" onclick="initiateScorchedEarth()"><i class="fas fa-fire" style="color:#ff3333;"></i> INITIATE SCORCHED EARTH</div>
+            </div>
+
+            <div class="glass-panel at-suggestions-panel">
+                <div class="panel-heading"><i class="fas fa-user-plus" style="color:var(--magenta);"></i> Suggestions</div>
+
+                <div class="suggestion-item">
+                    <a href="profile-4.html" class="suggestion-user" style="text-decoration:none;">
+                        <img src="static/assets/user_icon.svg" class="suggestion-avatar" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
+                        <div>
+                            <div class="suggestion-name">Robin</div>
+                            <div class="suggestion-sub">User 4</div>
+                        </div>
+                    </a>
+                    <a href="#demo-action-login-follow-4" style="text-decoration:none;"><button class="follow-btn">Follow</button></a>
+                </div>
+
+                <div class="suggestion-item">
+                    <a href="profile-5.html" class="suggestion-user" style="text-decoration:none;">
+                        <img src="static/assets/user_icon.svg" class="suggestion-avatar" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
+                        <div>
+                            <div class="suggestion-name">Sam</div>
+                            <div class="suggestion-sub">User 5</div>
+                        </div>
+                    </a>
+                    <a href="#demo-action-login-follow-5" style="text-decoration:none;"><button class="follow-btn">Follow</button></a>
+                </div>
+
+                <div class="suggestion-item">
+                    <a href="profile-6.html" class="suggestion-user" style="text-decoration:none;">
+                        <img src="static/assets/user_icon.svg" class="suggestion-avatar" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
+                        <div>
+                            <div class="suggestion-name">Taylor</div>
+                            <div class="suggestion-sub">User 6</div>
+                        </div>
+                    </a>
+                    <a href="#demo-action-login-follow-6" style="text-decoration:none;"><button class="follow-btn">Follow</button></a>
+                </div>
+
+            </div>
+
+            <div class="glass-panel at-trending-panel">
+                <div class="panel-heading"><i class="fas fa-fire" style="color:#ff4500;"></i> Trending Tags</div>
+                <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                    <span class="hash-tag">#Cyberpunk</span>
+                    <span class="hash-tag">#AssentTagPrivacy</span>
+                    <span class="hash-tag">#NeonLife</span>
+                    <span class="hash-tag">#DigitalArt</span>
+                    <span class="hash-tag">#Blockchain</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Followers Modal -->
+    <div id="followersModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center;">
+        <div class="glass-panel" style="width:400px; max-height:80vh; overflow-y:auto; border: 1px solid var(--magenta);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:10px;">
+                <h3 style="font-family:'Orbitron', sans-serif; color:#fff;">Followers</h3>
+                <button onclick="document.getElementById('followersModal').style.display='none'" style="background:transparent; border:none; color:#fff; font-size:1.5rem; cursor:pointer;">&times;</button>
+            </div>
+
+            <div class="suggestion-item" style="border-bottom: 1px solid rgba(255,255,255,0.05); border-radius: 0; margin-bottom: 0; padding: 12px 20px;">
+                <!-- Clickable Left Section pointing to Public Profile -->
+                <div class="suggestion-user" style="cursor:pointer;" onclick="window.location.href='profile-2.html'">
+                    <img src="static/assets/user_icon.svg" class="suggestion-avatar" style="border: 2px solid var(--neon-purple); cursor:pointer;" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
+                    <div>
+                        <div class="suggestion-name" style="font-size:0.9rem;">Maya</div>
+                        <div class="suggestion-sub" style="font-size:0.75rem; color:#888;">@maya@example.com</div>
+                    </div>
+                </div>
+                <!-- Action Buttons: Remove -->
+                <a href="#demo-action-login-remove_follower-2" style="text-decoration:none;">
+                    <button class="follow-btn" style="background:rgba(255,51,51,0.05); border: 1px solid rgba(255,51,51,0.3); color:#ff3333; padding:6px 14px; font-size:0.75rem; border-radius:8px; text-transform:none; font-weight: 600;" onmouseover="this.style.background='rgba(255,51,51,0.2)';" onmouseout="this.style.background='rgba(255,51,51,0.05)';">Remove</button>
+                </a>
+            </div>
+
+            <div class="suggestion-item" style="border-bottom: 1px solid rgba(255,255,255,0.05); border-radius: 0; margin-bottom: 0; padding: 12px 20px;">
+                <!-- Clickable Left Section pointing to Public Profile -->
+                <div class="suggestion-user" style="cursor:pointer;" onclick="window.location.href='profile-3.html'">
+                    <img src="static/assets/user_icon.svg" class="suggestion-avatar" style="border: 2px solid var(--neon-purple); cursor:pointer;" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
+                    <div>
+                        <div class="suggestion-name" style="font-size:0.9rem;">Alex</div>
+                        <div class="suggestion-sub" style="font-size:0.75rem; color:#888;">@alex@example.com</div>
+                    </div>
+                </div>
+                <!-- Action Buttons: Remove -->
+                <a href="#demo-action-login-remove_follower-3" style="text-decoration:none;">
+                    <button class="follow-btn" style="background:rgba(255,51,51,0.05); border: 1px solid rgba(255,51,51,0.3); color:#ff3333; padding:6px 14px; font-size:0.75rem; border-radius:8px; text-transform:none; font-weight: 600;" onmouseover="this.style.background='rgba(255,51,51,0.2)';" onmouseout="this.style.background='rgba(255,51,51,0.05)';">Remove</button>
+                </a>
+            </div>
+
+            <div class="suggestion-item" style="border-bottom: 1px solid rgba(255,255,255,0.05); border-radius: 0; margin-bottom: 0; padding: 12px 20px;">
+                <!-- Clickable Left Section pointing to Public Profile -->
+                <div class="suggestion-user" style="cursor:pointer;" onclick="window.location.href='profile-4.html'">
+                    <img src="static/assets/user_icon.svg" class="suggestion-avatar" style="border: 2px solid var(--neon-purple); cursor:pointer;" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
+                    <div>
+                        <div class="suggestion-name" style="font-size:0.9rem;">Robin</div>
+                        <div class="suggestion-sub" style="font-size:0.75rem; color:#888;">@robin@example.com</div>
+                    </div>
+                </div>
+                <!-- Action Buttons: Remove -->
+                <a href="#demo-action-login-remove_follower-4" style="text-decoration:none;">
+                    <button class="follow-btn" style="background:rgba(255,51,51,0.05); border: 1px solid rgba(255,51,51,0.3); color:#ff3333; padding:6px 14px; font-size:0.75rem; border-radius:8px; text-transform:none; font-weight: 600;" onmouseover="this.style.background='rgba(255,51,51,0.2)';" onmouseout="this.style.background='rgba(255,51,51,0.05)';">Remove</button>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Following Modal -->
+    <div id="followingModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center;">
+        <div class="glass-panel" style="width:400px; max-height:80vh; overflow-y:auto; border: 1px solid var(--neon-blue);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:10px;">
+                <h3 style="font-family:'Orbitron', sans-serif; color:#fff;">Following</h3>
+                <button onclick="document.getElementById('followingModal').style.display='none'" style="background:transparent; border:none; color:#fff; font-size:1.5rem; cursor:pointer;">&times;</button>
+            </div>
+
+            <div class="suggestion-item" style="border-bottom: 1px solid rgba(255,255,255,0.05); border-radius: 0; margin-bottom: 0; padding: 12px 20px;">
+                <!-- Clickable Left Section pointing to Public Profile -->
+                <div class="suggestion-user" style="cursor:pointer;" onclick="window.location.href='profile-2.html'">
+                    <img src="static/assets/user_icon.svg" class="suggestion-avatar" style="border: 2px solid var(--neon-purple); cursor:pointer;" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
+                    <div>
+                        <div class="suggestion-name" style="font-size:0.9rem;">Maya</div>
+                        <div class="suggestion-sub" style="font-size:0.75rem; color:#888;">@maya@example.com</div>
+                    </div>
+                </div>
+                <!-- Action Buttons: Following -->
+                <a href="#demo-action-login-unfollow-2" style="text-decoration:none;">
+                    <button class="follow-btn" style="background:rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color:#fff; padding:6px 14px; font-size:0.75rem; border-radius:8px; text-transform:none; font-weight: 600;" onmouseover="this.style.background='rgba(255,0,0,0.1)'; this.style.borderColor='#ff3333'; this.style.color='#ff3333'; this.innerHTML='Unfollow';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.2)'; this.style.color='#fff'; this.innerHTML='Following';">Following</button>
+                </a>
+            </div>
+
+            <div class="suggestion-item" style="border-bottom: 1px solid rgba(255,255,255,0.05); border-radius: 0; margin-bottom: 0; padding: 12px 20px;">
+                <!-- Clickable Left Section pointing to Public Profile -->
+                <div class="suggestion-user" style="cursor:pointer;" onclick="window.location.href='profile-3.html'">
+                    <img src="static/assets/user_icon.svg" class="suggestion-avatar" style="border: 2px solid var(--neon-purple); cursor:pointer;" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
+                    <div>
+                        <div class="suggestion-name" style="font-size:0.9rem;">Alex</div>
+                        <div class="suggestion-sub" style="font-size:0.75rem; color:#888;">@alex@example.com</div>
+                    </div>
+                </div>
+                <!-- Action Buttons: Following -->
+                <a href="#demo-action-login-unfollow-3" style="text-decoration:none;">
+                    <button class="follow-btn" style="background:rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color:#fff; padding:6px 14px; font-size:0.75rem; border-radius:8px; text-transform:none; font-weight: 600;" onmouseover="this.style.background='rgba(255,0,0,0.1)'; this.style.borderColor='#ff3333'; this.style.color='#ff3333'; this.innerHTML='Unfollow';" onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.2)'; this.style.color='#fff'; this.innerHTML='Following';">Following</button>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Likers Modal -->
+    <div id="likersModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center;">
+        <div class="glass-panel" style="width:400px; max-height:80vh; overflow-y:auto; border: 1px solid var(--neon-purple); box-shadow: 0 0 40px rgba(188,19,254,0.3);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:10px;">
+                <h3 style="font-family:'Orbitron', sans-serif; color:#fff;">Liked By</h3>
+                <button onclick="document.getElementById('likersModal').style.display='none'" style="background:transparent; border:none; color:#fff; font-size:1.5rem; cursor:pointer; transition:0.3s;" onmouseover="this.style.color='var(--magenta)'" onmouseout="this.style.color='#fff'">&times;</button>
+            </div>
+            <div id="likersModalBody">
+                <!-- Data populated dynamically -->
+                <p style="text-align: center; color: #888;">Loading...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Gallery Modal -->
+    <div id="imageGalleryModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:10000; justify-content:center; align-items:center; cursor:zoom-out; backdrop-filter:blur(10px);" onclick="this.style.display='none'">
+        <span style="position:absolute; top:25px; right:40px; color:rgba(255,255,255,0.5); font-size:3rem; font-weight:100; cursor:pointer; transition:0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">&times;</span>
+        <img id="galleryModalImg" src="" style="max-width:90%; max-height:90%; object-fit:contain; border-radius:12px; box-shadow: 0 0 50px rgba(0,243,255,0.15); border:1px solid rgba(255,255,255,0.1);">
+    </div>
+
+    <script>
+        /* --- GHOST TEXT CRYPTOGRAPHY --- */
+        function generateHash(len) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+~`|}{[]:;?><,./-=';
+            let result = '';
+            for (let i = 0; i < len; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        let ghostIntervals = new WeakMap();
+
+        function encryptGhostText(container) {
+            const el = container.querySelector('.ghost-text-content');
+            clearInterval(ghostIntervals.get(el));
+            const origLen = parseInt(el.dataset.len || "20");
+
+            // Continuous matrix scrambling
+            const interval = setInterval(() => {
+                el.innerText = generateHash(origLen);
+            }, 60);
+            ghostIntervals.set(el, interval);
+
+            container.style.boxShadow = 'inset 0 0 40px rgba(0, 243, 255, 0.05)';
+            el.style.color = 'var(--neon-blue)';
+            el.style.textShadow = '0 0 15px var(--neon-blue)';
+            el.style.transform = 'scale(1)';
+            el.style.transition = '0.3s';
+        }
+
+        function decryptGhostText(container, trueText) {
+            const el = container.querySelector('.ghost-text-content');
+            clearInterval(ghostIntervals.get(el));
+
+            // Fast cascade decryption
+            let iterations = 0;
+            const step = Math.max(1, Math.floor(trueText.length / 15)); // Decrypt in chunks for long text
+            const interval = setInterval(() => {
+                el.innerText = trueText.split('').map((char, index) => {
+                    if (index < iterations) return char;
+                    return generateHash(1);
+                }).join('');
+
+                iterations += step;
+                if (iterations >= trueText.length) {
+                    clearInterval(interval);
+                    el.innerText = trueText;
+                }
+            }, 20); // Faster tick rate
+            ghostIntervals.set(el, interval);
+
+            container.style.boxShadow = 'inset 0 0 80px rgba(188, 19, 254, 0.15)';
+            container.style.overflowY = 'auto'; // Ensure long text is scrollable
+            el.style.color = 'var(--neon-purple)';
+            el.style.textShadow = '0 0 25px var(--neon-purple)';
+            el.style.transform = 'scale(1.02)';
+            el.style.transition = '0.3s';
+            el.style.alignItems = 'flex-start'; // Align top for scrolling readability
+            el.style.paddingTop = '40px';
+        }
+
+        // Init on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.ghost-text-container').forEach(container => {
+                encryptGhostText(container);
+            });
+        });
+
+        function openGallery(src) {
+            document.getElementById('galleryModalImg').src = src;
+            document.getElementById('imageGalleryModal').style.display = 'flex';
+        }
+
+        function copyShare(url) {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'AssentTag Interactive Post',
+                    text: 'Check out this encrypted tag on AssentTag.',
+                    url: url
+                }).then(() => {
+                    console.log('Successfully shared');
+                }).catch(console.error);
+            } else if (navigator.clipboard) {
+                navigator.clipboard.writeText(url).then(function() {
+                    alert('Share URL securely copied to your clipboard!');
+                });
+            } else {
+                var textArea = document.createElement("textarea");
+                textArea.value = url;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    alert('Post link dynamically copied to clipboard!');
+                } catch (err) {
+                    console.error('Fallback: Oops, unable to copy', err);
+                }
+                document.body.removeChild(textArea);
+            }
+        }
+
+        async function viewLikers(postId) {
+            const modalBody = document.getElementById('likersModalBody');
+            modalBody.innerHTML = '<p style="text-align: center; color: #888;">Loading protocol data...</p>';
+            document.getElementById('likersModal').style.display = 'flex';
+            try {
+                const response = await fetch(`/image/get_likers/${postId}/`);
+                const data = await response.json();
+                if (data.status === 'success') {
+                    modalBody.innerHTML = '';
+                    if (data.likers.length === 0) {
+                        modalBody.innerHTML = '<p style="text-align: center; color: #888;">No interactions recorded yet.</p>';
+                        return;
+                    }
+                    data.likers.forEach(user => {
+                        const item = document.createElement('div');
+                        item.className = 'suggestion-item';
+                        item.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
+                        item.style.borderRadius = '0';
+                        item.style.marginBottom = '0';
+                        item.style.padding = '12px 20px';
+                        item.innerHTML = `
+                            <div class="suggestion-user" style="cursor:pointer;" onclick="window.location.href='profile-${user.register_id}.html'">
+                                <img src="static/${user.photo}" class="suggestion-avatar" style="border: 2px solid var(--neon-purple);" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
+                                <div>
+                                    <div class="suggestion-name" style="font-size:0.9rem;">${user.first_name} ${user.last_name}</div>
+                                    <div class="suggestion-sub" style="font-size:0.75rem; color:#888;">@${user.email.split('@')[0]}</div>
+                                </div>
+                            </div>
+                            <a href="profile-${user.register_id}.html" style="text-decoration:none;">
+                                <button class="follow-btn" style="padding:6px 14px; font-size:0.75rem;">View</button>
+                            </a>
+                        `;
+                        modalBody.appendChild(item);
+                    });
+                } else {
+                    modalBody.innerHTML = '<p style="text-align: center; color: #ff3333;">Failed to load data.</p>';
+                }
+            } catch (e) {
+                modalBody.innerHTML = '<p style="text-align: center; color: #ff3333;">Connection severed.</p>';
+            }
+        }
+
+        function confirmDelete(url) {
+            if (typeof Swal === 'undefined') {
+                if (confirm("WARNING: This will permanently scrub your asset from the server. Proceed?")) {
+                    window.location.href = url;
+                }
+                return;
+            }
+            Swal.fire({
+                title: '<span style="font-family:\'Orbitron\', sans-serif; color:#ff3333;">Secure Deletion Protocol</span>',
+                html: "WARNING: This will permanently scrub your securely encrypted asset from the AssentTag server array. This action is <b>irreversible</b>.",
+                icon: 'warning',
+                showCancelButton: true,
+                background: 'rgba(15, 15, 20, 0.95)',
+                color: '#fff',
+                cancelButtonColor: 'rgba(255,51,51,0.2)',
+                confirmButtonColor: 'rgba(0, 243, 255, 0.8)',
+                confirmButtonText: 'Initiate Wipe',
+                cancelButtonText: 'Abort',
+                customClass: {
+                    confirmButton: 'pill-btn',
+                    cancelButton: 'pill-btn danger'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Scrubbing Target...',
+                        background: 'rgba(15, 15, 20, 0.95)',
+                        color: '#00f3ff',
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
+                    });
+                    window.location.href = url;
+                }
+            })
+        }
+
+        function deactivateAccount() {
+            Swal.fire({
+                title: '<span style="font-family:\'Orbitron\', sans-serif; color:#ffa500;">HIBERNATE ACCOUNT</span>',
+                html: "This will render your account dormant and log you out. You can automatically break hibernation and restore your profile simply by logging back in.",
+                icon: 'warning',
+                showCancelButton: true,
+                background: 'rgba(5, 5, 5, 0.98)',
+                color: '#fff',
+                confirmButtonColor: '#ffa500',
+                cancelButtonColor: '#111',
+                confirmButtonText: 'Hibernate Now'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '#demo-action-deactivate';
+                }
+            });
+        }
+
+        function initiateScorchedEarth() {
+            Swal.fire({
+                title: '<span style="font-family:\'Orbitron\', sans-serif; color:#ff0000; font-size: 2rem; text-shadow: 0 0 20px #ff0000;">SCORCHED EARTH</span>',
+                html: "<div style='color:#ccc; font-family:monospace; text-align:left; line-height:1.6; background:rgba(255,0,0,0.1); padding:15px; border:1px solid #ff0000; border-radius:8px;'>WARNING: Activating Purge Protocol.<br>> Severing all biometric linkages.<br>> Scrubbing identity footprints.<br>> Permanent data obliteration across entire matrix.<br><br><span style='color:#fff;'>Type <b>PURGE</b> to authorize Self-Destruct.</span></div>",
+                input: 'text',
+                inputAttributes: {
+                    autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                background: 'rgba(5, 5, 5, 0.98)',
+                backdrop: `rgba(255,0,0,0.4) url("static/assets/glitch.gif") left top no-repeat`,
+                confirmButtonText: 'EXECUTE',
+                cancelButtonText: 'ABORT',
+                confirmButtonColor: '#ff0000',
+                cancelButtonColor: '#111',
+                preConfirm: (login) => {
+                    if (login !== 'PURGE') {
+                        Swal.showValidationMessage('Authorization Failed. Protocol Aborted.')
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: '<span style="font-family:\'Orbitron\', sans-serif; color:#ff0000;">OBLITERATING IDENTITY...</span>',
+                        background: 'rgba(5, 5, 5, 0.98)',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        didOpen: () => { Swal.showLoading() }
+                    });
+                    setTimeout(() => {
+                        window.location.href = '#demo-action-delete-account';
+                    }, 1500);
+                }
+            });
+        }
+    </script>
+<div class="demo-notice" role="note">UI preview · Sample data <a href="demo.html">Dashboard ↗</a><button type="button" aria-label="Dismiss demo notice" onclick="this.parentElement.remove()">×</button></div></body>
+</html>

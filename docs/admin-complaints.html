@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="demo-adapter.js"></script>
+    <meta charset="UTF-8">
+    <title>AssentTag - Manage Complaints</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-dark: #0a0a0c; --neon-blue: #00f3ff; --magenta: #ff00ff; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-dark); color: #fff; margin:0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+
+        .top-nav {
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0 4%;
+            display: flex; justify-content: space-between; align-items: center; height: 80px; width: 100%; box-sizing: border-box; position: sticky; top: 0; z-index: 1000;
+        }
+
+        .logo-box { display: flex; align-items: center; gap: 15px; }
+        .logo-text { font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: 1px; color: #fff; text-transform: uppercase; }
+
+        .btn-orange {
+            background: linear-gradient(135deg, #FFD700 0%, #FF4500 100%); border: none; padding: 10px 20px;
+            color: #000; font-weight: 800; font-size: 0.8rem; border-radius: 4px; cursor: pointer; text-decoration: none; transition: 0.3s;
+        }
+        .btn-orange:hover { transform: translateY(-2px); box-shadow: 0 0 15px rgba(255,69,0,0.5); }
+
+        .details-card { margin-top: 40px; margin-bottom: 60px; display: flex; flex-direction: column; gap: 20px; }
+        .card-header h2 { font-size: 1.8rem; margin: 0 0 5px 0; border-left: 4px solid var(--neon-blue); padding-left: 15px; }
+        .card-header p { font-size: 0.85rem; color: #888; padding-left: 15px; margin: 0; }
+
+        .table-container {
+            border-radius: 8px; overflow: hidden; background: #161b22; padding: 20px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        thead { border-bottom: 2px solid var(--neon-blue); }
+        th {
+            padding: 15px 10px; color: #fff; font-size: 0.65rem; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        tbody tr { border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s; }
+        tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+        td { padding: 15px 10px; color: #ccc; font-size: 0.75rem; font-weight: 500; vertical-align: middle; }
+
+        .btn-reply { background: var(--magenta); color: #fff; text-decoration: none; padding: 8px 14px; border-radius: 4px; font-weight: 800; font-size: 0.7rem; display: inline-block; transition: 0.3s; }
+        .btn-reply:hover { background: #ff33ff; box-shadow: 0 0 10px var(--magenta); color: #fff; }
+    </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="static/assets/assenttag-logo.png">
+<link rel="stylesheet" href="static/css/visual-experience.css?v=9">
+<script src="static/js/visual-experience.js?v=9" defer></script>
+
+
+
+<script src="static/js/success-notices.js?v=1" defer></script>
+
+<link rel="stylesheet" href="demo-banner.css"></head>
+<body class="at-experience" data-at-scene="admin-support" data-at-photo="static/assets/page-admin-support.webp">
+
+    <nav class="top-nav">
+        <div class="logo-box">
+<img src="static/assets/assenttag-logo.png" alt="AssentTag" class="logo-img at-brand-mark" width="42" height="42">
+            <span class="logo-text">MANAGE COMPLAINTS</span>
+        </div>
+        <a href="admin.html" class="btn-orange">BACK TO ADMIN HOME</a>
+    </nav>
+
+    <div class="details-card" style="max-width: 1400px; width: 95%;">
+        <section class="at-page-photo" aria-label="Listen. Review. Respond." data-workflow-image="static/assets/page-admin-support.webp">
+    <img src="static/assets/page-admin-support.webp" alt="A support administrator reviewing privacy concerns at a professional service desk" width="1536" height="1024" decoding="async">
+    <div class="at-page-photo-copy"><p class="at-eyebrow">AssentTag</p><h2>Listen. Review. Respond.</h2><p>Give every community concern the attention it needs.</p></div>
+</section>
+
+        <div class="card-header">
+            <h2>User Complaints</h2>
+            <p>Review and resolve user reported issues.</p>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>COMPLAINT ID</th>
+                        <th>DATE</th>
+                        <th>TIME</th>
+                        <th>USER</th>
+                        <th>SUBJECT</th>
+                        <th>COMPLAINT THREAD</th>
+                        <th>URGENCY</th>
+                        <th>REPLY LOG</th>
+                        <th>ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+
+                    <tr>
+                        <td colspan="9" style="text-align:center; padding: 40px; color:#888;">No complaints reported.</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+<div class="demo-notice" role="note">UI preview · Sample data <a href="demo.html">Dashboard ↗</a><button type="button" aria-label="Dismiss demo notice" onclick="this.parentElement.remove()">×</button></div></body>
+</html>

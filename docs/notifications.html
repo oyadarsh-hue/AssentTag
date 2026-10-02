@@ -1,0 +1,417 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<script src="demo-adapter.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AssentTag - Notifications</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-purple: #bc13fe;
+            --magenta: #ff00ff;
+            --warning-red: #ff4b2b;
+            --bg-dark: #050505;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #8b949e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* Background */
+        .user-bg-container {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .user-bg-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.4);
+            animation: zoom 20s infinite alternate;
+        }
+
+        .secure-content-media {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        @keyframes imageFadeIn {
+            from {
+                opacity: 0;
+                filter: blur(10px);
+            }
+
+            to {
+                opacity: 1;
+                filter: blur(0px);
+            }
+        }
+
+        @keyframes zoom {
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.1);
+            }
+        }
+
+        /* Navbar */
+        .glass-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-img {
+            height: 35px;
+            width: auto;
+        }
+
+        .logo-text {
+            font-family: 'Orbitron';
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        /* Main */
+        main {
+            padding: 3rem 5%;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        /* Card */
+        .notification-card {
+            background: rgba(22, 27, 34, 0.9);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .notification-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .notification-header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .notification-time {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .secure-card-image {
+            width: 100%;
+            border-radius: 12px;
+            margin-top: 10px;
+        }
+
+        /* Buttons */
+        .action-buttons {
+            margin-top: 15px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-approve {
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .btn-reject {
+            background: linear-gradient(135deg, var(--warning-red), #8b0000);
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .highlight {
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-btn {
+            color: var(--neon-blue);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background-color: rgba(0, 243, 255, 0.1);
+        }
+
+        .avatar-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #bc13fe, #ff00ff);
+            border: 2px solid #00f3ff;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 0 15px rgba(188, 19, 254, 0.4);
+            overflow: hidden;
+            color: white;
+            object-fit: cover;
+        }
+    </style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="static/assets/assenttag-logo.png">
+<link rel="stylesheet" href="static/css/visual-experience.css?v=9">
+<script src="static/js/visual-experience.js?v=9" defer></script>
+
+
+
+<script src="static/js/success-notices.js?v=1" defer></script>
+
+<link rel="stylesheet" href="demo-banner.css"></head>
+
+<body class="at-experience" data-at-scene="notification" data-at-photo="static/assets/page-notifications.webp">
+
+    <div class="user-bg-container">
+        <img src="static/assets/user_bg.jpg" class="user-bg-image" onerror="this.src='static/assets/user_icon.svg'">
+    </div>
+
+    <!-- Nav Integration matching requirements -->
+    <nav class="glass-nav">
+        <div class="logo">
+            <img src="static/assets/assenttag-logo.png" style="width: 35px; filter: drop-shadow(0 0 5px var(--neon-blue));" onerror="this.style.display='none'">
+            <h2>ASSENTTAG <span class="highlight">NOTIFICATIONS</span></h2>
+        </div>
+        <div style="display:flex; align-items:center; gap:20px;">
+            <a href="demo.html" class="nav-btn">Dashboard &rarr;</a>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-weight: 700; color: #fff; font-size: 0.9rem;">Jamie</span>
+                <a href="profile.html">
+                    <img src="static/assets/user_icon.svg" class="avatar-circle" onerror="this.src='static/assets/user_icon.svg'">
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="at-page-photo" aria-label="Every request. Your decision." data-workflow-image="static/assets/page-notifications.webp">
+    <img src="static/assets/page-notifications.webp" alt="A person reviewing a photo consent notification on a real smartphone" width="1536" height="1024" decoding="async">
+    <div class="at-page-photo-copy"><p class="at-eyebrow">AssentTag</p><h2>Every request. Your decision.</h2><p>Review photo tags and choose how you appear.</p></div>
+</section>
+
+
+        <h2 style="margin-bottom:2rem;">🔔 Pending Tag Requests</h2>
+
+
+
+        <div class="notification-card">
+
+            <div class="notification-header">
+
+                <img src="static/assets/user_icon.svg" alt="profile"
+                    onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
+
+
+                <div>
+                    <div class="notification-title">
+                        Maya tagged you in a photo
+                    </div>
+                    <div class="notification-time">
+                        2026-01-01 - 10:30
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons" style="margin-bottom: 12px; margin-top: 0;">
+                <a href="verify.html" class="btn-approve"
+                    style="width: 100%; text-align: center;">Face Verification to Respond</a>
+            </div>
+
+            <div class="image-blur-wrapper"
+                style="position: relative; display: inline-block; max-height: 800px; max-width: 100%;">
+                <img src="static/assets/photo-protection.webp"
+                    alt="Notification Graphic" class="secure-content-media"
+                    style="margin-top:0; max-width: 100%; max-height: 800px; display: block; animation: imageFadeIn 0.5s ease-out forwards;"
+                    onerror="this.onerror=null; this.src='static/assets/photo-index-hero-v2.webp'">
+            </div>
+
+        </div>
+
+
+
+        <h2 style="margin-top:3rem; margin-bottom:2rem;">🛡️ Follow Requests</h2>
+
+
+        <div class="empty-state">
+            No pending follow requests.
+        </div>
+
+
+        <h2 style="margin-top:3rem; margin-bottom:2rem;">👤 New Followers</h2>
+
+
+
+        <div class="notification-card" style="display:flex; justify-content:space-between; align-items:center;">
+
+            <div class="notification-header" style="margin-bottom:0;">
+
+                <img src="static/assets/user_icon.svg" alt="profile"
+                    onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
+
+
+                <div>
+                    <div class="notification-title">
+                        <div class="notification-text">
+                            <strong>Maya River</strong>
+                            Started following you at <span style="color:var(--neon-blue); font-weight:700;">various times</span> on recently.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons" style="margin-top:0;">
+                <a href="demo.html" class="btn-approve"
+                    style="background:var(--glass-border); color:var(--text-primary);">View Feed</a>
+            </div>
+
+        </div>
+
+        <div class="notification-card" style="display:flex; justify-content:space-between; align-items:center;">
+
+            <div class="notification-header" style="margin-bottom:0;">
+
+                <img src="static/assets/user_icon.svg" alt="profile"
+                    onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
+
+
+                <div>
+                    <div class="notification-title">
+                        <div class="notification-text">
+                            <strong>Alex Stone</strong>
+                            Started following you at <span style="color:var(--neon-blue); font-weight:700;">various times</span> on recently.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons" style="margin-top:0;">
+                <a href="demo.html" class="btn-approve"
+                    style="background:var(--glass-border); color:var(--text-primary);">View Feed</a>
+            </div>
+
+        </div>
+
+        <div class="notification-card" style="display:flex; justify-content:space-between; align-items:center;">
+
+            <div class="notification-header" style="margin-bottom:0;">
+
+                <img src="static/assets/user_icon.svg" alt="profile"
+                    onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
+
+
+                <div>
+                    <div class="notification-title">
+                        <div class="notification-text">
+                            <strong>Robin Kay</strong>
+                            Started following you at <span style="color:var(--neon-blue); font-weight:700;">various times</span> on recently.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons" style="margin-top:0;">
+                <a href="demo.html" class="btn-approve"
+                    style="background:var(--glass-border); color:var(--text-primary);">View Feed</a>
+            </div>
+
+        </div>
+
+
+
+    </main>
+
+<div class="demo-notice" role="note">UI preview · Sample data <a href="demo.html">Dashboard ↗</a><button type="button" aria-label="Dismiss demo notice" onclick="this.parentElement.remove()">×</button></div></body>
+
+</html>

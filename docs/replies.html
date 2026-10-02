@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="demo-adapter.js"></script>
+    <meta charset="UTF-8">
+    <title>AssentTag - View Replies</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #050505; --neon-blue: #00f3ff; --magenta: #ff00ff; --text-main: #ffffff; --text-secondary: #999999; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-y: auto;}
+
+        .user-bg-container { position: fixed; top: -50%; left: -50%; width: 200%; height: 200%; z-index: -1; pointer-events: none; overflow: hidden; background: #050505; }
+        .user-bg-image { width: 100%; height: 100%; object-fit: cover; animation: rotateBG 120s linear infinite; opacity: 0.3; mix-blend-mode: screen; filter: hue-rotate(20deg) contrast(1.2); }
+        @keyframes rotateBG { 0% { transform: rotate(0deg) scale(1.2); } 100% { transform: rotate(360deg) scale(1.2); } }
+
+        .glass-nav {
+            background: rgba(10,10,14,0.9); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0 4%;
+            display: flex; justify-content: space-between; align-items: center; height: 80px; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+        }
+
+        .nav-left { display: flex; align-items: center; gap: 12px; }
+        .logo-img { width: 35px; animation: pulseGlow 3s infinite alternate; filter: drop-shadow(0 0 5px var(--neon-blue)); }
+        @keyframes pulseGlow { 0% { filter: drop-shadow(0 0 5px var(--neon-blue)); transform: scale(1); } 100% { filter: drop-shadow(0 0 15px var(--neon-blue)); transform: scale(1.05); } }
+        .logo-text { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.2rem; color: #fff; text-transform: uppercase; letter-spacing: 1px;}
+
+        .nav-right { display: flex; align-items: center; gap: 20px; }
+        .nav-btn { background: transparent; border: 1px solid var(--magenta); color: var(--magenta); padding: 8px 16px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: 0.3s; }
+        .nav-btn:hover { background: rgba(255,0,255,0.1); box-shadow: 0 0 10px rgba(255,0,255,0.2); }
+        .profile-wrap { display: flex; align-items: center; gap: 10px; }
+        .profile-name { font-size: 0.85rem; font-weight: 700; color: #fff; }
+        .avatar-circle { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--magenta); object-fit: cover; }
+
+        .main-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 120px 20px 60px; }
+
+        .card-wrapper { display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 650px; }
+        .feedback-card { background: rgba(15,15,18,0.85); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 3rem; box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
+
+        .title { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 0.3rem; margin-top: 10px; border-left: 3px solid var(--magenta); padding-left: 10px; display: inline-block; }
+        .subtitle { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 2rem; }
+
+        .divider-fade { width: 100%; height: 1px; background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent); margin-bottom: 2rem; }
+
+        .reply-box { background: rgba(5,5,8,0.6); border: 1px solid rgba(255,255,255,0.02); border-left: 4px solid var(--neon-blue); padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; }
+        .reply-meta { font-size: 0.75rem; color: #888; text-transform: uppercase; font-weight: 800; margin-bottom: 10px; display: block;}
+        .reply-subject { color: var(--neon-blue); font-weight: 700; }
+        .reply-desc { font-size: 0.85rem; color: #ccc; margin-bottom: 15px; font-style: italic; border-left: 2px solid #333; padding-left: 10px; margin-left: 5px; }
+        .reply-admin { color: #fff; font-size: 0.95rem; }
+        .admin-tag { color: var(--magenta); font-weight: 800; }
+
+        .footer-tag { text-align: center; color: #444; font-size: 0.75rem; width: 100%; margin-top: 30px; }
+    </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="static/assets/assenttag-logo.png">
+<link rel="stylesheet" href="static/css/visual-experience.css?v=9">
+<script src="static/js/visual-experience.js?v=9" defer></script>
+
+
+
+<script src="static/js/success-notices.js?v=1" defer></script>
+
+<link rel="stylesheet" href="demo-banner.css"></head>
+<body class="at-experience" data-at-scene="replies" data-at-photo="static/assets/page-replies.webp">
+
+    <div class="user-bg-container">
+        <img src="static/assets/user_bg.jpg" class="user-bg-image" onerror="this.src='static/assets/user_icon.svg'">
+    </div>
+
+    <nav class="glass-nav">
+        <div class="nav-left">
+            <img src="static/assets/assenttag-logo.png" class="logo-img at-brand-mark" onerror="this.style.display='none'">
+            <div class="logo-text">View Reply By Admin</div>
+        </div>
+        <div class="nav-right">
+            <a href="demo.html" class="nav-btn">Back &rarr;</a>
+            <div class="profile-wrap">
+                <span class="profile-name">Jamie</span>
+                <a href="profile.html"><img src="static/assets/user_icon.svg" class="avatar-circle" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';"></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="card-wrapper">
+            <div class="feedback-card">
+                <section class="at-page-photo" aria-label="A response you can return to." data-workflow-image="static/assets/page-replies.webp">
+    <img src="static/assets/page-replies.webp" alt="A woman reading a reassuring privacy support response on a laptop" width="1536" height="1024" decoding="async">
+    <div class="at-page-photo-copy"><p class="at-eyebrow">AssentTag</p><h2>A response you can return to.</h2><p>Follow up on your concerns and read the team's replies.</p></div>
+</section>
+
+                <h1 class="title">Incoming System Messages</h1>
+                <p class="subtitle">Review communications targeting your historical complaint traces below.</p>
+
+                <div class="divider-fade"></div>
+
+
+                    <div class="reply-box" style="border-left-color: #333;">
+                        <em style="color:#888; font-size:0.85rem;">No replies received from administrators at this time.</em>
+                    </div>
+
+            </div>
+
+            <div class="footer-tag">&copy; 2026 AssentTag Systems</div>
+        </div>
+    </div>
+<div class="demo-notice" role="note">UI preview · Sample data <a href="demo.html">Dashboard ↗</a><button type="button" aria-label="Dismiss demo notice" onclick="this.parentElement.remove()">×</button></div></body>
+</html>

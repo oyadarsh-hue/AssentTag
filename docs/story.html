@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="demo-adapter.js"></script>
+    <meta charset="UTF-8">
+    <title>AssentTag - Foreground Forensic Engine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root { --neon-blue: #00f3ff; --magenta: #ff00ff; }
+        body { background: #000; color: #fff; font-family: 'Inter', sans-serif; margin: 0; padding: 0; min-height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+        /* Top Navigation Overlay */
+        .glass-nav {
+            background: linear-gradient(180deg, rgba(5,5,10,0.95), transparent); padding: 0 4%;
+            display: flex; justify-content: space-between; align-items: center; height: 80px; position: fixed; top: 0; left: 0; width: 100%; box-sizing: border-box; z-index: 1000;
+        }
+        .nav-left { display: flex; align-items: center; gap: 15px; }
+        .logo-img { width: 35px; filter: drop-shadow(0 0 5px var(--magenta)); }
+        .logo-text { font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: 1.3rem; color: #fff; text-transform: uppercase; letter-spacing: 1px;}
+        .highlight { color: var(--magenta); text-shadow: 0 0 10px rgba(255,0,255,0.5); }
+
+        .nav-right { display: flex; align-items: center; gap: 20px; }
+        .back-btn { background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 8px 16px; border-radius: 4px; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: 0.3s; }
+        .back-btn:hover { background: rgba(0,243,255,0.1); box-shadow: 0 0 15px rgba(0,243,255,0.2); }
+
+        .profile-wrap { display: flex; align-items: center; gap: 10px; }
+        .profile-name { font-size: 0.9rem; font-weight: 700; color: #fff; }
+        .avatar-circle { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--neon-blue); object-fit: cover; }
+
+        /* Story Container & Tap Zones */
+        .story-wrapper { flex: 1; display: flex; justify-content: center; align-items: center; margin-top: 80px; position: relative; }
+        .story-img { max-width: 100%; max-height: calc(100vh - 160px); object-fit: contain; box-shadow: 0 0 50px rgba(0,243,255,0.15); border-radius: 12px; z-index: 5; position: relative; }
+
+        .tap-zone { position: absolute; top: 0; width: 45%; height: 100%; z-index: 10; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .tap-left { left: 0; }
+        .tap-right { right: 0; }
+
+        .progress-bar-container { position: fixed; top: 80px; left: 0; width: 100%; height: 4px; background: rgba(255,255,255,0.1); z-index: 999; }
+        .progress-bar-fill { height: 100%; background: var(--neon-blue); width: 0%; box-shadow: 0 0 10px var(--neon-blue); transition: width 0.1s linear; }
+
+        /* Actions Footer */
+        .actions-footer { background: linear-gradient(0deg, rgba(5,5,10,0.95), transparent); padding: 20px; display: flex; justify-content: center; position: fixed; bottom: 0; width: 100%; z-index: 1000; }
+        .delete-btn { background: rgba(255,0,0,0.1); border: 1px solid #ff3333; color: #ff3333; padding: 12px 24px; border-radius: 30px; font-weight: 800; font-family: 'Orbitron', sans-serif; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
+        .delete-btn:hover { background: #ff3333; color: #000; box-shadow: 0 0 20px rgba(255,51,51,0.5); transform: scale(1.05); }
+
+    </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="static/assets/assenttag-logo.png">
+<link rel="stylesheet" href="static/css/visual-experience.css?v=9">
+<script src="static/js/visual-experience.js?v=9" defer></script>
+
+
+
+<script src="static/js/success-notices.js?v=1" defer></script>
+
+<link rel="stylesheet" href="demo-banner.css"></head>
+<body class="at-experience" data-at-scene="dashboard">
+
+    <nav class="glass-nav">
+        <div class="nav-left">
+            <img src="static/assets/assenttag-logo.png" alt="AssentTag" class="logo-img at-brand-mark" width="42" height="42">
+            <div class="logo-text"><span class="highlight">AssentTag</span> Story</div>
+        </div>
+
+        <div class="nav-right" style="display: flex; align-items: center; gap: 15px;">
+            <span style="font-size: 0.85rem; color: #a0a5cc; letter-spacing: 1px; margin-right: 15px; font-family: 'Orbitron', sans-serif;">2026-01-01 at 10:30</span>
+            <img src="static/assets/user_icon.svg" class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #00f3ff; object-fit: cover;">
+            <span class="profile-name" style="font-weight: 800; font-size: 1.1rem; color: #fff;">Jamie</span>
+            <a href="demo.html" class="back-btn" id="exitBtn" style="margin-left: 15px;">BACK &rarr;</a>
+        </div>
+    </nav>
+
+    <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="storyProgress"></div>
+    </div>
+
+    <div class="story-wrapper">
+
+        <a href="demo.html" class="tap-zone tap-left"></a>
+
+
+        <img src="static/assets/page-stories.webp" class="story-img">
+
+        <a href="demo.html" class="tap-zone tap-right"></a>
+    </div>
+
+
+
+    <script>
+        // Immersive Auto-Close Timer just like real stories!
+        let progress = 0;
+        const totalTime = 8000; // 8 seconds
+        const intervalTime = 100;
+
+        const timer = setInterval(() => {
+            progress += (intervalTime / totalTime) * 100;
+            document.getElementById('storyProgress').style.width = progress + '%';
+
+            if (progress >= 100) {
+                clearInterval(timer);
+
+                window.location.href = 'demo.html';
+
+            }
+        }, intervalTime);
+
+        document.addEventListener('click', (e) => {
+            // Pause timer if interacting with modals
+            if (e.target.closest('.delete-btn')) {
+                clearInterval(timer);
+            }
+        });
+
+        function confirmDeleteStory(url) {
+            Swal.fire({
+                title: '<span style="font-family:\'Orbitron\', sans-serif; color:#ff3333;">SECURE OVERRIDE</span>',
+                html: "WARNING: Immediate scrub sequence will permanently wipe this asset.",
+                icon: 'warning',
+                background: 'rgba(15, 15, 20, 0.95)',
+                color: '#fff',
+                showCancelButton: true,
+                confirmButtonColor: '#ff3333',
+                cancelButtonColor: '#444',
+                confirmButtonText: 'SCRUB STORY',
+                customClass: { confirmButton: 'pill-btn danger' }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        }
+    </script>
+<div class="demo-notice" role="note">UI preview · Sample data <a href="demo.html">Dashboard ↗</a><button type="button" aria-label="Dismiss demo notice" onclick="this.parentElement.remove()">×</button></div></body>
+</html>
