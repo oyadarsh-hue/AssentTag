@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AssentTag - Secure Digital Identity</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Orbitron:wght@500;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-purple: #bc13fe;
+            --magenta: #ff00ff;
+            --bg-dark: #050505;
+            --glass: rgba(10, 10, 14, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* 360 Rotating 4K Background */
+        .user-bg-container {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+            background: #050505;
+            transition: background 0.3s ease;
+        }
+
+        .user-bg-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            animation: rotateBG 120s linear infinite;
+            opacity: 0.4;
+            mix-blend-mode: screen;
+            transition: all 0.3s ease;
+        }
+
+        @keyframes rotateBG {
+            0% {
+                transform: rotate(0deg) scale(1.2);
+            }
+
+            100% {
+                transform: rotate(360deg) scale(1.2);
+            }
+        }
+
+        /* Navigation */
+        .glass-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 90px;
+            z-index: 1000;
+            background: linear-gradient(180deg, rgba(5, 5, 5, 0.9) 0%, rgba(5, 5, 5, 0) 100%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5%;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-img {
+            width: 45px;
+            animation: pulseGlow 3s infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                filter: drop-shadow(0 0 5px var(--neon-blue));
+                transform: scale(1);
+            }
+
+            100% {
+                filter: drop-shadow(0 0 15px var(--neon-blue));
+                transform: scale(1.05);
+            }
+        }
+
+        .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        /* Dark Mode Toggle Icon Button */
+        .toggle-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.2rem;
+            margin-right: 10px;
+        }
+
+        .toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--neon-blue);
+            color: var(--neon-blue);
+            transform: rotate(15deg);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--neon-purple);
+            color: var(--text-main);
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            background: rgba(188, 19, 254, 0.1);
+        }
+
+        .btn-outline:hover {
+            background: var(--neon-purple);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(188, 19, 254, 0.4);
+            text-shadow: 0 0 5px #fff;
+        }
+
+        .btn-solid {
+            background: var(--neon-blue);
+            border: none;
+            color: #000;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-solid:hover {
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.6);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 160px 5% 60px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            min-height: 80vh;
+        }
+
+        .hero-content {
+            max-width: 600px;
+        }
+
+        .badge {
+            display: inline-block;
+            border: 1px solid var(--neon-blue);
+            padding: 6px 16px;
+            border-radius: 20px;
+            color: var(--neon-blue);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+
+        .hero-title {
+            font-size: 4.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 25px;
+            font-family: 'Orbitron', sans-serif;
+            transition: color 0.3s ease;
+        }
+
+        .hero-title .highlight {
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: block;
+        }
+
+        .hero-desc {
+            font-size: 1.1rem;
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        /* Hero Graphic */
+        .hero-graphic {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .glass-phone {
+            width: 100%;
+            max-width: 500px;
+            aspect-ratio: 4/3;
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 243, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .glass-phone::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 10%;
+            width: 80%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+        }
+
+        .phone-inner-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+            opacity: 0.85;
+            filter: contrast(1.1) brightness(1.2);
+        }
+
+        /* The Exact 6-Frame Mirror from Image - Dynamic Colorization */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 0 5% 80px;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .feature-box {
+            background: rgba(15, 15, 18, 0.85);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .feature-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+        }
+
+        .fb-icon-holder {
+            width: 45px;
+            height: 45px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border-radius: 10px;
+        }
+
+        .feature-box h3 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 12px;
+            font-family: 'Inter', sans-serif;
+            transition: color 0.3s ease;
+        }
+
+        .feature-box p {
+            font-size: 0.9rem;
+            color: #aaa;
+            line-height: 1.6;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .ic-purple {
+            color: #8a2be2;
+            background: rgba(138, 43, 226, 0.1);
+        }
+
+        .ic-blue {
+            color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .ic-orange {
+            color: #ff6b2b;
+            background: rgba(255, 107, 43, 0.1);
+        }
+
+        .ic-yellow {
+            color: #eab308;
+            background: rgba(234, 179, 8, 0.1);
+        }
+
+        .ic-violet {
+            color: #6d28d9;
+            background: rgba(109, 40, 217, 0.1);
+        }
+
+        .ic-dark {
+            color: #333;
+            background: rgba(51, 51, 51, 0.1);
+        }
+
+        /* Light Mode Overrides */
+        body.light-mode {
+            background-color: #f0f2f5;
+            color: #111;
+            --text-main: #111;
+        }
+
+        body.light-mode .user-bg-container {
+            background: #e0e4e8;
+        }
+
+        body.light-mode .user-bg-image {
+            filter: invert(0.9) hue-rotate(180deg) brightness(1.1);
+            opacity: 0.35;
+            mix-blend-mode: multiply;
+        }
+
+        body.light-mode .glass-nav {
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        body.light-mode .hero-desc {
+            color: #555;
+        }
+
+        body.light-mode .glass-phone {
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .toggle-btn {
+            background: #fff;
+            color: #111;
+            border-color: #ddd;
+        }
+
+        body.light-mode .btn-outline {
+            color: #000;
+            border-color: #aaa;
+            background: #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        /* White Image Mirror Logic in Light Mode */
+        body.light-mode .feature-box {
+            background: #ffffff;
+            border-color: #e0e0e0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: none;
+        }
+
+        .dummy-footer {
+            padding: 30px 5%;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 20px;
+        }
+
+        .dummy-footer a {
+            color: #888;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+
+        .dummy-footer a:hover {
+            color: var(--neon-blue);
+        }
+
+        body.light-mode .feature-box h3 {
+            color: #111;
+        }
+
+        body.light-mode .feature-box p {
+            color: #666;
+        }
+
+        body.light-mode .dummy-footer {
+            border-color: #e0e0e0;
+        }
+
+        body.light-mode .dummy-footer a {
+            color: #555;
+        }
+
+        body.light-mode .dummy-footer a:hover {
+            color: var(--neon-blue);
+        }
+
+        @media (max-width: 1024px) {
+            .hero-section {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-content {
+                margin: 0 auto;
+            }
+
+            .hero-btn-group {
+                justify-content: center;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="static/assets/assenttag-logo.png">
+<link rel="stylesheet" href="static/css/visual-experience.css?v=9">
+<script src="static/js/visual-experience.js?v=9" defer></script>
+
+
+
+<script src="static/js/success-notices.js?v=1" defer></script>
+
+<link rel="stylesheet" href="demo-banner.css"><meta name="description" content="Explore AssentTag: a consent-based face privacy project. Interactive UI demo with social feed, privacy controls and disappearing messages."><meta property="og:title" content="AssentTag — Your face. Your choice."><meta property="og:description" content="Explore the interactive UI demo of a consent-based face privacy and social sharing project."><meta property="og:image" content="https://oyadarsh-hue.github.io/AssentTag/static/assets/photo-index-hero-v2.webp"></head>
+
+<body class="at-experience" data-at-scene="index">
+
+    <div class="user-bg-container">
+        <img src="static/assets/user_bg.jpg" class="user-bg-image" onerror="this.src='static/assets/back.jpg'">
+    </div>
+
+    <nav class="glass-nav">
+        <div class="logo-box">
+            <img src="static/assets/assenttag-logo.png" alt="AssentTag" class="logo-img at-brand-mark" width="42" height="42">
+            <span class="logo-text">AssentTag</span>
+        </div>
+        <div class="nav-controls">
+            <!-- ROBUST TOGGLE -->
+            <button type="button" class="toggle-btn" title="Switch to light theme" aria-label="Switch to light theme" aria-pressed="false"
+                onclick="document.body.classList.toggle('light-mode'); try { localStorage.setItem('assentTheme', document.body.classList.contains('light-mode') ? 'light' : 'dark'); } catch(e){}">
+                <i class="far fa-sun"></i>
+            </button>
+            <a href="demo.html#login" class="btn-outline">Login</a>
+            <a href="demo.html#register" class="btn-solid">Sign Up</a>
+        </div>
+    </nav>
+
+    <section class="hero-section" data-workflow-image="static/assets/photo-index-hero-v2.webp">
+        <div class="hero-content">
+            <div class="badge">CONSENT-FIRST SHARING</div>
+            <h1 class="hero-title">
+                Secure your digital<br>
+                <span class="highlight">identity.</span>
+            </h1>
+            <div style="margin:20px 0"><a href="demo.html#feed" class="btn-solid">Explore the UI demo ↗</a></div><p class="hero-desc">
+                Advanced facial recognition with granular privacy controls. A project that puts you in charge of
+                your biometric data.
+            </p>
+        </div>
+        <div class="hero-graphic">
+            <span class="at-hero-backplate at-hero-backplate-one" aria-hidden="true"></span>
+            <span class="at-hero-backplate at-hero-backplate-two" aria-hidden="true"></span>
+            <div class="glass-phone">
+                <img src="static/assets/photo-index-hero-v2.webp" class="phone-inner-img" alt="Friends choosing how to share their group photograph together in a rooftop garden" width="1536" height="1024">
+            </div>
+            <div class="at-hero-caption"><i class="fas fa-shield-alt" aria-hidden="true"></i><span>Every face has a say.</span></div>
+        </div>
+    </section>
+
+    <!-- PERFECT 6-BOX MATRIX COPYING IMAGE 1 -->
+    <section class="features-grid">
+        <div class="feature-box">
+            <div class="fb-icon-holder ic-purple"><i class="fas fa-id-card"></i></div>
+            <h3>Identity Engine</h3>
+            <p>Face-based identity verification. Log in with a glance, securing your account with unique facial
+                topology.</p>
+        </div>
+        <div class="feature-box">
+            <div class="fb-icon-holder ic-blue"><i class="fas fa-shield-alt"></i></div>
+            <h3>Consent Hub</h3>
+            <p>Granular privacy controls. Approve or deny photo tags instantly. You own your likeness rights
+                effectively.</p>
+        </div>
+        <div class="feature-box">
+            <div class="fb-icon-holder ic-orange"><i class="fas fa-bolt"></i></div>
+            <h3>Security Core</h3>
+            <p>Explore account verification, privacy decisions, and activity notifications in the interactive UI demo.</p>
+        </div>
+        <div class="feature-box">
+            <div class="fb-icon-holder ic-yellow"><i class="fas fa-lock"></i></div>
+            <h3>Media Vault</h3>
+            <p>Secure storage designed exclusively for your biometric vectors. Explore how consent shapes the sharing experience.</p>
+        </div>
+        <div class="feature-box">
+            <div class="fb-icon-holder ic-violet"><i class="fas fa-server"></i></div>
+            <h3>Admin Nexus</h3>
+            <p>Administrative console delivering top-level oversight, reporting dashboards, and threat remediation tools
+                globally.</p>
+        </div>
+        <div class="feature-box">
+            <div class="fb-icon-holder ic-dark"><i class="fas fa-plug"></i></div>
+            <h3>Private Conversations</h3>
+            <p>Stay connected with mutual friends and choose how long new messages stay with disappearing-message timers.</p>
+        </div>
+    </section>
+
+    <section class="at-procedure at-workflow" id="about" aria-labelledby="workflow-title">
+        <div class="at-workflow-heading">
+            <p class="at-eyebrow">The complete AssentTag journey</p>
+            <h2 id="workflow-title">From your first hello<br>to your final say.</h2>
+            <p class="at-procedure-intro">Create your identity, share a moment, and choose how you appear. Follow every step from registration to consent approval.</p>
+        </div>
+        <div class="at-workflow-chapters">
+            <article class="at-workflow-chapter" id="workflow-registration" data-workflow-stage="01" data-workflow-image="static/assets/photo-registration.webp" aria-labelledby="title-registration">
+    <div class="at-workflow-copy">
+        <div class="at-chapter-eyebrow"><span class="at-chapter-number">01</span><span>Create your identity</span></div>
+        <h3 id="title-registration">A profile that starts with you.</h3>
+        <p>Enter your details, upload your photo, and capture a live webcam image. AssentTag compares the two faces and checks for duplicate identities before enrolling your profile.</p>
+        <div class="at-chapter-detail">Profile details · Photo upload · Live face capture</div>
+    </div>
+    <figure class="at-workflow-photo">
+        <img src="static/assets/photo-registration.webp" alt="A woman registering her profile and matching a live webcam image on a real laptop" width="1536" height="1024" loading="lazy" decoding="async">
+        <figcaption><span>AssentTag journey</span><span>01 / 08</span></figcaption>
+    </figure>
+</article>
+
+            <article class="at-workflow-chapter" id="workflow-login" data-workflow-stage="02" data-workflow-image="static/assets/photo-login.webp" aria-labelledby="title-login">
+    <div class="at-workflow-copy">
+        <div class="at-chapter-eyebrow"><span class="at-chapter-number">02</span><span>Sign in</span></div>
+        <h3 id="title-login">Your gateway to a private world.</h3>
+        <p>Sign in with your registered email and password. Your selected access role takes you to the appropriate user or administrator dashboard.</p>
+        <div class="at-chapter-detail">Email & password · Role selection · Secure session</div>
+    </div>
+    <figure class="at-workflow-photo">
+        <img src="static/assets/photo-login.webp" alt="A person entering account credentials on a real laptop" width="1536" height="1024" loading="lazy" decoding="async">
+        <figcaption><span>AssentTag journey</span><span>02 / 08</span></figcaption>
+    </figure>
+</article>
+
+            <article class="at-workflow-chapter" id="workflow-dashboard" data-workflow-stage="03" data-workflow-image="static/assets/photo-dashboard.webp" aria-labelledby="title-dashboard">
+    <div class="at-workflow-copy">
+        <div class="at-chapter-eyebrow"><span class="at-chapter-number">03</span><span>Find your community</span></div>
+        <h3 id="title-dashboard">Your people. Your shared moments.</h3>
+        <p>Browse the feed and stories, connect with other people, and reach your profile, messages, uploads, and consent notifications from one dashboard.</p>
+        <div class="at-chapter-detail">Social feed · Stories · Connections</div>
+    </div>
+    <figure class="at-workflow-photo">
+        <img src="static/assets/photo-dashboard.webp" alt="A real social dashboard showing stories, connections, and a privacy-protected group photo" width="1536" height="1024" loading="lazy" decoding="async">
+        <figcaption><span>AssentTag journey</span><span>03 / 08</span></figcaption>
+    </figure>
+</article>
+
+            <article class="at-workflow-chapter" id="workflow-upload" data-workflow-stage="04" data-workflow-image="static/assets/photo-upload.webp" aria-labelledby="title-upload">
+    <div class="at-workflow-copy">
+        <div class="at-chapter-eyebrow"><span class="at-chapter-number">04</span><span>Share a photo</span></div>
+        <h3 id="title-upload">Post a moment with care.</h3>
+        <p>Choose your photo, add a caption, and select the people you want to tag. Complete the required live identity check before the photo enters the sharing workflow.</p>
+        <div class="at-chapter-detail">Photo & caption · Friend tags · Identity check</div>
+    </div>
+    <figure class="at-workflow-photo">
+        <img src="static/assets/photo-upload.webp" alt="A person uploading a group photo and tagging friends from a laptop" width="1536" height="1024" loading="lazy" decoding="async">
+        <figcaption><span>AssentTag journey</span><span>04 / 08</span></figcaption>
+    </figure>
+</article>
+
+            <article class="at-workflow-chapter" id="workflow-detection" data-workflow-stage="05" data-workflow-image="static/assets/photo-detection.webp" aria-labelledby="title-detection">
+    <div class="at-workflow-copy">
+        <div class="at-chapter-eyebrow"><span class="at-chapter-number">05</span><span>Detect & match</span></div>
+        <h3 id="title-detection">Recognize the people in the picture.</h3>
+        <p>The face engine locates faces and compares their descriptors with enrolled identities. Registered people can then be linked to consent requests for that photo.</p>
+        <div class="at-chapter-detail">Face detection · Landmarks · Identity matching</div>
+    </div>
+    <figure class="at-workflow-photo">
+        <img src="static/assets/photo-detection.webp" alt="A photographed monitor analyzing a group photo with face detection brackets and profile matches" width="1536" height="1024" loading="lazy" decoding="async">
+        <figcaption><span>AssentTag journey</span><span>05 / 08</span></figcaption>
+    </figure>
+</article>
+
+            <article class="at-workflow-chapter" id="workflow-protection" data-workflow-stage="06" data-workflow-image="static/assets/photo-protection.webp" aria-labelledby="title-protection">
+    <div class="at-workflow-copy">
+        <div class="at-chapter-eyebrow"><span class="at-chapter-number">06</span><span>Protect first</span></div>
+        <h3 id="title-protection">Privacy before permission.</h3>
+        <p>Faces awaiting consent are obscured in the shared image. The moment stays visible while the person's facial identity stays protected until a decision is made.</p>
+        <div class="at-chapter-detail">Face blurring · Pending consent · Protected sharing</div>
+    </div>
+    <figure class="at-workflow-photo">
+        <img src="static/assets/photo-protection.webp" alt="A real phone displaying a group photo with two faces blurred while consent is pending" width="1536" height="1024" loading="lazy" decoding="async">
+        <figcaption><span>AssentTag journey</span><span>06 / 08</span></figcaption>
+    </figure>
+</article>
+
+            <article class="at-workflow-chapter" id="workflow-notification" data-workflow-stage="07" data-workflow-image="static/assets/photo-notification.webp" aria-labelledby="title-notification">
+    <div class="at-workflow-copy">
+        <div class="at-chapter-eyebrow"><span class="at-chapter-number">07</span><span>Notify & verify</span></div>
+        <h3 id="title-notification">Let the person make the decision.</h3>
+        <p>Tagged people receive a request in their notification center. A live face check verifies their identity before they review and respond to the consent request.</p>
+        <div class="at-chapter-detail">Tag notification · Live verification · Review request</div>
+    </div>
+    <figure class="at-workflow-photo">
+        <img src="static/assets/photo-notification.webp" alt="A woman reviewing a photo tag notification and verifying her face using a phone camera" width="1536" height="1024" loading="lazy" decoding="async">
+        <figcaption><span>AssentTag journey</span><span>07 / 08</span></figcaption>
+    </figure>
+</article>
+
+            <article class="at-workflow-chapter" id="workflow-consent" data-workflow-stage="08" data-workflow-image="static/assets/photo-consent.webp" aria-labelledby="title-consent">
+    <div class="at-workflow-copy">
+        <div class="at-chapter-eyebrow"><span class="at-chapter-number">08</span><span>Consent approval</span></div>
+        <h3 id="title-consent">One choice. Only your face revealed.</h3>
+        <p>Approval reveals the consenting person's face. Other pending faces stay protected, and declining a request keeps the privacy blur in place.</p>
+        <div class="at-chapter-detail">Explicit approval · Selective reveal · Privacy retained</div>
+    </div>
+    <figure class="at-workflow-photo">
+        <img src="static/assets/photo-consent.webp" alt="A real tablet showing selective face reveal after explicit consent approval" width="1536" height="1024" loading="lazy" decoding="async">
+        <figcaption><span>AssentTag journey</span><span>08 / 08</span></figcaption>
+    </figure>
+</article>
+
+        </div>
+        <div class="at-workflow-finale">
+            <p class="at-eyebrow">Your face. Your choice.</p>
+            <h2>Share freely. Stay in control.</h2>
+            <a href="demo.html#register" class="btn-solid">Create your identity <span aria-hidden="true">↗</span></a>
+        </div>
+    </section>
+    <!-- Site footer -->
+    <footer class="dummy-footer">
+        <a href="#about">About Core</a>
+        <a href="demo.html#register">Create Your Identity</a>
+        <a href="demo.html#login">Sign In</a>
+    </footer>
+
+    <!-- Ensuring Theme State Initialization doesn't block DOM parsing -->
+    <script>
+        try { if (localStorage.getItem('assentTheme') === 'light') { document.body.classList.add('light-mode'); } } catch (e) { }
+    </script>
+<div class="demo-notice">UI demo · Fictional sample data <a href="demo.html#feed">Explore the app ↗</a></div></body>
+
+</html>

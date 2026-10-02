@@ -5,6 +5,14 @@
 [![Computer Vision](https://img.shields.io/badge/Vision-OpenCV%20%7C%20Dlib-orange.svg)](https://github.com/davisking/dlib)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 
+## Live UI demo
+
+**[Open AssentTag — public UI demo](https://oyadarsh-hue.github.io/AssentTag/)** · [Explore the app](https://oyadarsh-hue.github.io/AssentTag/demo.html#feed)
+
+Share this link on LinkedIn or open it on any device. The GitHub Pages showcase includes the landing page, sign-in and registration previews, feed, stories, consent requests, profile, sample posting, inbox, and disappearing-message UI. It uses fictional sample data and temporary browser-only interactions; login, email OTP, face recognition, real uploads, and real messaging require the local Django application.
+
+The public site is built from `docs/`. Rebuild it with `python tools/build_ui_demo.py` (Django required); this exporter reads only templates and allowlisted design assets, never the database or uploaded user photos. GitHub Pages publishes `main` → `/docs`.
+
 ## Open the full project UI locally
 
 **[Open AssentTag — full website](http://127.0.0.1:8010/)** · [Login](http://127.0.0.1:8010/login/login/) · [Messages](http://127.0.0.1:8010/login/messages/)

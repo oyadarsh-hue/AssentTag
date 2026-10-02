@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maya · AssentTag Chat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="static/assets/assenttag-logo.png">
+<link rel="stylesheet" href="static/css/visual-experience.css?v=9">
+<script src="static/js/visual-experience.js?v=9" defer></script>
+
+
+
+<script src="static/js/success-notices.js?v=1" defer></script>
+
+    <link rel="stylesheet" href="static/css/chat-timers.css?v=3">
+<link rel="stylesheet" href="demo-banner.css"></head>
+<body class="at-experience" data-at-scene="chat" data-at-photo="static/assets/page-chat.webp">
+    <nav class="chat-nav" aria-label="Chat navigation">
+        <a class="chat-brand" href="demo.html#feed"><img src="static/assets/assenttag-logo.png" alt="">AssentTag</a>
+        <a class="chat-back" href="messages.html"><span class="chat-back-icon" aria-hidden="true">←</span><span>All conversations</span></a>
+    </nav>
+    <div class="chat-photo-frame">
+        <section class="at-page-photo" aria-label="A little hello. A closer connection." data-workflow-image="static/assets/page-chat.webp">
+    <img src="static/assets/page-chat.webp" alt="A person catching up with a friend on their phone beside a sunlit window" width="1536" height="1024" decoding="async">
+    <div class="at-page-photo-copy"><p class="at-eyebrow">AssentTag</p><h2>A little hello. A closer connection.</h2><p>Make time for a conversation. Choose how long your messages stay.</p></div>
+</section>
+
+    </div>
+    <main class="conversation" data-chat-url="chat.html" data-server-now="">
+        <header class="conversation-header">
+            <div class="contact">
+                <div class="contact-avatar"><img src="static/assets/user_icon.svg" alt="Maya's profile photo" onerror="this.onerror=null;this.src='static/assets/user_icon.svg'"></div>
+                <div class="contact-details"><h1>Maya River</h1><p>Mutual followers · Personal conversation</p></div>
+            </div>
+            <button class="timer-chip" type="button" data-open-timer aria-haspopup="dialog" aria-controls="timer-dialog" aria-label="Disappearing messages settings">
+                <svg class="timer-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="14" r="8"/><path d="M9 2h6M12 2v4m6 2 2-2m-8 4v5l3 2"/></svg>
+                <span class="chip-label">Message timer</span><strong data-timer-label>24 hours</strong>
+            </button>
+        </header>
+        <div class="timer-banner"><span data-timer-description>New messages disappear 24 hours after sending.</span> <button type="button" data-open-timer>Change</button></div>
+        <section class="chat-body" id="cb" aria-label="Messages">
+<div class="chat-empty"><span aria-hidden="true">✦</span><p>A little space for conversation.</p><small>Write the first message below.</small></div>
+
+</section>
+        <footer class="chat-composer">
+            <div class="composer-top"><button class="timer-link" type="button" data-open-timer><svg class="timer-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="14" r="8"/><path d="M9 2h6M12 2v4m0 4v5l3 2"/></svg>Disappearing messages · <span data-timer-label>24 hours</span></button><span class="composer-hint">Your next message follows this timer</span></div>
+            <form method="dialog"  id="message-form">
+                
+                <div class="composer-input"><label class="sr-only" for="message-content">Message</label><input id="message-content" name="content" type="text" placeholder="Write a message…" required autocomplete="off" maxlength="10000"><button type="submit" class="send-button">Send ↑</button></div>
+            </form>
+            <p class="chat-status" role="status" aria-live="polite" id="chat-status"></p>
+        </footer>
+    </main>
+    <dialog class="timer-dialog" id="timer-dialog" aria-labelledby="timer-title" aria-describedby="timer-description">
+        <form class="dialog-content" id="timer-form">
+            <div class="dialog-heading"><h2 id="timer-title">Disappearing messages</h2><button class="dialog-close" type="button" data-close-timer aria-label="Close settings">×</button></div>
+            <p class="dialog-description" id="timer-description">Choose how long new messages stay in this conversation. The timer starts when a message is sent, even if it hasn't been read.</p>
+            <fieldset class="timer-options"><legend class="sr-only">Message duration</legend>
+            <label class="timer-option"><input type="radio" name="duration" value="0" ><span>Off</span><small>Keep new messages</small></label><label class="timer-option"><input type="radio" name="duration" value="60" ><span>60 seconds</span><small>Quick timer</small></label><label class="timer-option"><input type="radio" name="duration" value="86400" checked><span>24 hours</span></label><label class="timer-option"><input type="radio" name="duration" value="604800" ><span>7 days</span></label><label class="timer-option"><input type="radio" name="duration" value="7776000" ><span>90 days</span></label>
+            </fieldset>
+            <p class="dialog-note">UI simulation on this page only. Changing or turning off the timer doesn't change messages already sent. A screenshot or saved copy can still remain.</p>
+            <p class="dialog-error" id="timer-error" role="alert"></p>
+            <div class="dialog-actions"><button type="button" data-close-timer>Cancel</button><button class="save-timer" type="submit">Save timer</button></div>
+        </form>
+    </dialog>
+    <script id="initial-chat-timer" type="application/json">{"duration": 86400, "label": "24 hours"}</script>
+    <script src="demo-chat.js" defer></script>
+<div class="demo-notice">UI demo · Fictional sample data <a href="demo.html#feed">Explore the app ↗</a></div></body>
+</html>
