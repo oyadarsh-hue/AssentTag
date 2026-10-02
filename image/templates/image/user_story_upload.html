@@ -67,17 +67,13 @@
         .deploy-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,243,255,0.3); }
         .deploy-btn:disabled { background: #222; color: #444; cursor: not-allowed; transform: none; box-shadow: none; filter: grayscale(1); }
     </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% include "includes/visual-head.html" %}
 </head>
-<body>
+<body class="at-experience" data-at-scene="stories" data-at-photo="/static/assets/page-stories.webp">
     <nav class="glass-nav">
         <div class="nav-left">
-            <svg width="35" height="35" viewBox="0 0 100 100" fill="none" class="logo-img">
-                <rect x="10" y="10" width="25" height="25" stroke="#ff00ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                <rect x="65" y="10" width="25" height="25" stroke="#ff00ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                <rect x="10" y="65" width="25" height="25" stroke="#ff00ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                <circle cx="50" cy="50" r="10" fill="#00f3ff"/>
-                <circle cx="77.5" cy="77.5" r="5" fill="#00f3ff"/>
-            </svg>
+            <img src="/static/assets/assenttag-logo.png" alt="AssentTag" class="logo-img at-brand-mark" width="42" height="42">
             <div class="logo-text"><span class="highlight">AssentTag</span> Story Studio</div>
         </div>
         
@@ -94,6 +90,7 @@
 
     <div class="studio-container">
         <div class="glass-card">
+            {% include "includes/page-photo.html" with image="page-stories.webp" title="A little story. A lasting moment." description="Share a moment with the people you trust." alt="A woman creating a sunset photo story beside a riverside promenade" %}
             <div class="card-header">
                 <div>
                     <h2 style="font-family:'Orbitron', sans-serif; margin:0; font-size:1.5rem;">STORY GENERATOR</h2>

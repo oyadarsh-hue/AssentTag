@@ -34,7 +34,7 @@ urlpatterns = [
      path('', add_index, name='root_index'),
      path('generate/',include('generate.url')),
      path('verify/',include('varify.url')),
-     path('favicon.ico', RedirectView.as_view(url='/static/assets/logo.svg', permanent=True)),
+     path('favicon.ico', RedirectView.as_view(url='/static/assets/assenttag-logo.png', permanent=False)),
 ]
 
 if settings.DEBUG:

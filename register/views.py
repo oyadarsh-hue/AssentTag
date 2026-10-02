@@ -1,4 +1,5 @@
-from django.shortcuts import render # pyre-ignore
+from django.shortcuts import render, redirect # pyre-ignore
+from django.contrib import messages as notices
 from register.models import  Register # pyre-ignore
 from login.models import Login # pyre-ignore
 from django.core.files.storage import FileSystemStorage # pyre-ignore
@@ -135,8 +136,8 @@ def add_register1(request):
         ob.u_id = obj.register_id
         ob.save()
         
-        context = {'msg': 'Registration sucess', 'msg_type': 'success'}
-        return render(request, "register/register.html", context)
+        notices.success(request, 'Your account was created successfully. You can now log in.', extra_tags='registration')
+        return redirect('/login/login/')
 
     return render(request, "register/register.html")
 def add_register(request):

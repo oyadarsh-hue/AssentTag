@@ -1,0 +1,4 @@
+{% for notice in messages %}
+{% if notice.level == 25 %}<template class="at-success-data" data-message="{{ notice }}" data-tags="{{ notice.tags }}"></template>{% endif %}
+{% endfor %}
+{% if msg and msg_type == 'success' %}<template class="at-success-data" data-message="{{ msg }}" data-title="{{ success_title|default:'Completed successfully' }}" data-redirect="{{ redirect_url|default:'' }}"></template>{% endif %}

@@ -194,9 +194,11 @@
             font-weight: 500;
         }
     </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% include "includes/visual-head.html" %}
 </head>
 
-<body bgcolor="#f4f4f4" text="#333333">
+<body bgcolor="#f4f4f4" text="#333333" class="at-experience" data-at-scene="enrollment-review" data-at-photo="/static/assets/photo-detection.webp">
 
     <!-- Header Table -->
     <table width="100%" border="0" cellpadding="10" bgcolor="#ffffff">
@@ -204,6 +206,7 @@
             <td align="left">
                 <font size="6" face="Arial, sans-serif" color="#222222">
                     <strong>Manage Users</strong>
+                    <img src="/static/assets/assenttag-logo.png" alt="AssentTag" class="at-brand-mark" style="vertical-align:middle;margin-left:16px">
                 </font>
             </td>
             <td align="right">
@@ -218,18 +221,19 @@
 
     <!-- Main Content -->
     <center>
-        <table width="1000" border="0" cellpadding="20" bgcolor="#ffffff">
+        <table class="at-table-shell" width="1000" border="0" cellpadding="20" bgcolor="#ffffff">
             <tr>
                 <td align="center">
                     <font face="Arial, sans-serif">
 
                         <div style="text-align: left; padding: 0 1rem;">
+                            {% include "includes/page-photo.html" with image="photo-detection.webp" title="Review each identity with care." description="Verify enrollment details before changing account access." alt="Face detection and matching displayed on a real monitor" %}
                             <h2>Registered User Count</h2>
                             <p style="color: #a3a3a3; margin-top: 0;">View and manage registered users.</p>
                         </div>
 
                         <!-- Structured Table -->
-                        <div style="padding: 10px; overflow-x: auto;">
+                        <div class="at-table-scroll" style="padding: 10px; overflow-x: auto;">
                             <table border="1">
                                 <tr>
                                     <th>Date</th>

@@ -115,12 +115,14 @@
         .btn-submit:hover { filter: brightness(1.2); }
         .btn-upload:hover { box-shadow: 0 0 15px rgba(0,243,255,0.4); filter: brightness(1.2); }
     </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% include "includes/visual-head.html" %}
 </head>
-<body>
+<body class="at-experience" data-at-scene="upload" data-at-photo="/static/assets/page-upload.webp">
 
     <nav class="top-nav">
         <div class="logo-box">
-            <img src="/static/assets/logo.svg" style="width: 35px; animation: pulseGlow 3s infinite alternate; filter: drop-shadow(0 0 5px var(--neon-blue));" onerror="this.style.display='none'">
+            <img src="/static/assets/assenttag-logo.png" style="width: 35px; animation: pulseGlow 3s infinite alternate; filter: drop-shadow(0 0 5px var(--neon-blue));" onerror="this.style.display='none'">
             <div class="logo-text" style="color: #fff;">UPLOAD MEDIA</div>
         </div>
         <div class="nav-right-block">
@@ -141,6 +143,7 @@
                 {% csrf_token %}
                 
                 <div class="card-left">
+                    {% include "includes/page-photo.html" with image="page-upload.webp" title="Give your moment a place." description="Share a photo with the people who made it special." alt="A photographer composing a tagged photo upload on a tablet at a studio desk" %}
                     <div class="card-header">
                         <h2>Upload Media</h2>
                         <p>Process your media securely using facial recognition.</p>
@@ -236,7 +239,7 @@
         const msg = "{{ msg|escapejs }}";
         const msgType = "{{ msg_type|default:'error' }}";
         const redirectUrl = "{{ redirect_url|escapejs }}";
-        if (msg) {
+        if (msg && msgType !== 'success') {
             Swal.fire({
                 title: msgType === "success" ? "Success!" : "Notice",
                 text: msg,

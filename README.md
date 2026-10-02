@@ -62,7 +62,7 @@ source venv/bin/activate
 
 Install dependencies:
 ```bash
-pip install django opencv-python dlib numpy pillow
+pip install django opencv-python dlib numpy pillow cryptography
 ```
 
 ### 3. Database Migration
@@ -82,6 +82,12 @@ Navigate to `http://127.0.0.1:8000/` in your browser.
 ## 📖 System Design & Motion Specification
 
 For detailed token system, UI typography, spatial grid, and "The Veil" motion design specifications, see [DESIGN.md](DESIGN.md).
+
+The shared colorful visual layer is in `static/css/visual-experience.css` and `static/js/visual-experience.js`, included by every full-page template. Generated logo and image assets are kept in `static/assets/`. Motion respects the device's reduced-motion setting and adds no animation toggle.
+
+For real Gmail OTP delivery, follow [Gmail setup](docs/GMAIL_SETUP.md). Run `python setup_email.py` to enter a Gmail App Password privately, restart Django, then use `python manage.py check_email --send-to YOUR_ADDRESS` to test delivery. A connected Codex Gmail account does not configure the application's SMTP sender automatically.
+
+MySQL's `caching_sha2_password` authentication requires `cryptography`. This workspace has a project-local copy in the ignored `.runtime/` directory, which `manage.py` loads when present. For another environment, install the package normally.
 
 ---
 

@@ -2,6 +2,12 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+from pathlib import Path
+
+# Optional project-local dependencies installed with pip --target .runtime.
+runtime_path = Path(__file__).resolve().parent / '.runtime'
+if runtime_path.is_dir():
+    sys.path.insert(0, str(runtime_path))
 
 
 def main():

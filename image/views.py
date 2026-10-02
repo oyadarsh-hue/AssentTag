@@ -1,5 +1,7 @@
 # pyre-ignore-all-errors
 from django.shortcuts import render # pyre-ignore
+from django.contrib import messages as notices
+from image.face_privacy import blur_private_face
 from image.models import Image # pyre-ignore
 import datetime # pyre-ignore
 import dlib # pyre-ignore
@@ -66,6 +68,7 @@ def add_text_post(request):
             obj.photo = '' 
             obj.choose_file = ''
             obj.save()
+            notices.success(request, 'Your text post was published successfully.', extra_tags='post')
     return redirect('/index/index3/')
 
 def add_story(request):
@@ -279,6 +282,7 @@ def add_story(request):
                 tops.upuser_id = ss
                 tops.save()
         
+        notices.success(request, 'Your story was shared successfully.', extra_tags='upload')
         return redirect('/index/index3/')
     except Exception as e:
         return render(request, "image/user_story_upload.html", {'msg': f'Asset decryption failed: {e}', 'current_user': current_user, 'friends': mutual_friends, 'selected_friends': tagged_friends})
@@ -330,29 +334,10 @@ def view_story(request, story_id):
                     elif face.get('name') and str(face.get('name')) in authorized_ids:
                         is_authorized = True
                         
-                    if not is_authorized: # Reverted to standard Gaussian Blur per user request
-                        x, y, w, h = face['x'], face['y'], face['w'], face['h']
-                        max_dim = max(w, h)
-                        offset_x, offset_y = max_dim * 0.4, max_dim * 0.4
-                        left = int(max(0, x - offset_x))
-                        top = int(max(0, y - offset_y))
-                        right = int(min(img_w, left + max_dim + (offset_x * 2)))
-                        bottom = int(min(img_h, top + max_dim + (offset_y * 2)))
-                        roi = original_frame[top:bottom, left:right]
-                        if roi.size > 0:
-                            # Pure 100-weight Gaussian Blur for Anonymous & Pending Users (No pixelation geometry)
-                            h_roi, w_roi = roi.shape[:2]
-                            k_w = max(15, min(149, w_roi if w_roi % 2 == 1 else w_roi - 1))
-                            k_h = max(15, min(149, h_roi if h_roi % 2 == 1 else h_roi - 1))
-                            blurred_roi = cv2.GaussianBlur(roi, (k_w, k_h), 100)
-                            mask = np.zeros(roi.shape[:2], dtype=np.uint8)
-                            cx, cy = w_roi // 2, h_roi // 2
-                            cv2.ellipse(mask, (cx, cy), (cx, cy), 0, 0, 360, 255, -1)
-                            mask_bool = mask == 255
-                            roi[mask_bool] = blurred_roi[mask_bool]
-                            original_frame[top:bottom, left:right] = roi
+                    if not is_authorized:
+                        blur_private_face(original_frame, face)
     except Exception as e:
-        print(f"Story blur logic failed: {e}")
+        return redirect('/index/index3/')
 
     # Final base64 stream directly to template
     _, buffer = cv2.imencode('.jpg', original_frame)
@@ -898,6 +883,7 @@ def approve_tag(request, perm_id):
         perm.status = 'approved'
         perm.save()
         request.session.pop(f'verified_tag_{perm_id}', None)
+        notices.success(request, 'Your consent was saved. Your tagged photo is now approved.', extra_tags='verification')
         
         # --- PERMANENT EXIF OVERRIDE ---
         img_obj = Image.objects.filter(image_id=perm.image_id).first()
@@ -1021,13 +1007,14 @@ def add_comment(request, image_id):
     if not ss: return redirect('/login/login/')
     
     if request.method == 'POST':
-        content = request.POST.get('comment')
+        content = request.POST.get('comment', '').strip()[:500]
         if content:
             img = Image.objects.filter(image_id=image_id).first()
             if img:
                 CommentPost.objects.create(image=img, user_id=ss, text=content)
+                notices.success(request, 'Your comment was added successfully.', extra_tags='post')
     
-    return redirect('/index/index3/')
+    return redirect(f'/index/index3/#comments-{image_id}')
 
 def delete_comment(request, comment_id):
     ss = request.session.get('u_id')
@@ -1100,38 +1087,8 @@ def serve_dynamic_image(request, image_id):
                             is_authorized = True
                             
                         if not is_authorized:
-                            # Apply mathematical bounding box padding (perfect circle math)
-                            x, y, w, h = face['x'], face['y'], face['w'], face['h']
-                            max_dim = max(w, h)
-                            offset_x, offset_y = max_dim * 0.4, max_dim * 0.4
-                            
-                            left = int(max(0, x - offset_x))
-                            top = int(max(0, y - offset_y))
-                            right = int(min(img_w, left + max_dim + (offset_x * 2)))
-                            bottom = int(min(img_h, top + max_dim + (offset_y * 2)))
-                            
-                            roi = im[top:bottom, left:right]
-                            if roi.size > 0:
-                                h_roi, w_roi = roi.shape[:2]
-                                
-                                # Deep Pixelation (Structural Geometry Destruction)
-                                small = cv2.resize(roi, (max(1, w_roi//25), max(1, h_roi//25)), interpolation=cv2.INTER_LINEAR)
-                                pixelated = cv2.resize(small, (w_roi, h_roi), interpolation=cv2.INTER_NEAREST)
-                                
-                                # Heavy Gaussian Smoothing Kernel Strength Increase
-                                k_w = max(15, min(149, w_roi if w_roi % 2 == 1 else w_roi - 1))
-                                k_h = max(15, min(149, h_roi if h_roi % 2 == 1 else h_roi - 1))
-                                blurred_roi = cv2.GaussianBlur(pixelated, (k_w, k_h), 150)
-                                
-                                # CSS border-radius: 50% matching physical mask
-                                mask = np.zeros(roi.shape[:2], dtype=np.uint8)
-                                cx, cy = w_roi // 2, h_roi // 2
-                                cv2.ellipse(mask, (cx, cy), (cx, cy), 0, 0, 360, 255, -1)
-                                
-                                mask_bool = mask == 255
-                                roi[mask_bool] = blurred_roi[mask_bool]
-                                im[top:bottom, left:right] = roi
-                                
+                            blur_private_face(im, face)
+
             # -------- HIGH SECURITY: ANTI-SCREENSHOT STEGANOGRAPHIC TRACING --------
             # Embed the mathematical footprint of the current VIEWER into the image pixels.
             # This survives basic screenshots/cropping, enabling Traitor Tracing.
@@ -1146,7 +1103,7 @@ def serve_dynamic_image(request, image_id):
                 cv2.addWeighted(overlay, 0.03, im, 0.97, 0, im)
 
         except Exception as e:
-            print(f"Server-side EXIF physical blur failed: {e}")
+            raise Http404("Privacy processing unavailable") from e
             
         # Compress back to JPEG and construct the network payload
         ret, buffer = cv2.imencode('.jpg', im, [int(cv2.IMWRITE_JPEG_QUALITY), 85])
@@ -1223,39 +1180,10 @@ def serve_dynamic_notif(request, image_id, target_id):
                             
                         # If the face is NOT the uploader and NOT the viewer evaluating the tag, DESTROY IT geometrically
                         if not is_authorized:
-                            x, y, w, h = face['x'], face['y'], face['w'], face['h']
-                            max_dim = max(w, h)
-                            offset_x, offset_y = max_dim * 0.4, max_dim * 0.4
-                            
-                            left = int(max(0, x - offset_x))
-                            top = int(max(0, y - offset_y))
-                            right = int(min(img_w, left + max_dim + (offset_x * 2)))
-                            bottom = int(min(img_h, top + max_dim + (offset_y * 2)))
-                            
-                            roi = im[top:bottom, left:right]
-                            if roi.size > 0:
-                                h_roi, w_roi = roi.shape[:2]
-                                
-                                # Deep Pixelation (Structural Geometry Destruction)
-                                small = cv2.resize(roi, (max(1, w_roi//25), max(1, h_roi//25)), interpolation=cv2.INTER_LINEAR)
-                                pixelated = cv2.resize(small, (w_roi, h_roi), interpolation=cv2.INTER_NEAREST)
-                                
-                                # Heavy Gaussian Smoothing Kernel
-                                k_w = max(15, min(149, w_roi if w_roi % 2 == 1 else w_roi - 1))
-                                k_h = max(15, min(149, h_roi if h_roi % 2 == 1 else h_roi - 1))
-                                blurred_roi = cv2.GaussianBlur(pixelated, (k_w, k_h), 150)
-                                
-                                # CSS border-radius: 50% matching physical mask
-                                mask = np.zeros(roi.shape[:2], dtype=np.uint8)
-                                cx, cy = w_roi // 2, h_roi // 2
-                                cv2.ellipse(mask, (cx, cy), (cx, cy), 0, 0, 360, 255, -1)
-                                
-                                mask_bool = mask == 255
-                                roi[mask_bool] = blurred_roi[mask_bool]
-                                im[top:bottom, left:right] = roi
-                                
+                            blur_private_face(im, face)
+
         except Exception as e:
-            print(f"Notification server-side physical blur failed: {e}")
+            raise Http404("Privacy processing unavailable") from e
             
         ret, buffer = cv2.imencode('.jpg', im, [int(cv2.IMWRITE_JPEG_QUALITY), 85])
         if not ret:

@@ -1,0 +1,58 @@
+[
+  {
+    "key": "photo-registration",
+    "prompt": "Use case: photorealistic-natural. Generate a REALISTIC PHOTOGRAPH, landscape 3:2, for AssentTag account registration and live face enrollment workflow. A candid documentary photograph of a young adult South Indian woman at a real laptop desk in a modern home workspace, facing the laptop webcam naturally. The laptop screen visible at a three-quarter angle shows a clean dark navy account registration form with a profile photo upload thumbnail and a live webcam preview of that SAME woman with discreet cyan face framing brackets. Minimal screen text, only small readable labels if necessary, no promotional words. Photographic skin texture, real fingers, fabric and hair, genuine desk, daylight with soft warm lamp and faint violet accent light, professional warm blue and teal palette. Premium editorial technology photography. Compose the woman on right, laptop and profile enrollment clearly visible on left, visual story is creating an identity using uploaded photo and webcam. No cartoon, no illustration, no 3D render, no floating holograms, no plastic skin, no watermark, no logo.",
+    "source": "C:\\Users\\HP\\.codex\\generated_images\\01a0fd5b-b9b1-7af0-83eb-4e865a050657\\exec-dd264fba-240c-4b6b-ba61-e31df2120f93.png",
+    "png": "static/assets/photo-registration.png",
+    "webp": "static/assets/photo-registration.webp"
+  },
+  {
+    "key": "photo-login",
+    "prompt": "Use case: photorealistic-natural. A REALISTIC landscape 3:2 premium editorial photograph illustrating secure account login for AssentTag face privacy platform. Close over-the-shoulder view of a young adult South Indian man at a real laptop in a calm modern workspace. Focus on the real laptop screen showing a polished navy sign-in form, an email input as a short anonymous example, password dots, and a simple rounded blue submit button. The man's hand rests naturally on a real trackpad. A small smartphone and coffee cup sit on desk. Window light, warm practical lighting, professional cyan-blue and muted violet accents, sharp screen and tactile materials, honest real-life camera photography with shallow depth of field. Clearly different composition from registration: closer view centered on credentials and hand, person softly out of focus. No cartoon, no illustration, no CGI, no holograms, no fake floating objects, no watermark, no brand logo.",
+    "source": "C:\\Users\\HP\\.codex\\generated_images\\01a0fd5b-b9b1-7af0-83eb-4e865a050657\\exec-19a01580-fe71-42b1-84d1-620775c6688c.png",
+    "png": "static/assets/photo-login.png",
+    "webp": "static/assets/photo-login.webp"
+  },
+  {
+    "key": "photo-dashboard",
+    "prompt": "Use case: photorealistic-natural. A REALISTIC landscape 3:2 editorial technology photograph for AssentTag's social dashboard, distinctly different from login and registration. A handsome real ultrawide desktop monitor and laptop in a modern creative workspace near a window, with a young adult Indian woman browsing her social feed from the side. The main screen shows a polished navy privacy-focused social dashboard: story avatar rings at top, a central real group photograph of three friends with ONE face visibly blurred to represent pending consent, smaller feed cards and a right connections panel. Avoid dense screen text. The composition emphasizes a real social workspace and organized feed, not a login form. Daylight, warm light on wooden desk, softly coloured cyan and violet screen reflections, real camera textures, premium cinematic but natural photography. No cartoon, no illustration, no 3D render, no holograms, no watermark, no logo.",
+    "source": "C:\\Users\\HP\\.codex\\generated_images\\01a0fd5b-b9b1-7af0-83eb-4e865a050657\\exec-c6b72a67-26c1-42d1-91b7-1d65d64d42e0.png",
+    "png": "static/assets/photo-dashboard.png",
+    "webp": "static/assets/photo-dashboard.webp"
+  },
+  {
+    "key": "photo-upload",
+    "prompt": "Use case: photorealistic-natural. A REALISTIC landscape 3:2 editorial photograph illustrating uploading a group photo and tagging friends to AssentTag. A close view of real hands on a laptop at a café table, with the real laptop display visible and in focus. Display a modern dark navy upload composer containing a thumbnail photo of three smiling South Indian young adult friends at a park, simple caption lines, small tagging avatar circles, a file-selection tray and a rounded blue publish button. A camera and a phone with the matching group photo sit beside the laptop, suggesting the photo is being transferred into a post. Natural skin and fingers, authentic café light, wood and glass textures, restrained teal, indigo and warm amber colours, professional technology editorial photography, clearly not registration or login. No cartoon, no illustration, no CGI, no floating cards, no watermark, no logo.",
+    "source": "C:\\Users\\HP\\.codex\\generated_images\\01a0fd5b-b9b1-7af0-83eb-4e865a050657\\exec-8f3ec0d1-4728-4852-8444-f692e7667334.png",
+    "png": "static/assets/photo-upload.png",
+    "webp": "static/assets/photo-upload.webp"
+  },
+  {
+    "key": "photo-detection",
+    "prompt": "Use case: photorealistic-natural. A REALISTIC landscape 3:2 photographic still of face detection and identity matching for AssentTag privacy platform. A physical computer monitor photographed closely at a slight angle in a real modern studio; the screen is the main subject. On screen a realistic photograph of THREE South Indian adult friends, with tasteful thin cyan rectangular brackets around EACH face and small landmark points. A small side column contains three actual profile-photo thumbnails, linked visually to matching faces by subtle cyan lines contained within the screen. This is a real photographed screen running face analysis, NOT a floating hologram. A softly out-of-focus person's shoulder and keyboard provide realistic depth. Dark navy interface, natural monitor reflections, warm studio daylight, crisp realistic faces and hardware. Avoid dense text and numbers. No cartoon, no illustration, no CGI, no holograms, no watermark, no logo.",
+    "source": "C:\\Users\\HP\\.codex\\generated_images\\01a0fd5b-b9b1-7af0-83eb-4e865a050657\\exec-5b040ffa-1f07-4ddc-8e3e-99795ce56ed5.png",
+    "png": "static/assets/photo-detection.png",
+    "webp": "static/assets/photo-detection.webp"
+  },
+  {
+    "key": "photo-protection",
+    "prompt": "Use case: photorealistic-natural. A REALISTIC landscape 3:2 editorial photograph demonstrating privacy-by-default face blurring in AssentTag. Close view of a REAL smartphone held naturally by a South Indian adult user near a bright window. The smartphone screen shows a navy social feed and a REAL GROUP PHOTOGRAPH of three adult friends. The left person's face is clear; the center and right faces are unmistakably obscured by localized photographic Gaussian blur covering only their faces, leaving bodies and surrounding photo sharp. A small discrete lock icon appears beside the photo within the interface. Make the two consent-pending blur masks clearly visible, NOT frosted glass objects floating outside screen. Photographic skin and fingers, true reflections and phone edges, premium natural daylight, soft teal and warm accents. No cartoon, no illustration, no 3D render, no watermark, no logo.",
+    "source": "C:\\Users\\HP\\.codex\\generated_images\\01a0fd5b-b9b1-7af0-83eb-4e865a050657\\exec-76625557-079e-48a9-8a6a-1f3ac83fa720.png",
+    "png": "static/assets/photo-protection.png",
+    "webp": "static/assets/photo-protection.webp"
+  },
+  {
+    "key": "photo-notification",
+    "prompt": "Use case: photorealistic-natural. A REALISTIC landscape 3:2 editorial photograph of receiving a tag request and verifying identity in AssentTag. A South Indian young adult woman sitting by a window looks at a real smartphone held in her hand. Screen is visible at a three-quarter angle and shows a tasteful navy notification card, bell icon, a group-photo thumbnail with a privacy blur, and a small live selfie preview of the SAME woman framed by cyan camera corner brackets. The clear visual story is that the tagged person receives a photo request and checks her own identity using the phone camera before deciding. Modern quiet workspace, realistic hair, skin pores, fingers and fabric, warm natural daylight, teal and lilac accents, sharp believable smartphone, no dense screen text. Professional candid technology photograph, not a hologram or an illustrated card. No cartoon, no illustration, no CGI, no watermark, no logo.",
+    "source": "C:\\Users\\HP\\.codex\\generated_images\\01a0fd5b-b9b1-7af0-83eb-4e865a050657\\exec-2dfcd0a8-b4d3-435e-9654-9825eeeb9bfa.png",
+    "png": "static/assets/photo-notification.png",
+    "webp": "static/assets/photo-notification.webp"
+  },
+  {
+    "key": "photo-consent",
+    "prompt": "Use case: photorealistic-natural. A REALISTIC landscape 3:2 editorial photograph showing explicit consent approval and selective face reveal in AssentTag. A person's real hand taps a rounded green approval button on a REAL tablet on a wooden desk. The tablet screen dominates and shows a clean dark navy interface with TWO adjacent versions of the SAME real group photograph of three South Indian adult friends: on the left version the middle and right faces are blurred; on the right version only the middle face becomes clear after approval, while the right face stays blurred. Both photo versions must show exactly the same group arrangement and setting. A small green check icon connects the approving profile thumbnail to the revealed middle person. Very little screen text, visually clear before/after permission decision. Authentic camera photography, natural skin and fingers, real tablet reflections, warm daylight with muted blue accents. No cartoon, no illustration, no CGI, no floating cards, no watermark, no logo.",
+    "source": "C:\\Users\\HP\\.codex\\generated_images\\01a0fd5b-b9b1-7af0-83eb-4e865a050657\\exec-b95b95ed-3729-471f-8831-b59d827f1d82.png",
+    "png": "static/assets/photo-consent.png",
+    "webp": "static/assets/photo-consent.webp"
+  }
+]

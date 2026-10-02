@@ -1,0 +1,13 @@
+<section class="at-dashboard-scene at-dashboard-scene--{{ variant }}" aria-label="{{ title }}" data-workflow-image="{{ image }}">
+    <a href="{{ href }}" class="at-scene-link">
+        <figure class="at-scene-window">
+            <img class="at-scene-photo" src="{{ image }}" alt="{% if variant == 'discover' %}Friends enjoying a sunrise photo walk beside the Kochi waterfront{% elif variant == 'private' %}A traveller privately reviewing her personal photographs on a train{% else %}Two friends reviewing a group photograph together in a botanical garden{% endif %}" width="1536" height="1024" loading="lazy" decoding="async">
+            <figcaption class="at-scene-caption">
+                <span class="at-scene-kicker">Your world, thoughtfully shared <span>{{ step }}</span></span>
+                <h2>{{ title }}</h2>
+                <p>{{ description }}</p>
+                <span class="at-scene-cta">{{ label }} <span aria-hidden="true">↗</span></span>
+            </figcaption>
+        </figure>
+    </a>
+</section>

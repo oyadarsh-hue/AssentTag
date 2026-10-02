@@ -444,13 +444,14 @@
             font-family: 'Inter', sans-serif;
         }
     </style>
+{% include "includes/visual-head.html" %}
 </head>
 
-<body>
+<body class="at-experience" data-at-scene="register">
 
     <nav class="glass-nav">
         <div class="logo-box">
-            <img src="/static/assets/logo.svg" alt="Logo" class="logo-img"
+            <img src="/static/assets/assenttag-logo.png" alt="Logo" class="logo-img at-brand-mark"
                 onerror="this.src='/static/assets/default_avatar.jpg'">
             <span class="logo-text"><span class="highlight">AssentTag</span> User <span
                     class="module">Module</span></span>
@@ -463,6 +464,7 @@
 
     <div class="main-wrapper">
         <div class="admin-content-card">
+            <figure class="at-registration-photo"><img src="/static/assets/photo-registration.webp" alt="Live face enrollment and profile registration on a real laptop" width="1536" height="1024"><figcaption>Your identity begins with you.</figcaption></figure>
             <div class="header-section">
                 <h2>Initialize Profile</h2>
                 <p>Secure your identity with military-grade facial recognition topology.</p>
@@ -573,7 +575,7 @@
 
     <div class="footer-bottom">&copy; 2026 AssentTag Systems • Secure Registration</div>
 
-    {% if msg %}
+    {% if msg and msg_type != 'success' %}
     <script>
         Swal.fire({ title: 'System Notice', text: '{{ msg }}', icon: '{{ msg_type|default:"error" }}', background: '#11131a', color: '#fff', confirmButtonColor: '#00f3ff' });
     </script>
@@ -620,6 +622,7 @@
             videoStream.style.display = 'none';
             snapBtn.style.display = 'none';
             livePhotoInput.value = canvas.toDataURL('image/jpeg');
+            window.AssentTagNotice?.success('Your live photo was captured. You can now complete registration.', {title:'Photo captured'});
             const stream = videoStream.srcObject;
             if (stream) { stream.getTracks().forEach(t => t.stop()); }
         });

@@ -72,18 +72,19 @@
         .secure-badge { margin-top: 2rem; font-size: 0.7rem; color: #555; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .secure-badge i { color: var(--neon-blue); }
     </style>
+{% include "includes/visual-head.html" %}
 </head>
-<body>
+<body class="at-experience" data-at-scene="otp" data-at-photo="/static/assets/page-otp.webp">
+<a href="/index/index3/" class="at-brand-header" style="position:absolute;top:0;left:0;right:0;"><img src="/static/assets/assenttag-logo.png" alt="AssentTag" class="logo-img at-brand-mark" width="42" height="42"><span>AssentTag</span></a>
 
     <div class="bg-glow"></div>
 
-    <div class="otp-card">
-        <div class="icon-circle">
-            <i class="fas fa-shield-alt"></i>
-        </div>
+    <div class="otp-card" data-otp-remaining="{{ otp_remaining_seconds }}" data-resend-remaining="{{ resend_remaining_seconds }}">
+        <figure class="at-otp-photo"><img src="/static/assets/page-otp.webp" alt="A real phone and laptop used for one-time email verification" width="1536" height="1024"></figure>
         
         <h2>Security Check</h2>
-        <p class="subtitle">We intercepted a high-risk financial keyword in your message stream. To authorize this transfer, we've sent a Secure 2FA Token to your registered Email Address.</p>
+        <p class="subtitle">Your message includes a financial keyword. Verify your registered email to send this pending message. Each code expires in five minutes.</p>
+        {% if delivery_notice %}<p class="at-status" role="status" data-status="{{ delivery_status }}">{{ delivery_notice }}</p>{% endif %}
         
         <div class="number-box">
             <i class="fas fa-envelope" style="color:#fff; margin-right:10px;"></i>
@@ -93,19 +94,22 @@
         <form method="POST">
             {% csrf_token %}
             <div class="form-group">
-                <label>ENTER 6-DIGIT OTP</label>
-                <input type="text" name="otp" maxlength="6" pattern="\d{6}" placeholder="------" required autocomplete="off">
+                <label for="email-otp">ENTER 6-DIGIT OTP</label>
+                <input id="email-otp" type="text" name="otp" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" placeholder="------" required autocomplete="one-time-code" {% if not code_sent %}disabled{% endif %}>
             </div>
             
-            <button type="submit" class="btn-submit"><i class="fas fa-unlock-alt"></i> AUTHORIZE TRANSFER</button>
+            <p class="at-otp-countdown" id="otp-countdown" role="status" aria-live="polite">{% if code_sent %}Code is valid for five minutes.{% else %}Request a new OTP to continue.{% endif %}</p>
+            <button type="submit" id="otp-verify" class="btn-submit" {% if not code_sent %}disabled{% endif %}><i class="fas fa-unlock-alt"></i> Verify & send message</button>
         </form>
 
-        <a href="/index/index3/" class="btn-cancel">Cancel & Return to Dashboard</a>
+        <form method="POST" style="margin-top:16px">{% csrf_token %}<button type="submit" name="action" value="resend" id="otp-resend" class="btn-create" {% if resend_remaining_seconds %}disabled{% endif %}>Resend OTP{% if resend_remaining_seconds %} in {{ resend_remaining_seconds }}s{% endif %}</button></form>
+        <form method="POST">{% csrf_token %}<button type="submit" name="action" value="cancel" class="btn-cancel">Cancel & Return to Dashboard</button></form>
         
         <div class="secure-badge">
-            <i class="fas fa-lock"></i> AES-256 Authentic Interceptor
+            <i class="fas fa-lock"></i> One-time email verification
         </div>
     </div>
+    <script src="/static/js/email-otp.js?v=1" defer></script>
 
     {% if msg %}
     <script>

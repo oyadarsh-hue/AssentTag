@@ -490,9 +490,10 @@
             }
         }
     </style>
+{% include "includes/visual-head.html" %}
 </head>
 
-<body>
+<body class="at-experience" data-at-scene="index">
 
     <div class="user-bg-container">
         <img src="/static/assets/user_bg.jpg" class="user-bg-image" onerror="this.src='/static/assets/back.jpg'">
@@ -500,21 +501,12 @@
 
     <nav class="glass-nav">
         <div class="logo-box">
-            <svg width="40" height="40" viewBox="0 0 100 100" fill="none" class="logo-img">
-                <rect x="10" y="10" width="25" height="25" stroke="#00f3ff" stroke-width="6" stroke-linecap="round"
-                    stroke-linejoin="round" fill="none" opacity="0.9" />
-                <rect x="65" y="10" width="25" height="25" stroke="#00f3ff" stroke-width="6" stroke-linecap="round"
-                    stroke-linejoin="round" fill="none" opacity="0.9" />
-                <rect x="10" y="65" width="25" height="25" stroke="#00f3ff" stroke-width="6" stroke-linecap="round"
-                    stroke-linejoin="round" fill="none" opacity="0.9" />
-                <circle cx="50" cy="50" r="10" fill="#00f3ff" />
-                <circle cx="77.5" cy="77.5" r="5" fill="#00f3ff" />
-            </svg>
+            <img src="/static/assets/assenttag-logo.png" alt="AssentTag" class="logo-img at-brand-mark" width="42" height="42">
             <span class="logo-text">AssentTag</span>
         </div>
         <div class="nav-controls">
             <!-- ROBUST TOGGLE -->
-            <button class="toggle-btn" title="Toggle Dark Mode"
+            <button type="button" class="toggle-btn" title="Switch to light theme" aria-label="Switch to light theme" aria-pressed="false"
                 onclick="document.body.classList.toggle('light-mode'); try { localStorage.setItem('assentTheme', document.body.classList.contains('light-mode') ? 'light' : 'dark'); } catch(e){}">
                 <i class="far fa-sun"></i>
             </button>
@@ -523,12 +515,12 @@
         </div>
     </nav>
 
-    <section class="hero-section">
+    <section class="hero-section" data-workflow-image="/static/assets/photo-index-hero-v2.webp">
         <div class="hero-content">
             <div class="badge">MILITARY-GRADE SECURITY</div>
             <h1 class="hero-title">
-                Secure Your<br>Digital<br>
-                <span class="highlight">Identity</span>
+                Secure your digital<br>
+                <span class="highlight">identity.</span>
             </h1>
             <p class="hero-desc">
                 Advanced facial recognition with granular privacy controls. The only platform that puts you in charge of
@@ -536,10 +528,12 @@
             </p>
         </div>
         <div class="hero-graphic">
+            <span class="at-hero-backplate at-hero-backplate-one" aria-hidden="true"></span>
+            <span class="at-hero-backplate at-hero-backplate-two" aria-hidden="true"></span>
             <div class="glass-phone">
-                <img src="/static/assets/hero-face.jpg" class="phone-inner-img"
-                    onerror="this.src='/static/assets/default.jpg'" alt="Facial Recognition Demo">
+                <img src="/static/assets/photo-index-hero-v2.webp" class="phone-inner-img" alt="Friends choosing how to share their group photograph together in a rooftop garden" width="1536" height="1024">
             </div>
+            <div class="at-hero-caption"><i class="fas fa-shield-alt" aria-hidden="true"></i><span>Every face has a say.</span></div>
         </div>
     </section>
 
@@ -583,11 +577,33 @@
         </div>
     </section>
 
-    <!-- Restored Legacy Dummy Footer -->
+    <section class="at-procedure at-workflow" id="about" aria-labelledby="workflow-title">
+        <div class="at-workflow-heading">
+            <p class="at-eyebrow">The complete AssentTag journey</p>
+            <h2 id="workflow-title">From your first hello<br>to your final say.</h2>
+            <p class="at-procedure-intro">Create your identity, share a moment, and choose how you appear. Follow every step from registration to consent approval.</p>
+        </div>
+        <div class="at-workflow-chapters">
+            {% include "includes/workflow-chapter.html" with number="01" stage="registration" category="Create your identity" heading="A profile that starts with you." description="Enter your details, upload your photo, and capture a live webcam image. AssentTag compares the two faces and checks for duplicate identities before enrolling your profile." detail="Profile details · Photo upload · Live face capture" image="photo-registration.webp" alt="A woman registering her profile and matching a live webcam image on a real laptop" %}
+            {% include "includes/workflow-chapter.html" with number="02" stage="login" category="Sign in" heading="Your gateway to a private world." description="Sign in with your registered email and password. Your selected access role takes you to the appropriate user or administrator dashboard." detail="Email & password · Role selection · Secure session" image="photo-login.webp" alt="A person entering account credentials on a real laptop" %}
+            {% include "includes/workflow-chapter.html" with number="03" stage="dashboard" category="Find your community" heading="Your people. Your shared moments." description="Browse the feed and stories, connect with other people, and reach your profile, messages, uploads, and consent notifications from one dashboard." detail="Social feed · Stories · Connections" image="photo-dashboard.webp" alt="A real social dashboard showing stories, connections, and a privacy-protected group photo" %}
+            {% include "includes/workflow-chapter.html" with number="04" stage="upload" category="Share a photo" heading="Post a moment with care." description="Choose your photo, add a caption, and select the people you want to tag. Complete the required live identity check before the photo enters the sharing workflow." detail="Photo & caption · Friend tags · Identity check" image="photo-upload.webp" alt="A person uploading a group photo and tagging friends from a laptop" %}
+            {% include "includes/workflow-chapter.html" with number="05" stage="detection" category="Detect & match" heading="Recognize the people in the picture." description="The face engine locates faces and compares their descriptors with enrolled identities. Registered people can then be linked to consent requests for that photo." detail="Face detection · Landmarks · Identity matching" image="photo-detection.webp" alt="A photographed monitor analyzing a group photo with face detection brackets and profile matches" %}
+            {% include "includes/workflow-chapter.html" with number="06" stage="protection" category="Protect first" heading="Privacy before permission." description="Faces awaiting consent are obscured in the shared image. The moment stays visible while the person's facial identity stays protected until a decision is made." detail="Face blurring · Pending consent · Protected sharing" image="photo-protection.webp" alt="A real phone displaying a group photo with two faces blurred while consent is pending" %}
+            {% include "includes/workflow-chapter.html" with number="07" stage="notification" category="Notify & verify" heading="Let the person make the decision." description="Tagged people receive a request in their notification center. A live face check verifies their identity before they review and respond to the consent request." detail="Tag notification · Live verification · Review request" image="photo-notification.webp" alt="A woman reviewing a photo tag notification and verifying her face using a phone camera" %}
+            {% include "includes/workflow-chapter.html" with number="08" stage="consent" category="Consent approval" heading="One choice. Only your face revealed." description="Approval reveals the consenting person's face. Other pending faces stay protected, and declining a request keeps the privacy blur in place." detail="Explicit approval · Selective reveal · Privacy retained" image="photo-consent.webp" alt="A real tablet showing selective face reveal after explicit consent approval" %}
+        </div>
+        <div class="at-workflow-finale">
+            <p class="at-eyebrow">Your face. Your choice.</p>
+            <h2>Share freely. Stay in control.</h2>
+            <a href="/register/register/" class="btn-solid">Create your identity <span aria-hidden="true">↗</span></a>
+        </div>
+    </section>
+    <!-- Site footer -->
     <footer class="dummy-footer">
         <a href="#about">About Core</a>
-        <a href="#dummy-404">404 Error</a>
-        <a href="#contact">Contact Support</a>
+        <a href="/register/register/">Create Your Identity</a>
+        <a href="/login/login/">Sign In</a>
     </footer>
 
     <!-- Ensuring Theme State Initialization doesn't block DOM parsing -->

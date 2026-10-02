@@ -45,17 +45,21 @@
         
         .rating-star { color: #FFD700; font-size: 1.2rem; }
     </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% include "includes/visual-head.html" %}
 </head>
-<body>
+<body class="at-experience" data-at-scene="admin-feedback" data-at-photo="/static/assets/page-admin-feedback.webp">
 
     <nav class="top-nav">
         <div class="logo-box">
+<img src="/static/assets/assenttag-logo.png" alt="AssentTag" class="logo-img at-brand-mark" width="42" height="42">
             <span class="logo-text">USER FEEDBACK</span>
         </div>
         <a href="/index/index2/" class="btn-orange">BACK TO ADMIN HOME</a>
     </nav>
 
     <div class="details-card" style="max-width: 1400px; width: 95%;">
+        {% include "includes/page-photo.html" with image="page-admin-feedback.webp" title="Build a better shared space." description="Learn from community feedback and ratings." alt="Two administrators reviewing community feedback in a real meeting room" %}
         <div class="card-header">
             <h2>User Feedback & Reviews</h2>
             <p>See what users are saying about the platform.</p>

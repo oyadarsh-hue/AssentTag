@@ -159,8 +159,10 @@
             opacity: 0; transition: 0.3s; letter-spacing: 2px;
         }
     </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% include "includes/visual-head.html" %}
 </head>
-<body>
+<body class="at-experience" data-at-scene="public-profile" data-at-photo="/static/assets/photo-consent.webp">
 
     <div id="timestream-overlay">
         <div class="hud-telemetry tele-left" id="tele-left"></div>
@@ -182,7 +184,7 @@
 
     <nav class="glass-nav">
         <div class="logo">
-            <img src="/static/assets/logo.svg" class="logo-img" onerror="this.style.display='none'">
+            <img src="/static/assets/assenttag-logo.png" class="logo-img at-brand-mark" onerror="this.style.display='none'">
             <h2 class="logo-text">ASSENT<span>TAG</span></h2>
         </div>
         <div style="display:flex; align-items:center; gap:20px;">

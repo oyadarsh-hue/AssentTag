@@ -1,0 +1,23 @@
+[
+  {
+    "key": "dashboard-scroll-discover",
+    "prompt": "Use case: photorealistic-natural. Asset type: landscape 3:2 cinematic editorial photograph for a social dashboard about sharing photos with each person's consent. Generate one fresh realistic camera photograph. Authentic South Indian adults, believable faces and hands, natural skin and fabric texture, physical smartphones or cameras only, crisp subject with softly detailed environment. Premium photography, no cartoons, no illustration, no CGI, no holograms, no floating UI, no watermark, no text or logos, no readable personal information. Wide composition designed for a website panel, people centered in the upper two thirds with gentle negative space near bottom for HTML captions. A candid group of three adult friends on a Kochi coastal promenade at sunrise, one friend capturing a photo with a small real mirrorless camera while the others laugh naturally by the sea. Stone waterfront, distant fishing nets and softly glowing water, warm apricot sun, teal blue sky, cool indigo clothing. A joyful discovery moment, cinematic wide view, completely different from a desk, rooftop, studio, or mountain hike.",
+    "source": "C:\\Users\\HP\\.codex\\generated_images\\01a0fd5b-b9b1-7af0-83eb-4e865a050657\\exec-4d2a7dfd-9095-4373-a748-2eb178338fc6.png",
+    "png": "static/assets/dashboard-scroll-discover.png",
+    "webp": "static/assets/dashboard-scroll-discover.webp"
+  },
+  {
+    "key": "dashboard-scroll-private",
+    "prompt": "Use case: photorealistic-natural. Asset type: landscape 3:2 cinematic editorial photograph for a social dashboard about sharing photos with each person's consent. Generate one fresh realistic camera photograph. Authentic South Indian adults, believable faces and hands, natural skin and fabric texture, physical smartphones or cameras only, crisp subject with softly detailed environment. Premium photography, no cartoons, no illustration, no CGI, no holograms, no floating UI, no watermark, no text or logos, no readable personal information. Wide composition designed for a website panel, people centered in the upper two thirds with gentle negative space near bottom for HTML captions. A relaxed adult woman travelling beside the large window of a contemporary Indian train, privately reviewing her own travel photographs on a physical smartphone. Sunlit green palms and countryside softly blurred outside, navy upholstered seat, camera bag at her side, rich tactile cotton clothing, soft blue and warm amber light. A thoughtful personal photo collection, intimate candid diagonal composition. No desktop, no office, no cafe, no rooftop.",
+    "source": "C:\\Users\\HP\\.codex\\generated_images\\01a0fd5b-b9b1-7af0-83eb-4e865a050657\\exec-05583115-7a37-4b8f-8b31-1ffc6dd9c56a.png",
+    "png": "static/assets/dashboard-scroll-private.png",
+    "webp": "static/assets/dashboard-scroll-private.webp"
+  },
+  {
+    "key": "dashboard-scroll-consent",
+    "prompt": "Use case: photorealistic-natural. Asset type: landscape 3:2 cinematic editorial photograph for a social dashboard about sharing photos with each person's consent. Generate one fresh realistic camera photograph. Authentic South Indian adults, believable faces and hands, natural skin and fabric texture, physical smartphones or cameras only, crisp subject with softly detailed environment. Premium photography, no cartoons, no illustration, no CGI, no holograms, no floating UI, no watermark, no text or logos, no readable personal information. Wide composition designed for a website panel, people centered in the upper two thirds with gentle negative space near bottom for HTML captions. Two adult friends seated on a curved stone bench in a lush South Indian botanical garden, thoughtfully reviewing a group photograph together on a physical smartphone before sharing it. Both are attentive and comfortably smiling, the person holding the phone shows it respectfully to the other. Sunlight through dense foliage, terracotta path, understated violet linen shirt and teal green dress, small realistic phone photo thumbnails with no text. Warm feeling of trust and personal choice. No studio, no desk, no rooftop, no cafe.",
+    "source": "C:\\Users\\HP\\.codex\\generated_images\\01a0fd5b-b9b1-7af0-83eb-4e865a050657\\exec-dd1a48c8-dc21-420b-a0b2-387c2b7ed3ed.png",
+    "png": "static/assets/dashboard-scroll-consent.png",
+    "webp": "static/assets/dashboard-scroll-consent.webp"
+  }
+]

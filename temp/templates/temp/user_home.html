@@ -7,9 +7,10 @@
     <title>AssentTag - User Home</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/assets/style.css">
+{% include "includes/visual-head.html" %}
 </head>
 
-<body>
+<body class="at-experience" data-at-scene="module" data-at-photo="/static/assets/page-module.webp">
 
     <!-- User Background Animation -->
     <div class="user-bg-container">
@@ -17,7 +18,7 @@
     </div>
     <nav class="glass-nav" style="display: flex; justify-content: space-between; align-items: center; padding: 0 5%; height: 80px;">
         <div class="logo" style="display: flex; align-items: center; gap: 10px;">
-            <img src="/static/assets/logo.svg" alt="AssentTag Logo" style="width: 35px; filter: drop-shadow(0 0 5px var(--neon-blue));" onerror="this.style.display='none'">
+            <img src="/static/assets/assenttag-logo.png" alt="AssentTag Logo" style="width: 35px; filter: drop-shadow(0 0 5px var(--neon-blue));" onerror="this.style.display='none'">
             <span class="logo-text" style="font-weight: 800; font-size: 1.2rem; color: #fff;">AssentTag User Module</span>
         </div>
         <div style="display: flex; align-items: center; gap: 20px;">
@@ -34,6 +35,7 @@
     <!-- Main Content Container -->
     <main>
         <div class="admin-content-card"> <!-- Reusing card styles for consistency -->
+            {% include "includes/page-photo.html" with image="page-module.webp" title="Everything you need. One place." description="Reach your profile, sharing tools, notifications, and privacy controls." alt="A person browsing six organized app shortcuts on a real tablet" %}
 
             <h1 class="admin-title-border">Welcome User</h1>
             <p>Access your personal security dashboard and manage your profile settings.</p>

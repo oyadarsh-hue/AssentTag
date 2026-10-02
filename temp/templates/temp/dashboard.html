@@ -231,23 +231,19 @@
         @media (max-width: 1200px) { .dashboard-container { grid-template-columns: 280px 1fr; } .right-column { display: none; } }
         @media (max-width: 900px) { .dashboard-container { grid-template-columns: 1fr; } .left-column { display: none; } }
     </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% include "includes/visual-head.html" %}
 </head>
-<body>
+<body class="at-experience" data-at-scene="dashboard" data-at-photo="/static/assets/page-dashboard.webp">
 
     <nav class="glass-nav">
         <div class="logo-box">
-            <svg width="35" height="35" viewBox="0 0 100 100" fill="none" class="logo-img">
-                <rect x="10" y="10" width="25" height="25" stroke="#00f3ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.9"/>
-                <rect x="65" y="10" width="25" height="25" stroke="#00f3ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.9"/>
-                <rect x="10" y="65" width="25" height="25" stroke="#00f3ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.9"/>
-                <circle cx="50" cy="50" r="10" fill="#00f3ff"/>
-                <circle cx="77.5" cy="77.5" r="5" fill="#00f3ff"/>
-            </svg>
+            <img src="/static/assets/assenttag-logo.png" alt="AssentTag" class="logo-img at-brand-mark" width="42" height="42">
             <span class="logo-text"><span class="highlight">AssentTag</span> Dashboard</span>
         </div>
         <div class="nav-controls">
             <a href="/index/index4/" class="pill-btn"><i class="fas fa-bell"></i> Notify {% if notif_count %}<span style="background:var(--magenta);color:#fff;border-radius:50%;padding:2px 6px;margin-left:5px;">{{notif_count}}</span>{% endif %}</a>
-            <a href="/image/image/" class="pill-btn"><i class="fas fa-upload"></i> Upload</a>
+            <a href="/image/image/" class="pill-btn at-post-action"><i class="fas fa-upload"></i> Upload</a>
             <a href="/register/profile/" class="pill-btn"><i class="fas fa-user-astronaut"></i> Profile</a>
             <a href="/index/index1/" class="pill-btn" style="border-color:var(--neon-blue);"><i class="fas fa-tools"></i> MODULE</a>
             <a href="/login/login/" class="pill-btn danger"><i class="fas fa-power-off"></i> Logout</a>
@@ -309,19 +305,23 @@
 
         <!-- Middle Column -->
         <div class="middle-column">
+            <section class="at-dashboard-welcome" aria-label="Dashboard welcome" data-workflow-image="/static/assets/page-dashboard.webp">
+                <div><p class="at-eyebrow">Your AssentTag space</p><h1>Welcome back, {{ current_user.first_name|default:"friend" }}.</h1><p>Your moments, shared on your terms.</p></div>
+                <img src="/static/assets/page-dashboard.webp" alt="Friends sharing photographic memories together in a creative studio" width="1536" height="1024">
+            </section>
             <div class="glass-panel make-post">
                 <img src="{% if current_user.photo %}/media/{{ current_user.photo }}{% else %}/static/assets/user_icon.svg{% endif %}" style="width:50px; height:50px; border-radius:50%; border:2px solid var(--neon-blue); object-fit:cover;">
                 <form action="/image/add_text_post/" method="POST" style="flex:1; display:flex; margin:0 10px;">
                     {% csrf_token %}
                     <input type="text" name="text_content" class="make-post-input" placeholder="Drop a Ghost Text... (Encrypted from Shoulder Surfers)" required>
-                    <button type="submit" style="display:none;"></button>
+                    <button type="submit" class="at-compose-submit"><i class="fas fa-paper-plane" aria-hidden="true"></i><span>Post</span></button>
                 </form>
-                <a href="/image/image/" style="text-decoration:none;"><button class="pill-btn"><i class="fas fa-camera" style="color:#fff;"></i> Photo</button></a>
+                <a href="/image/image/" class="pill-btn at-post-action"><i class="fas fa-camera" style="color:#fff;"></i> Photo</a>
             </div>
 
             <!-- Feed Rendering -->
             {% for post in a %}
-            <div class="post-card">
+            <div class="post-card" id="post-{{ post.image_id }}">
                 <div class="post-header">
                     <div class="post-user-info">
                         <a href="/register/u_view_profile/{{ post.register_id }}/"><img src="/static/{{ post.register.photo }}" class="post-avatar" onerror="this.onerror=null; this.src='/static/assets/user_icon.svg';"></a>
@@ -353,15 +353,15 @@
                 </div>
                 {% else %}
                 <div class="post-image-container">
-                    <img src="/image/content/media/{{ post.image_id }}/" class="post-image clickable-photo" onclick="openGallery(this.src);" style="cursor: zoom-in;" onerror="this.onerror=null; this.src='/static/{{ post.photo }}'">
+                    <img src="/image/content/media/{{ post.image_id }}/" class="post-image clickable-photo" onclick="openGallery(this.src);" style="cursor: zoom-in;" onerror="this.onerror=null; this.alt='Protected photo is temporarily unavailable'; this.removeAttribute('src');">
                 </div>
                 {% endif %}
 
                 <!-- Instagram Parity Interactive Bar -->
                 <div class="post-interaction-bar">
-                    <button class="interaction-btn like" onclick="window.location.href='/image/like-post/{{ post.image_id }}/'"><i class="far fa-heart"></i></button>
-                    <button class="interaction-btn comment" onclick="window.location.href='/image/add_comment/{{ post.image_id }}/';"><i class="far fa-comment"></i></button>
-                    <button class="interaction-btn share" onclick="copyShare(window.location.origin + '/image/add_comment/{{ post.image_id }}/');"><i class="far fa-paper-plane"></i></button>
+                    <a class="interaction-btn like{% if post.has_liked %} is-liked{% endif %}" href="/image/like-post/{{ post.image_id }}/" aria-label="{% if post.has_liked %}Unlike{% else %}Like{% endif %} post"><i class="{% if post.has_liked %}fas{% else %}far{% endif %} fa-heart" aria-hidden="true"></i><span>Like</span></a>
+                    <button type="button" class="interaction-btn comment" data-comments="comments-{{ post.image_id }}" aria-expanded="false" aria-controls="comments-{{ post.image_id }}"><i class="far fa-comment" aria-hidden="true"></i><span>Comment</span></button>
+                    <button type="button" class="interaction-btn share" onclick="copyShare(window.location.origin + '/index/index3/#post-{{ post.image_id }}');" aria-label="Copy post link"><i class="far fa-paper-plane" aria-hidden="true"></i><span>Share</span></button>
                 </div>
                 <div class="likes-count" style="cursor: pointer; transition: 0.3s;" onmouseover="this.style.color='#ff00ff'" onmouseout="this.style.color='#fff'" onclick="viewLikers({{ post.image_id|default:0 }})">{{ post.like_count|default:"0" }} likes</div>
 
@@ -375,6 +375,8 @@
                     {% endfor %}
                 </div>
 
+                <section class="at-comments" id="comments-{{ post.image_id }}" aria-label="Post comments" hidden>
+                <h3 class="at-comments-heading">Conversation</h3>
                 {% if post.recent_comments %}
                 <div class="recent-comments" style="padding: 0 25px 15px; display: flex; flex-direction: column; gap: 8px;">
                     {% for comment in post.recent_comments %}
@@ -392,21 +394,45 @@
                     </div>
                     {% endfor %}
                 </div>
+                {% else %}
+                <p class="at-comments-empty">Start the conversation. Share a thoughtful comment.</p>
                 {% endif %}
 
                 <form action="/image/add_comment/{{ post.image_id }}/" method="POST" style="display: flex; border-top: 1px solid rgba(255,255,255,0.1); padding: 15px 20px; background: rgba(0,0,0,0.2);">
                     {% csrf_token %}
-                    <input type="text" name="comment" id="comment-input-{{ post.image_id }}" placeholder="Add a comment..." style="flex: 1; background: transparent; border: none; color: #fff; font-size: 0.95rem; outline: none; padding-right: 10px;" required>
+                    <input type="text" name="comment" maxlength="500" aria-label="Write a comment" id="comment-input-{{ post.image_id }}" placeholder="Add a comment..." style="flex: 1; background: transparent; border: none; color: #fff; font-size: 0.95rem; outline: none; padding-right: 10px;" required>
                     <button type="submit" style="background: transparent; border: none; color: var(--neon-blue); font-weight: 700; cursor: pointer; text-transform:uppercase; letter-spacing:1px; transition:0.3s; padding:5px 10px; border-radius:4px;">Post</button>
                 </form>
+                </section>
             </div>
+            {% if forloop.counter == 1 %}
+            {% include "includes/dashboard-scroll-card.html" with image="/static/assets/dashboard-scroll-discover.webp" title="A new story around every corner." description="Discover moments shared by your community." href="/index/explore/" label="Explore the feed" variant="discover" step="01" %}
+            {% endif %}
+            {% if forloop.counter == 2 or forloop.last and forloop.counter == 1 %}
+            {% include "includes/dashboard-scroll-card.html" with image="/static/assets/dashboard-scroll-private.webp" title="Your memories. Your space." description="Bring your next photo into your personal collection." href="/image/image/" label="Share a moment" variant="private" step="02" %}
+            {% endif %}
             {% empty %}
             <div class="glass-panel" style="text-align: center; color: #999; padding: 4rem 2rem;">
                 <i class="fas fa-fingerprint" style="font-size: 4rem; color: var(--neon-blue); opacity: 0.5; margin-bottom: 2rem; display:block;"></i>
                 <h3 style="color:#fff; font-family:'Orbitron', sans-serif; font-size:1.5rem; margin-bottom:1rem;">Feed Secured & Empty</h3>
                 <p style="font-size:1rem; line-height:1.6;">Follow users or wait for new secured biometric uploads.</p>
             </div>
+            {% include "includes/dashboard-scroll-card.html" with image="/static/assets/dashboard-scroll-discover.webp" title="A new story around every corner." description="Discover moments shared by your community." href="/index/explore/" label="Explore the feed" variant="discover" step="01" %}
+            {% include "includes/dashboard-scroll-card.html" with image="/static/assets/dashboard-scroll-private.webp" title="Your memories. Your space." description="Bring your next photo into your personal collection." href="/image/image/" label="Share a moment" variant="private" step="02" %}
             {% endfor %}
+            {% include "includes/dashboard-scroll-card.html" with image="/static/assets/dashboard-scroll-consent.webp" title="A good photo starts with everyone's yes." description="Review where you are tagged and choose what you share." href="/index/index4/" label="Review your tags" variant="consent" step="03" %}
+            <section class="at-dashboard-pathways" aria-label="More ways to share">
+                <p class="at-eyebrow">Beyond the feed</p>
+                <h2>Good moments. Thoughtful sharing.</h2>
+                <a class="at-pathway" href="/image/image/" data-workflow-image="/static/assets/page-dashboard-moments.webp">
+                    <img src="/static/assets/page-dashboard-moments.webp" alt="Friends sharing a photographic memory while hiking in the Kerala hills" width="1536" height="1024" loading="lazy">
+                    <div><h3>Make room for your next moment.</h3><p>Share a photo with your community. <span aria-hidden="true">↗</span></p></div>
+                </a>
+                <a class="at-pathway" href="/index/index4/" data-workflow-image="/static/assets/page-dashboard-connections.webp">
+                    <img src="/static/assets/page-dashboard-connections.webp" alt="Friends choosing which personal photographs to share together on a rooftop terrace" width="1536" height="1024" loading="lazy">
+                    <div><h3>Sharing starts with a choice.</h3><p>Review the moments where you are tagged. <span aria-hidden="true">↗</span></p></div>
+                </a>
+            </section>
         </div>
 
         <!-- Right Column -->
@@ -438,7 +464,7 @@
                 <div class="pill-btn danger" style="width:100%; justify-content:center; padding:12px; background:linear-gradient(135deg, rgba(255,51,51,0.2), rgba(255,0,0,0.1)); border-color:#ff3333; cursor:pointer;" onclick="initiateScorchedEarth()"><i class="fas fa-fire" style="color:#ff3333;"></i> INITIATE SCORCHED EARTH</div>
             </div>
 
-            <div class="glass-panel">
+            <div class="glass-panel at-suggestions-panel">
                 <div class="panel-heading"><i class="fas fa-user-plus" style="color:var(--magenta);"></i> Suggestions</div>
                 {% for sugg in suggestions %}
                 <div class="suggestion-item">
@@ -454,7 +480,7 @@
                 {% endfor %}
             </div>
 
-            <div class="glass-panel">
+            <div class="glass-panel at-trending-panel">
                 <div class="panel-heading"><i class="fas fa-fire" style="color:#ff4500;"></i> Trending Tags</div>
                 <div style="display:flex; flex-wrap:wrap; gap:8px;">
                     <span class="hash-tag">#Cyberpunk</span>

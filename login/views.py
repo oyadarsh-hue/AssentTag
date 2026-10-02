@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages as notices
 from login.models import Login
 from register.models import Register, Follower, Message
 from django.http import HttpResponseRedirect
@@ -39,20 +40,22 @@ def add_login(request):
                 return render(request, 'login/login.html', context)
             
             if tp == "admin":
+                request.session.cycle_key()
                 request.session["u_id"]=uid
                 request.session["type"]="admin"
-                context = {'msg': 'Login Successful!', 'msg_type': 'success', 'redirect_url': '/index/index2'}
-                return render(request, 'login/login.html', context)
+                notices.success(request, 'You are signed in. Your admin dashboard is ready.', extra_tags='admin-login')
+                return redirect('/index/index2/')
             elif tp == "user":
                 user = Register.objects.filter(register_id=uid).first()
                 if user and user.status == 'hibernated':
                     user.status = 'approved'
                     user.save()
                     
+                request.session.cycle_key()
                 request.session["u_id"]=uid
                 request.session["type"]="user"
-                context = {'msg': 'Login Successful!', 'msg_type': 'success', 'redirect_url': '/index/index3'}
-                return render(request, 'login/login.html', context)
+                notices.success(request, f'Welcome back, {user.first_name if user else "friend"}. Your dashboard is ready.', extra_tags='login')
+                return redirect('/index/index3/')
             else:
                 context = {
                     'msg': "Invalid user role."
@@ -176,79 +179,14 @@ def chat_user(request, user_id):
             lower_content = msg_content.lower()
             is_financial = any(kw in lower_content for kw in financial_kws)
             if is_financial:
-                import random
-                otp = "123456" # Hardcoded for Demo Success!
-                request.session['financial_otp'] = otp
+                from login.otp import clear_pending, issue_challenge
+                clear_pending(request.session)
                 request.session['pending_financial_msg'] = msg_content
                 request.session['pending_financial_receiver'] = user_id
                 request.session['pending_is_disappearing'] = is_disappearing
-                
-                # --- 1. LOCAL HTML EMAIL GATEWAY ---
-                # Completely bypasses SMTP/Google restrictions by writing the email physically to disk.
-                import os # pyre-ignore
-                from django.utils import timezone # pyre-ignore
-                from django.conf import settings # pyre-ignore
-                try:
-                    email_dir = os.path.join(settings.BASE_DIR.parent, 'emails')
-                    if not os.path.exists(email_dir):
-                        os.makedirs(email_dir)
-                        
-                    html_content = f"""
-                    <!DOCTYPE html>
-                    <html>
-                    <body style="background-color: #0d0f1a; color: white; font-family: 'Segoe UI', Arial, sans-serif; padding: 40px;">
-                        <div style="max-width: 600px; margin: 0 auto; background: #1a1c29; border-radius: 20px; border: 1px solid #ff0055; padding: 40px; text-align: center;">
-                            <h2 style="color: #ff0055; margin-bottom: 5px;">ASSENTTAG SECURITY ALERT</h2>
-                            <p style="color: #a0a5cc; font-size: 16px;">HIGH-RISK FINANCIAL TRANSFER INTERCEPTED</p>
-                            
-                            <hr style="border-color: #2a2d3e; margin: 30px 0;">
-                            
-                            <p style="font-size: 16px; line-height: 1.6; color: #e1e3f0; text-align: left;">
-                                Hello {current_user_obj.first_name},
-                                <br><br>
-                                Our Cognitive Interceptor has halted an aggressive financial transfer request originating from your account. 
-                                To authorize this transaction, please enter the exclusive One-Time Password below into your terminal:
-                            </p>
-                            
-                            <div style="background: rgba(255, 0, 85, 0.1); border-radius: 12px; padding: 25px; margin: 30px 0; border: 1px dashed #ff0055;">
-                                <h1 style="color: #fff; font-size: 48px; letter-spacing: 12px; margin: 0; text-shadow: 0 0 20px rgba(255,0,85,0.8);">{otp}</h1>
-                            </div>
-                            
-                            <p style="color: #ff0055; font-size: 14px; font-weight: bold;">DO NOT SHARE THIS CODE WITH ANYONE.</p>
-                            <p style="color: #6a6f8c; font-size: 12px; margin-top: 40px;">
-                                Timestamp: {timezone.now().strftime('%Y-%m-%d %H:%M:%S')}<br>
-                                If you did not initiate this, your account is currently under attack.
-                            </p>
-                        </div>
-                    </body>
-                    </html>
-                    """
-                    
-                    if getattr(settings, 'EMAIL_HOST_USER', 'YOUR_EMAIL@gmail.com') == 'YOUR_EMAIL@gmail.com':
-                        # The user has NOT yet injected their unique Google App Password -> Fallback to Safe Local File Storage
-                        filename = f"OTP_Confirmation_{current_user_obj.first_name}_{timezone.now().strftime('%H%M%S')}.html"
-                        filepath = os.path.join(email_dir, filename)
-                        
-                        with open(filepath, 'w', encoding='utf-8') as f:
-                            f.write(html_content)
-                            
-                        print(f"[+] Security Failsafe: SMTP Offline. HTML Email generated safely at {filepath}!")
-                    else:
-                        # ACTIVE GMAIL SMTP ROUTING ENABLED! -> Transmit onto the Real Internet 
-                        from django.core.mail import send_mail # pyre-ignore
-                        send_mail(
-                            subject="AssentTag High-Risk Security Override: Financial Transfer",
-                            message=f"Your Financial 2FA Authorization Code is:\n{otp}", # Plain text fallback for old clients
-                            from_email=settings.EMAIL_HOST_USER,
-                            recipient_list=[current_user_obj.email],
-                            fail_silently=False,
-                            html_message=html_content
-                        )
-                        print(f"[+] High Security: LIVE OTP Confirmation Page Sent to {current_user_obj.email} via Google SMTP!")
-                except Exception as e:
-                    print(f"[-] HTML Email Generation Failed! Error: {e}")
-                    print(f"[!] FAILSAFE OTP: {otp}")
-                
+                sent, notice = issue_challenge(request.session, current_user_obj)
+                request.session['financial_email_notice'] = notice
+                request.session['financial_email_sent'] = sent
                 return redirect('/login/financial_otp_verify/')
                 
             Message.objects.create(
@@ -276,7 +214,7 @@ def chat_user(request, user_id):
     
     context = {
         'target_user': target_user,
-        'messages': messages,
+        'chat_messages': messages,
         'current_user_id': int(ss),
         'current_user': current_user_obj
     }
@@ -315,47 +253,52 @@ def read_disappearing_message(request, message_id):
     return redirect(f'/login/chat/{msg.sender_id}/')
 
 def financial_otp_verify(request):
+    from login.otp import challenge_state, clear_pending, issue_challenge, verify_challenge
     ss = request.session.get('u_id')
-    from django.shortcuts import redirect # pyre-ignore
-    if not ss or 'financial_otp' not in request.session:
+    if not ss or request.session.get('type') != 'user':
+        return redirect('/login/login/')
+    if not request.session.get('pending_financial_msg') or not request.session.get('pending_financial_receiver'):
         return redirect('/index/index3/')
-        
-    from register.models import Register # pyre-ignore
-    current_user = Register.objects.get(register_id=ss)
-    
-    email_parts = current_user.email.split('@') if current_user.email else []
-    email_domain = email_parts[-1] if len(email_parts) > 1 else 'domain.com'
-    
-    context = {'current_user': current_user, 'email': current_user.email, 'email_domain': email_domain}
-    
+    current_user = Register.objects.filter(register_id=ss).first()
+    if not current_user:
+        clear_pending(request.session)
+        return redirect('/login/login/')
+    notice = request.session.pop('financial_email_notice', '')
+    sent = request.session.pop('financial_email_sent', False)
+    context = {
+        'current_user': current_user, 'email': current_user.email,
+        'email_domain': current_user.email.rsplit('@', 1)[-1],
+        'delivery_notice': notice, 'delivery_status': 'success' if sent else 'error',
+    }
     if request.method == 'POST':
-        entered_otp = str(request.POST.get('otp', '')).strip()
-        expected_otp = str(request.session.get('financial_otp', '')).strip()
-        
-        print(f"[*] OTP Validation Check: Entered='{entered_otp}' | Expected='{expected_otp}'")
-        
-        if entered_otp == expected_otp and expected_otp != '':
-            # OTP Verified! Send the pending message natively.
-            receiver = request.session.get('pending_financial_receiver')
-            msg_content = request.session.get('pending_financial_msg')
-            is_disappearing = request.session.get('pending_is_disappearing', False)
-            
-            Message.objects.create(
-                sender_id=ss,
-                receiver_id=receiver,
-                content=msg_content,
-                is_disappearing=is_disappearing
-            )
-            
-            # Clear session payload
-            del request.session['financial_otp']
-            del request.session['pending_financial_msg']
-            del request.session['pending_financial_receiver']
-            print(f"[+] Security: Transfer authorized successfully!")
-            return redirect(f'/login/chat/{receiver}/')
+        action = request.POST.get('action', 'verify')
+        if action == 'cancel':
+            clear_pending(request.session)
+            return redirect('/index/index3/')
+        if action == 'resend':
+            sent, notice = issue_challenge(request.session, current_user)
+            context.update(delivery_notice=notice, delivery_status='success' if sent else 'error')
         else:
-            print(f"[-] Security: OTP Mismatch Rejected!")
-            context['msg'] = "INVALID OTP SEQUENCE. Extortion transfer blocked."
-            context['msg_type'] = "error"
-            
+            receiver = request.session.get('pending_financial_receiver')
+            # Recheck permission: a follow relationship may have changed since sending the email.
+            mutual = (Follower.objects.filter(follower_user_id=ss, user_id=receiver).exists()
+                      and Follower.objects.filter(follower_user_id=receiver, user_id=ss).exists())
+            if not mutual or str(ss) == str(receiver):
+                clear_pending(request.session)
+                return redirect('/login/messages/')
+            valid, error = verify_challenge(request.session, current_user, request.POST.get('otp', '').strip())
+            if valid:
+                Message.objects.create(
+                    sender_id=ss, receiver_id=receiver,
+                    content=request.session['pending_financial_msg'],
+                    is_disappearing=request.session.get('pending_is_disappearing', False),
+                )
+                clear_pending(request.session)
+                notices.success(request, 'Your email was verified and your message was sent.', extra_tags='verification')
+                return redirect(f'/login/chat/{receiver}/')
+            context.update(delivery_notice=error, delivery_status='error')
+    state = challenge_state(request.session, current_user)
+    context.update(state)
+    if state['code_expired'] and not context.get('delivery_notice'):
+        context.update(delivery_notice='Your code expired. Resend OTP to receive a new code.', delivery_status='error')
     return render(request, 'login/financial_otp.html', context)

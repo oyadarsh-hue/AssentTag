@@ -1,5 +1,9 @@
-<html>
-  <body>
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>AssentTag</title>{% include "includes/visual-head.html" %}
+</head>
+  <body class="at-experience" data-at-scene="upload">
+    <a href="/index/index3/" class="at-brand-header"><img src="/static/assets/assenttag-logo.png" alt="AssentTag" class="at-brand-mark">AssentTag</a>
+    <main class="at-plain-page">
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       <input type="file" name="photo" />
@@ -9,5 +13,6 @@
     <img src="/static/{{photo}}" />
     <img src="/static/{{uploaded_file_url}}" />
     {% endif %}
+    </main>
   </body>
 </html>

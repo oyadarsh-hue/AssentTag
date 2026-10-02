@@ -76,18 +76,20 @@
         .btn-cyan { background: var(--neon-blue); box-shadow: 0 0 15px rgba(0,243,255,0.4); }
         .btn-red { background: #ff3300; box-shadow: 0 0 15px rgba(255,51,0,0.4); color: #fff; }
     </style>
+{% include "includes/visual-head.html" %}
 </head>
-<body>
+<body class="at-experience" data-at-scene="admin" data-at-photo="/static/assets/page-admin.webp">
 
     <nav class="top-nav">
         <div class="logo-box">
-            <svg width="24" height="24" viewBox="0 0 100 100" fill="none"><rect x="10" y="10" width="25" height="25" stroke="#ff3366" stroke-width="8" fill="none"/><rect x="65" y="10" width="25" height="25" stroke="#ff3366" stroke-width="8" fill="none"/><rect x="10" y="65" width="25" height="25" stroke="#ff3366" stroke-width="8" fill="none"/><circle cx="50" cy="50" r="10" fill="#00f3ff"/></svg>
+            <img src="/static/assets/assenttag-logo.png" alt="AssentTag" class="at-brand-mark" width="42" height="42">
             AssentTag <span>Admin Module</span>
         </div>
         <a href="/login/login/" class="btn-orange">BACK TO MAIN</a>
     </nav>
 
     <div class="admin-card">
+        {% include "includes/page-photo.html" with image="page-admin.webp" title="A safer community starts here." description="Manage people, review media, and respond with care." alt="An administrator reviewing accounts and photo submissions in a professional office" %}
         <div class="card-header">
             <h2>Welcome Administrator</h2>
             <p>Restricted access for system administrators only.</p>

@@ -89,7 +89,7 @@ def get_feed_data(request):
         post.has_liked = any(like.user_id == int(ss) for like in post.likes.all())
         
         # Fetch the top 3 comments from the pre-fetched QuerySet
-        post.recent_comments = post.comments.all()[:3]
+        post.recent_comments = post.comments.all()
         
         # --- TURBO-FEED EXIF BYPASS ---
         # Instead of synchronously reading 50MB of images sequentially from the drive

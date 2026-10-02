@@ -80,11 +80,13 @@
         .fab-scroll.visible { opacity: 1; pointer-events: auto; }
         .fab-scroll:hover { background: var(--neon-blue); border-color: var(--neon-purple); transform: scale(1.1); }
     </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% include "includes/visual-head.html" %}
 </head>
-<body>
+<body class="at-experience" data-at-scene="chat" data-at-photo="/static/assets/page-chat.webp">
     <nav class="glass-nav">
         <div class="nav-left">
-            <img src="/static/assets/logo.svg" class="logo-img" onerror="this.style.display='none'">
+            <img src="/static/assets/assenttag-logo.png" class="logo-img at-brand-mark" onerror="this.style.display='none'">
             <div class="logo-text">AssentTag Chat</div>
         </div>
         <div class="nav-right" style="display:flex; align-items:center; gap:20px;">
@@ -97,6 +99,7 @@
     </nav>
     
     <div class="chat-overlay">
+        <figure class="at-chat-photo"><img src="/static/assets/page-chat.webp" alt="A person having a private conversation on a real smartphone" width="1536" height="1024"></figure>
         <div class="chat-target-header">
             <div class="header-left">
                 <img class="avatar-circle" style="width:45px; height:45px;" src="/media/{{ target_user.photo }}" onerror="this.onerror=null; this.src='/static/assets/user_icon.svg';">
@@ -111,7 +114,7 @@
         </div>
 
         <div class="chat-body" id="cb">
-            {% for msg in messages %}
+            {% for msg in chat_messages %}
                 {% if "[DECOY_FLAG]" in msg.content %}
                     {% if msg.sender_id == current_user_id %}
                         <!-- Sender (Hacker) sees normal message -->
@@ -154,7 +157,7 @@
                     </div>
                 {% endif %}
             {% endfor %}
-            {% if not messages %}
+            {% if not chat_messages %}
                 <div style="text-align:center; padding-top:40%; color:#aaa; font-size:0.9rem;">
                     Send a message to start chatting with {{ target_user.first_name }}!
                 </div>

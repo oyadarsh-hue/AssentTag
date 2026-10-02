@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages as notices
 from complaint.models import Complaint
 from register.models import Register
 import datetime
@@ -27,6 +28,8 @@ def add_complaint1(request):
         obj.reply='pending'
         obj.register_id=ss
         obj.save()
+        notices.success(request, 'Your privacy concern has been submitted for review.', extra_tags='complaint')
+        return redirect('/complaint/complaint/')
     return render(request,"complaint/user_complaint.html", {'current_user': current_user})
 
 def add_reply(request,idd):
@@ -34,6 +37,8 @@ def add_reply(request,idd):
         obj=Complaint.objects.get(complaint_id=idd)
         obj.reply=request.POST.get('admin_reply')
         obj.save()
+        notices.success(request, 'Your response has been saved.', extra_tags='complaint')
+        return redirect('/complaint/view/')
     return render(request,'complaint/post_reply.html')
 
 def view_replies(request):

@@ -57,8 +57,10 @@
         
         .footer-tag { text-align: center; color: #444; font-size: 0.75rem; width: 100%; margin-top: 30px; }
     </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% include "includes/visual-head.html" %}
 </head>
-<body>
+<body class="at-experience" data-at-scene="support" data-at-photo="/static/assets/page-support.webp">
 
     <div class="user-bg-container">
         <img src="/static/assets/user_bg.jpg" class="user-bg-image" onerror="this.src='/static/assets/back.jpg'">
@@ -66,7 +68,7 @@
 
     <nav class="glass-nav">
         <div class="nav-left">
-            <img src="/static/assets/logo.svg" class="logo-img" onerror="this.style.display='none'">
+            <img src="/static/assets/assenttag-logo.png" class="logo-img at-brand-mark" onerror="this.style.display='none'">
             <div class="logo-text">AssentTag Complaint</div>
         </div>
         <div class="nav-right">
@@ -81,6 +83,7 @@
     <div class="main-container">
         <div class="card-wrapper">
             <form method="POST" class="feedback-card">
+                {% include "includes/page-photo.html" with image="page-support.webp" title="Your privacy concern matters." description="Tell us what happened so it can be reviewed." alt="A woman reporting a privacy concern from a calm home workspace" %}
                 {% csrf_token %}
                 <h1 class="title">Report an Issue</h1>
                 <p class="subtitle">Securely log your incident or complaint below.</p>

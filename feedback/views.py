@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages as notices
 from feedback.models import Feedback
 from register.models import Register
 import datetime
@@ -26,6 +27,8 @@ def add_feedback1(request):
         obj.rating=request.POST.get('rating')
         obj.register_id=ss
         obj.save()
+        notices.success(request, 'Thank you. Your feedback has been saved successfully.', extra_tags='feedback')
+        return redirect('/feedback/feedback/')
     return render(request,"feedback/user_feedback.html", {'current_user': current_user})
 
 

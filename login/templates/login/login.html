@@ -354,9 +354,10 @@
             }
         }
     </style>
+{% include "includes/visual-head.html" %}
 </head>
 
-<body>
+<body class="at-experience" data-at-scene="login">
 
     <div class="user-bg-container">
         <img src="/static/assets/user_bg.jpg" class="user-bg-image" onerror="this.src='/static/assets/back.jpg'">
@@ -364,16 +365,7 @@
 
     <nav class="glass-nav">
         <div class="logo-box">
-            <svg width="40" height="40" viewBox="0 0 100 100" fill="none" class="logo-img">
-                <rect x="10" y="10" width="25" height="25" stroke="#00f3ff" stroke-width="6" stroke-linecap="round"
-                    stroke-linejoin="round" fill="none" opacity="0.9" />
-                <rect x="65" y="10" width="25" height="25" stroke="#00f3ff" stroke-width="6" stroke-linecap="round"
-                    stroke-linejoin="round" fill="none" opacity="0.9" />
-                <rect x="10" y="65" width="25" height="25" stroke="#00f3ff" stroke-width="6" stroke-linecap="round"
-                    stroke-linejoin="round" fill="none" opacity="0.9" />
-                <circle cx="50" cy="50" r="10" fill="#00f3ff" />
-                <circle cx="77.5" cy="77.5" r="5" fill="#00f3ff" />
-            </svg>
+            <img src="/static/assets/assenttag-logo.png" alt="AssentTag" class="logo-img at-brand-mark" width="42" height="42">
             <span class="logo-text">AssentTag</span>
         </div>
         <div class="nav-buttons">
@@ -384,6 +376,7 @@
     <div class="main-wrapper">
         <div class="auth-container">
             <div class="auth-hero">
+                <img class="at-login-photo" src="/static/assets/photo-login.webp" alt="Secure account sign-in on a real laptop" width="1536" height="1024">
                 <div class="badge">SECURE PLATFORM</div>
                 <h1 class="hero-title">Identity<br><span class="highlight">Gateway</span></h1>
                 <p class="hero-desc">Authenticate to access your military-grade privacy dashboard. Manage your biometric
@@ -425,7 +418,7 @@
 
     <div class="footer-bottom">&copy; 2026 AssentTag Systems - Military-Grade Protection</div>
 
-    {% if msg %}
+    {% if msg and msg_type != 'success' %}
     <script>
         Swal.fire({
             title: '{{ msg_type|title|default:"System Notice" }}',

@@ -96,12 +96,13 @@
         
         .footer-bottom { text-align: center; margin-top: 4rem; font-size: 0.75rem; color: #555; padding-bottom: 2rem; }
     </style>
+{% include "includes/visual-head.html" %}
 </head>
-<body>
+<body class="at-experience" data-at-scene="profile-edit" data-at-photo="/static/assets/photo-upload.webp">
 
     <nav class="glass-nav">
         <div class="nav-left">
-            <img src="/static/assets/logo.svg" class="logo-img" onerror="this.style.display='none'">
+            <img src="/static/assets/assenttag-logo.png" class="logo-img at-brand-mark" onerror="this.style.display='none'">
             <div class="logo-text">EDIT PROFILE</div>
         </div>
         <div class="nav-right" style="display:flex; align-items:center; gap:20px;">
@@ -115,7 +116,8 @@
 
     <div class="main-wrapper">
         <div class="admin-content-card">
-            
+            {% include "includes/page-photo.html" with image="page-profile.webp" title="Your identity, thoughtfully shared." description="Keep your profile and privacy preferences in your hands." alt="A woman reviewing her personal profile and photo gallery on a laptop" %}
+
             <div class="header-section">
                 <h2>Edit Details</h2>
                 <p>Update your personal information and profile picture.</p>
@@ -184,7 +186,7 @@
     
     <div class="footer-bottom">&copy; 2026 AssentTag Systems • Military-Grade Protection</div>
 
-    {% if msg %}
+    {% if msg and msg_type != 'success' %}
     <script>
         Swal.fire({ title: 'System Notice', text: '{{ msg }}', icon: '{{ msg_type|default:"error" }}', background: '#11131a', color: '#fff', confirmButtonColor: '#00f3ff' });
     </script>

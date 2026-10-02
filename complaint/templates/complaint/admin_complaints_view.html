@@ -46,17 +46,21 @@
         .btn-reply { background: var(--magenta); color: #fff; text-decoration: none; padding: 8px 14px; border-radius: 4px; font-weight: 800; font-size: 0.7rem; display: inline-block; transition: 0.3s; }
         .btn-reply:hover { background: #ff33ff; box-shadow: 0 0 10px var(--magenta); color: #fff; }
     </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% include "includes/visual-head.html" %}
 </head>
-<body>
+<body class="at-experience" data-at-scene="admin-support" data-at-photo="/static/assets/page-admin-support.webp">
 
     <nav class="top-nav">
         <div class="logo-box">
+<img src="/static/assets/assenttag-logo.png" alt="AssentTag" class="logo-img at-brand-mark" width="42" height="42">
             <span class="logo-text">MANAGE COMPLAINTS</span>
         </div>
         <a href="/index/index2/" class="btn-orange">BACK TO ADMIN HOME</a>
     </nav>
 
     <div class="details-card" style="max-width: 1400px; width: 95%;">
+        {% include "includes/page-photo.html" with image="page-admin-support.webp" title="Listen. Review. Respond." description="Give every community concern the attention it needs." alt="A support administrator reviewing privacy concerns at a professional service desk" %}
         <div class="card-header">
             <h2>User Complaints</h2>
             <p>Review and resolve user reported issues.</p>

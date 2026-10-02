@@ -237,9 +237,10 @@
             object-fit: cover;
         }
     </style>
+{% include "includes/visual-head.html" %}
 </head>
 
-<body>
+<body class="at-experience" data-at-scene="notification" data-at-photo="/static/assets/page-notifications.webp">
 
     <div class="user-bg-container">
         <img src="/static/assets/user_bg.jpg" class="user-bg-image" onerror="this.src='/static/assets/back.jpg'">
@@ -248,7 +249,7 @@
     <!-- Nav Integration matching requirements -->
     <nav class="glass-nav">
         <div class="logo">
-            <img src="/static/assets/logo.svg" style="width: 35px; filter: drop-shadow(0 0 5px var(--neon-blue));" onerror="this.style.display='none'">
+            <img src="/static/assets/assenttag-logo.png" style="width: 35px; filter: drop-shadow(0 0 5px var(--neon-blue));" onerror="this.style.display='none'">
             <h2>ASSENTTAG <span class="highlight">NOTIFICATIONS</span></h2>
         </div>
         <div style="display:flex; align-items:center; gap:20px;">
@@ -263,6 +264,7 @@
     </nav>
 
     <main>
+        {% include "includes/page-photo.html" with image="page-notifications.webp" title="Every request. Your decision." description="Review photo tags and choose how you appear." alt="A person reviewing a photo consent notification on a real smartphone" %}
 
         <h2 style="margin-bottom:2rem;">🔔 Pending Tag Requests</h2>
 

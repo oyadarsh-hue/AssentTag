@@ -1,0 +1,12 @@
+<article class="at-workflow-chapter" id="workflow-{{ stage }}" data-workflow-stage="{{ number }}" data-workflow-image="/static/assets/{{ image }}" aria-labelledby="title-{{ stage }}">
+    <div class="at-workflow-copy">
+        <div class="at-chapter-eyebrow"><span class="at-chapter-number">{{ number }}</span><span>{{ category }}</span></div>
+        <h3 id="title-{{ stage }}">{{ heading }}</h3>
+        <p>{{ description }}</p>
+        <div class="at-chapter-detail">{{ detail }}</div>
+    </div>
+    <figure class="at-workflow-photo">
+        <img src="/static/assets/{{ image }}" alt="{{ alt }}" width="1536" height="1024" loading="lazy" decoding="async">
+        <figcaption><span>AssentTag journey</span><span>{{ number }} / 08</span></figcaption>
+    </figure>
+</article>

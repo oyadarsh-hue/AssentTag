@@ -47,11 +47,13 @@
         .btn-chat { color: var(--neon-blue); text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: 0.3s; }
         .btn-chat:hover { text-shadow: 0 0 10px rgba(0,243,255,0.5); }
     </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% include "includes/visual-head.html" %}
 </head>
-<body>
+<body class="at-experience" data-at-scene="comms" data-at-photo="/static/assets/page-comms.webp">
     <nav class="glass-nav">
         <div class="nav-left">
-            <img src="/static/assets/logo.svg" class="logo-img" onerror="this.style.display='none'">
+            <img src="/static/assets/assenttag-logo.png" class="logo-img at-brand-mark" onerror="this.style.display='none'">
             <div class="logo-text">AssentTag Message</div>
         </div>
         <div class="nav-right" style="display:flex; align-items:center; gap:20px;">
@@ -64,6 +66,7 @@
     </nav>
 
     <div class="inbox-card">
+        {% include "includes/page-photo.html" with image="page-comms.webp" title="Stay close. Speak privately." description="Start a conversation with your mutual connections." alt="Two friends exchanging private messages on their smartphones" %}
         <div class="card-header">Your Mutual Friends</div>
         
         {% for u in mutual_users %}

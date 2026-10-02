@@ -87,17 +87,21 @@
 
         .footer { text-align: center; font-size: 0.75rem; color: #555; padding-bottom: 2rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
     </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% include "includes/visual-head.html" %}
 </head>
-<body>
+<body class="at-experience" data-at-scene="media-review" data-at-photo="/static/assets/page-media.webp">
 
     <nav class="top-nav">
         <div class="logo-box">
+<img src="/static/assets/assenttag-logo.png" alt="AssentTag" class="logo-img at-brand-mark" width="42" height="42">
             <span class="logo-text"><span>AssentTag</span> Monitor</span>
         </div>
         <a href="/index/index2/" class="btn-orange">BACK TO ADMIN HOME</a>
     </nav>
 
     <div class="details-card">
+        {% include "includes/page-photo.html" with image="page-media.webp" title="Good moments deserve careful review." description="Browse uploaded media and its privacy status." alt="A media editor reviewing a contact sheet of group photographs and blurred faces" %}
         <div class="card-header">
             <h2>User Photo Analytics</h2>
             <p>Review photo details, origins, and tracking metadata.</p>

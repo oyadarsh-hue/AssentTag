@@ -151,24 +151,24 @@ CACHES = {
     }
 }
 
-# --- ASSENTTAG LIVE SMTP EMAIL GATEWAY ---
-# To activate real-world internet email delivery, use the setup_email.py script.
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
+# Gmail SMTP settings: OS environment takes precedence over local .env.
+email_env = {}
+env_path = BASE_DIR / '.env'
+if env_path.exists():
+    for line in env_path.read_text(encoding='utf-8').splitlines():
+        line = line.strip()
+        if line and not line.startswith('#') and '=' in line:
+            key, value = line.split('=', 1)
+            email_env[key.strip()] = value.strip().strip('"').strip("'")
+
+def email_setting(key, default=''):
+    return os.environ.get(key, email_env.get(key, default))
+
+EMAIL_BACKEND = email_setting('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = email_setting('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(email_setting('EMAIL_PORT', '587'))
 EMAIL_USE_TLS = True
-
-# Load sensitive credentials safely from the hidden .env file
-env_path = os.path.join(BASE_DIR, '.env')
-EMAIL_HOST_USER = 'YOUR_EMAIL@gmail.com'
-EMAIL_HOST_PASSWORD = 'YOUR_16_CHAR_APP_PASSWORD'
-
-if os.path.exists(env_path):
-    with open(env_path, 'r') as f:
-        for line in f:
-            if '=' in line:
-                key, val = line.strip().split('=', 1)
-                if key == 'EMAIL_HOST_USER':
-                    EMAIL_HOST_USER = val
-                elif key == 'EMAIL_HOST_PASSWORD':
-                    EMAIL_HOST_PASSWORD = val
+EMAIL_TIMEOUT = 15
+EMAIL_HOST_USER = email_setting('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = email_setting('EMAIL_HOST_PASSWORD').replace(' ', '')
+DEFAULT_FROM_EMAIL = email_setting('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER or 'AssentTag <noreply@localhost>')
