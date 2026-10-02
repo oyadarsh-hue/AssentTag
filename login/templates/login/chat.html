@@ -6,18 +6,18 @@
     <title>{{ target_user.first_name }} · AssentTag Chat</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     {% include "includes/visual-head.html" %}
-    <link rel="stylesheet" href="/static/css/chat-timers.css">
+    <link rel="stylesheet" href="/static/css/chat-timers.css?v=2">
 </head>
 <body class="at-experience" data-at-scene="chat" data-at-photo="/static/assets/page-chat.webp">
     <nav class="chat-nav" aria-label="Chat navigation">
         <a class="chat-brand" href="/index/index3/"><img src="/static/assets/assenttag-logo.png" alt="">AssentTag</a>
-        <a class="chat-back" href="/login/messages/">← All conversations</a>
+        <a class="chat-back" href="/login/messages/"><span class="chat-back-icon" aria-hidden="true">←</span><span>All conversations</span></a>
     </nav>
     <main class="conversation" data-chat-url="/login/chat/{{ target_user.register_id }}/" data-server-now="{{ server_now }}">
         <header class="conversation-header">
             <div class="contact">
-                <img src="{% if target_user.photo %}/media/{{ target_user.photo }}{% else %}/static/assets/user_icon.svg{% endif %}" alt="" onerror="this.onerror=null;this.src='/static/assets/user_icon.svg'">
-                <div><h1>{{ target_user.first_name }} {{ target_user.last_name }}</h1><p>Mutual followers · Personal conversation</p></div>
+                <div class="contact-avatar"><img src="{% if target_user.photo %}/media/{{ target_user.photo }}{% else %}/static/assets/user_icon.svg{% endif %}" alt="{{ target_user.first_name }}'s profile photo" onerror="this.onerror=null;this.src='/static/assets/user_icon.svg'"></div>
+                <div class="contact-details"><h1>{{ target_user.first_name }} {{ target_user.last_name }}</h1><p>Mutual followers · Personal conversation</p></div>
             </div>
             <button class="timer-chip" type="button" data-open-timer aria-haspopup="dialog" aria-controls="timer-dialog" aria-label="Disappearing messages settings">
                 <svg class="timer-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="14" r="8"/><path d="M9 2h6M12 2v4m6 2 2-2m-8 4v5l3 2"/></svg>
