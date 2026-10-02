@@ -8,11 +8,11 @@
         :root { --neon-blue: #00f3ff; --neon-purple: #bc13fe; }
         * { box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: url('static/assets/user_bg.jpg') center/cover fixed; color: #fff; margin:0; padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
-        .glass-nav { 
-            background: rgba(10,10,14,0.9); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0 4%; 
+        .glass-nav {
+            background: rgba(10,10,14,0.9); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0 4%;
             display: flex; justify-content: space-between; align-items: center; height: 80px; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
         }
-        
+
         .nav-left { display: flex; align-items: center; gap: 12px; }
         .logo-img { width: 35px; animation: pulseGlow 3s infinite alternate; filter: drop-shadow(0 0 5px var(--neon-blue)); }
         @keyframes pulseGlow { 0% { filter: drop-shadow(0 0 5px var(--neon-blue)); transform: scale(1); } 100% { filter: drop-shadow(0 0 15px var(--neon-blue)); transform: scale(1.05); } }
@@ -26,7 +26,7 @@
         .avatar-circle { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--neon-blue); object-fit: cover; }
 
         .inbox-card {
-            background: #161b22; 
+            background: #161b22;
             border-radius: 12px; width: 100%; max-width: 600px;
             border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             max-height: 75vh; overflow-y: auto; margin-top: 60px;
@@ -37,13 +37,13 @@
         .contact-item { display: flex; align-items: center; justify-content: space-between; padding: 20px 30px; border-bottom: 1px solid rgba(255,255,255,0.1); transition: background 0.3s; }
         .contact-item:last-child { border-bottom: none; }
         .contact-item:hover { background: rgba(255,255,255,0.1); }
-        
+
         .contact-info { display: flex; align-items: center; gap: 18px; }
         .avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--neon-purple); }
-        
+
         .contact-name { font-size: 1rem; font-weight: 700; color: #fff; display: block; margin-bottom: 3px; }
         .contact-handle { font-size: 0.75rem; color: #aaa; }
-        
+
         .btn-chat { color: var(--neon-blue); text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: 0.3s; }
         .btn-chat:hover { text-shadow: 0 0 10px rgba(0,243,255,0.5); }
     </style>
@@ -83,8 +83,8 @@
 </section>
 
         <div class="card-header">Your Mutual Friends</div>
-        
-        
+
+
         <div class="contact-item">
             <div class="contact-info">
                 <img class="avatar" src="static/assets/user_icon.svg" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
@@ -100,7 +100,7 @@
                 OPEN COMMS
             </a>
         </div>
-        
+
         <div class="contact-item">
             <div class="contact-info">
                 <img class="avatar" src="static/assets/user_icon.svg" onerror="this.onerror=null; this.src='static/assets/user_icon.svg';">
@@ -116,9 +116,9 @@
                 OPEN COMMS
             </a>
         </div>
-        
-        
-        
+
+
+
     </div>
 
 <div class="demo-notice">UI demo · Fictional sample data <a href="demo.html#feed">Explore the app ↗</a></div></body>

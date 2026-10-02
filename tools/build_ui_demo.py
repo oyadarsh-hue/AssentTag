@@ -45,6 +45,7 @@ def export(template, filename, context=None):
         html = html.replace('Developer API', 'Private Conversations').replace('Seamlessly integrate the AssentTag engine into your third-party infrastructure. Highly documented\n                interoperable limits.', 'Stay connected with mutual friends and choose how long new messages stay with disappearing-message timers.')
         html = html.replace('<p class="hero-desc">', '<div style="margin:20px 0"><a href="demo.html#feed" class="btn-solid">Explore the UI demo ↗</a></div><p class="hero-desc">')
         html = html.replace('</head>', '<meta name="description" content="Explore AssentTag: a consent-based face privacy project. Interactive UI demo with social feed, privacy controls and disappearing messages."><meta property="og:title" content="AssentTag — Your face. Your choice."><meta property="og:description" content="Explore the interactive UI demo of a consent-based face privacy and social sharing project."><meta property="og:image" content="https://oyadarsh-hue.github.io/AssentTag/static/assets/photo-index-hero-v2.webp"></head>')
+    html = '\n'.join(line.rstrip() for line in html.splitlines()) + '\n'
     (OUT / filename).write_text(html, encoding='utf-8')
 
 OUT.mkdir(exist_ok=True)
