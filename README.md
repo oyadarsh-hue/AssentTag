@@ -5,6 +5,14 @@
 [![Computer Vision](https://img.shields.io/badge/Vision-OpenCV%20%7C%20Dlib-orange.svg)](https://github.com/davisking/dlib)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 
+## Open the full project UI locally
+
+**[Open AssentTag — full website](http://127.0.0.1:8010/)** · [Login](http://127.0.0.1:8010/login/login/) · [Messages](http://127.0.0.1:8010/login/messages/)
+
+On your computer, double-click [Start AssentTag.cmd](Start%20AssentTag.cmd) in the downloaded project folder to start the server and open the full website. If it is already running, use [Open AssentTag.url](Open%20AssentTag.url).
+
+These links open your own computer's local server; GitHub stores the project code and does not host this Django application. The local MySQL service and project dependencies must be available. After login, the website links to the dashboard and the other project pages.
+
 **AssentTag** is an intelligent, automated face privacy and identity consent management platform built with Django and Computer Vision. It protects individuals against unauthorized visual media exposure across social feeds, posts, and stories by enforcing privacy-by-default face obfuscation, real-time facial recognition matching, dynamic consent granting, and cryptographic authorization workflows.
 
 ---

@@ -76,3 +76,18 @@ body.at-experience .conversation .chat-body { min-height:0; }
 @media(prefers-reduced-motion:no-preference) { .msg-container { animation:message-arrive .18s ease-out; } @keyframes message-arrive { from { opacity:.7; transform:translateY(3px); } to { opacity:1; transform:none; } } }
 @media(max-width:600px) { .chat-nav { padding:0 12px; gap:10px; } .chat-brand { gap:8px; font-size:.9rem; } .chat-brand img { width:32px; height:32px; } .chat-back { padding:8px 10px; gap:6px; font-size:.75rem; } .chat-back-icon { width:22px; height:22px; } .contact-avatar { flex-basis:50px; width:50px; height:50px; } .contact { gap:10px; } .contact h1 { line-height:1.4; } }
 @media(max-width:380px) { .conversation-header { flex-wrap:wrap; gap:12px; } .conversation-header .timer-chip { margin-left:60px; } }
+
+/* Match the framed photo introduction on the inbox, using this chat's image. */
+.chat-photo-frame { width:min(100%,900px); margin:0 auto 20px; }
+.chat-photo-frame .at-page-photo { margin:0; border:1px solid #b5b1f060; border-radius:26px 8px 26px 8px; box-shadow:0 16px 38px #030a1840; }
+.chat-photo-frame .at-page-photo > img { height:240px; object-position:center 48%; }
+.chat-photo-frame .at-page-photo-copy { padding:26px 30px; background:linear-gradient(180deg,#09152300 10%,#09152355 38%,#091523f5 100%); }
+body.at-experience .chat-photo-frame .at-page-photo h2,
+body.at-experience .chat-photo-frame .at-page-photo h2 .at-word { background:none; color:#b3f0f3; -webkit-text-fill-color:#b3f0f3; opacity:1; filter:none; transform:none; animation:none; }
+.chat-photo-frame + .conversation { height:calc(100dvh - 382px); min-height:430px; }
+@media(max-width:600px) {
+ .chat-photo-frame { width:calc(100% - 24px); margin:16px auto; }
+ .chat-photo-frame .at-page-photo > img { height:220px; object-position:58% center; }
+ .chat-photo-frame .at-page-photo-copy { padding:20px; }
+ .chat-photo-frame + .conversation { height:calc(100dvh - 326px); min-height:480px; }
+}

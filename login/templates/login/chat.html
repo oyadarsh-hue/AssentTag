@@ -6,13 +6,16 @@
     <title>{{ target_user.first_name }} · AssentTag Chat</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     {% include "includes/visual-head.html" %}
-    <link rel="stylesheet" href="/static/css/chat-timers.css?v=2">
+    <link rel="stylesheet" href="/static/css/chat-timers.css?v=3">
 </head>
 <body class="at-experience" data-at-scene="chat" data-at-photo="/static/assets/page-chat.webp">
     <nav class="chat-nav" aria-label="Chat navigation">
         <a class="chat-brand" href="/index/index3/"><img src="/static/assets/assenttag-logo.png" alt="">AssentTag</a>
         <a class="chat-back" href="/login/messages/"><span class="chat-back-icon" aria-hidden="true">←</span><span>All conversations</span></a>
     </nav>
+    <div class="chat-photo-frame">
+        {% include "includes/page-photo.html" with image="page-chat.webp" title="A little hello. A closer connection." description="Make time for a conversation. Choose how long your messages stay." alt="A person catching up with a friend on their phone beside a sunlit window" %}
+    </div>
     <main class="conversation" data-chat-url="/login/chat/{{ target_user.register_id }}/" data-server-now="{{ server_now }}">
         <header class="conversation-header">
             <div class="contact">
