@@ -1,5 +1,5 @@
 from types import SimpleNamespace
-from unittest.mock import patch
+from unittest.mock import patch, ANY
 from django.contrib.sessions.backends.signed_cookies import SessionStore
 from django.core import mail
 from django.contrib.messages.storage.fallback import FallbackStorage
@@ -149,7 +149,8 @@ class EmailOTPTests(SimpleTestCase):
             follows.return_value.exists.return_value = True
             response = financial_otp_verify(request)
             self.assertEqual(response.status_code, 302)
-            create.assert_called_once_with(sender_id=12, receiver_id=14, content='Please send money', is_disappearing=True)
+            create.assert_called_once_with(sender_id=12, receiver_id=14, content='Please send money', is_disappearing=True,
+                                           disappearing_seconds=86400, expires_at=ANY)
             financial_otp_verify(request)
             self.assertEqual(create.call_count, 1)
 

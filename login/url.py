@@ -9,6 +9,8 @@ urlpatterns = [
     path('accept_follow/<int:req_id>/', views.accept_follow),
     path('reject_follow/<int:req_id>/', views.reject_follow),
     path('chat/<int:user_id>/', views.chat_user),
+    path('chat/<int:user_id>/state/', views.chat_state),
+    path('chat/<int:user_id>/timer/', views.chat_timer),
     path('messages/', views.messages_inbox),
     path('financial_otp_verify/', views.financial_otp_verify),
     path('read_disappearing/<int:message_id>/', views.read_disappearing_message),

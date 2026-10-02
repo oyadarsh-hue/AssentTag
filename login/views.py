@@ -4,6 +4,13 @@ from login.models import Login
 from register.models import Register, Follower, Message
 from django.http import HttpResponseRedirect
 from django_ratelimit.decorators import ratelimit
+from django.http import JsonResponse
+from django.utils import timezone
+from django.views.decorators.http import require_POST, require_GET
+from django.views.decorators.cache import never_cache
+from django.template.loader import render_to_string
+from login.disappearing import (TIMER_CHOICES, can_chat, timer_for, timer_payload,
+                                update_timer, conversation_messages, create_message)
 
 # @ratelimit(key='ip', rate='5/15m', block=True)
 def add_login(request):
@@ -121,9 +128,10 @@ def remove_follower(request, user_id):
     Follower.objects.filter(follower_user_id=user_id, user_id=ss).delete()
     return redirect(request.META.get('HTTP_REFERER', '/index/index3/'))
 
+@never_cache
 def chat_user(request, user_id):
     ss = request.session.get('u_id')
-    if not ss:
+    if not ss or request.session.get('type') != 'user':
         return redirect('/login/login/')
         
     if str(ss) == str(user_id):
@@ -159,11 +167,14 @@ def chat_user(request, user_id):
         
     target_user = Register.objects.filter(register_id=user_id).first()
     current_user_obj = Register.objects.get(register_id=ss)
+    if not target_user:
+        return redirect('/login/messages/')
+    timer = timer_for(ss, user_id)
     
     # Handle new message submission
     if request.method == 'POST':
         msg_content = request.POST.get('content')
-        is_disappearing = request.POST.get('is_disappearing') in ['on', 'true']
+        duration = timer.duration
         if msg_content:
             # The Apex Protocol: Deep-Linguistic Cognitive Behavioral Interceptor
             # Extensively upgraded with advanced Transliterated Malayalam / Hindi phonetic variations
@@ -183,40 +194,25 @@ def chat_user(request, user_id):
                 clear_pending(request.session)
                 request.session['pending_financial_msg'] = msg_content
                 request.session['pending_financial_receiver'] = user_id
-                request.session['pending_is_disappearing'] = is_disappearing
+                request.session['pending_is_disappearing'] = bool(duration)
+                request.session['pending_disappearing_seconds'] = duration
                 sent, notice = issue_challenge(request.session, current_user_obj)
                 request.session['financial_email_notice'] = notice
                 request.session['financial_email_sent'] = sent
                 return redirect('/login/financial_otp_verify/')
                 
-            Message.objects.create(
-                sender_id=ss,
-                receiver_id=user_id,
-                content=msg_content,
-                is_disappearing=is_disappearing
-            )
+            create_message(ss, user_id, msg_content, duration)
             return redirect(f'/login/chat/{user_id}/')
             
-    # Fetch chat history between the two users
-    messages_query = Message.objects.filter(
-        sender_id__in=[ss, user_id],
-        receiver_id__in=[ss, user_id]
-    ).order_by('timestamp')
-    
-    # Convert query to list to retain in-memory for rendering before deleting
-    messages = list(messages_query)
-    
-    # Advanced logic: Auto-delete disappearing messages received by current user
-    # They will render exactly once for the receiver, then vanish from DB permanently
-    for msg in messages:
-        if msg.is_disappearing and str(msg.receiver_id) == str(ss):
-            msg.delete()
+    messages = list(conversation_messages(ss, user_id))
     
     context = {
         'target_user': target_user,
         'chat_messages': messages,
         'current_user_id': int(ss),
-        'current_user': current_user_obj
+        'current_user': current_user_obj,
+        'timer': timer_payload(timer), 'timer_choices': TIMER_CHOICES,
+        'server_now': timezone.now().isoformat(),
     }
     
     return render(request, 'login/chat.html', context)
@@ -244,13 +240,58 @@ def messages_inbox(request):
     }
     return render(request, 'login/messages.html', context)
 
+@require_POST
 def read_disappearing_message(request, message_id):
-    from django.shortcuts import redirect # pyre-ignore
-    msg = Message.objects.get(message_id=message_id)
-    if msg.is_disappearing:
-        msg.is_read = 1
-        msg.save()
+    ss = request.session.get('u_id')
+    if not ss or request.session.get('type') != 'user':
+        return redirect('/login/login/')
+    msg = Message.objects.filter(message_id=message_id, receiver_id=ss).first()
+    if not msg or not can_chat(ss, msg.sender_id):
+        return JsonResponse({'error': 'Message unavailable.'}, status=404)
+    if msg.expires_at and msg.expires_at <= timezone.now():
+        msg.delete()
+        return JsonResponse({'error': 'Message expired.'}, status=404)
+    msg.is_read = 1
+    msg.save(update_fields=['is_read'])
     return redirect(f'/login/chat/{msg.sender_id}/')
+
+
+@never_cache
+@require_GET
+def chat_state(request, user_id):
+    ss = request.session.get('u_id')
+    if not ss or request.session.get('type') != 'user':
+        return JsonResponse({'error': 'Please sign in again.'}, status=401)
+    if not can_chat(ss, user_id):
+        return JsonResponse({'error': 'This conversation is no longer available.'}, status=403)
+    timer = timer_for(ss, user_id)
+    now = timezone.now()
+    messages = list(conversation_messages(ss, user_id, now))
+    html = render_to_string('login/chat_messages.html',
+                            {'chat_messages': messages, 'current_user_id': int(ss)})
+    return JsonResponse({'timer': timer_payload(timer), 'server_now': now.isoformat(), 'html': html})
+
+
+@never_cache
+@require_POST
+def chat_timer(request, user_id):
+    ss = request.session.get('u_id')
+    if not ss or request.session.get('type') != 'user':
+        return JsonResponse({'error': 'Please sign in again.'}, status=401)
+    if not can_chat(ss, user_id):
+        return JsonResponse({'error': 'Both people must follow each other.'}, status=403)
+    try:
+        duration = int(request.POST['duration'])
+        revision = int(request.POST['revision'])
+        if duration not in dict(TIMER_CHOICES) or revision < 0:
+            raise ValueError
+    except (KeyError, ValueError):
+        return JsonResponse({'error': 'Choose a valid message timer.'}, status=400)
+    timer, saved = update_timer(timer_for(ss, user_id), duration, revision, ss)
+    payload = {'timer': timer_payload(timer), 'server_now': timezone.now().isoformat()}
+    if not saved:
+        payload['error'] = 'The timer changed in another window. Review the current setting and try again.'
+    return JsonResponse(payload, status=200 if saved else 409)
 
 def financial_otp_verify(request):
     from login.otp import challenge_state, clear_pending, issue_challenge, verify_challenge
@@ -288,11 +329,9 @@ def financial_otp_verify(request):
                 return redirect('/login/messages/')
             valid, error = verify_challenge(request.session, current_user, request.POST.get('otp', '').strip())
             if valid:
-                Message.objects.create(
-                    sender_id=ss, receiver_id=receiver,
-                    content=request.session['pending_financial_msg'],
-                    is_disappearing=request.session.get('pending_is_disappearing', False),
-                )
+                create_message(ss, receiver, request.session['pending_financial_msg'],
+                               request.session.get('pending_disappearing_seconds',
+                                   86400 if request.session.get('pending_is_disappearing') else 0))
                 clear_pending(request.session)
                 notices.success(request, 'Your email was verified and your message was sent.', extra_tags='verification')
                 return redirect(f'/login/chat/{receiver}/')

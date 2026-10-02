@@ -59,6 +59,8 @@ class Message(models.Model):
     receiver = models.ForeignKey('Register', models.DO_NOTHING, related_name='received_messages')
     sender = models.ForeignKey('Register', models.DO_NOTHING, related_name='sent_messages')
     is_disappearing = models.BooleanField(default=False)
+    disappearing_seconds = models.PositiveIntegerField(default=0)
+    expires_at = models.DateTimeField(null=True, blank=True, db_index=True)
 
     class Meta:
         # managed = False

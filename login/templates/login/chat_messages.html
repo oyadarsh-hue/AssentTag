@@ -1,0 +1,17 @@
+{% for msg in chat_messages %}
+<article class="msg-container {% if msg.sender_id == current_user_id %}sent{% else %}recv{% endif %}" data-message-id="{{ msg.message_id }}" {% if msg.expires_at %}data-expires-at="{{ msg.expires_at|date:'c' }}" data-duration="{{ msg.disappearing_seconds }}"{% endif %}>
+    <div class="msg-box">
+        {% if "[DECOY_FLAG]" in msg.content and msg.sender_id != current_user_id %}
+            <strong class="message-warning">Security warning · Do not send funds</strong>
+            <p>A device verification check failed for this message.</p>
+        {% endif %}
+        <span class="message-content">{% if "[DECOY_FLAG]" in msg.content %}{{ msg.content|slice:"13:" }}{% else %}{{ msg.content }}{% endif %}</span>
+        <footer class="message-meta">
+            <time datetime="{{ msg.timestamp|date:'c' }}">{{ msg.timestamp|date:"g:i A" }}</time>
+            {% if msg.expires_at %}<span class="message-countdown" title="Disappears {{ msg.expires_at|date:'M j, g:i A' }}"><span class="countdown-ring" aria-hidden="true"></span><span data-countdown>Timed message</span></span>{% endif %}
+        </footer>
+    </div>
+</article>
+{% empty %}
+<div class="chat-empty"><span aria-hidden="true">✦</span><p>A little space for conversation.</p><small>Write the first message below.</small></div>
+{% endfor %}

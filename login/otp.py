@@ -14,14 +14,15 @@ TTL = 300
 MAX_ATTEMPTS = 5
 RESEND_SECONDS = 60
 CHALLENGE_KEY = 'financial_email_challenge'
-PENDING_KEYS = ('pending_financial_msg', 'pending_financial_receiver', 'pending_is_disappearing')
+PENDING_KEYS = ('pending_financial_msg', 'pending_financial_receiver', 'pending_is_disappearing', 'pending_disappearing_seconds')
 
 
 def binding(session, user):
     payload = '|'.join((str(user.register_id), user.email.strip().lower(),
                         str(session.get('pending_financial_receiver', '')),
                         str(session.get('pending_financial_msg', '')),
-                        str(session.get('pending_is_disappearing', False))))
+                        str(session.get('pending_is_disappearing', False)),
+                        str(session.get('pending_disappearing_seconds', 86400 if session.get('pending_is_disappearing') else 0))))
     return hashlib.sha256(payload.encode()).hexdigest()
 
 

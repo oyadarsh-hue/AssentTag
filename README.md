@@ -77,6 +77,8 @@ python manage.py runserver
 ```
 Navigate to `http://127.0.0.1:8000/` in your browser.
 
+For a one-click local launch, double-click **Start AssentTag.cmd**. It opens `http://127.0.0.1:8010/` and includes the background message-expiry worker. **Open AssentTag.url** opens that address when the server is already running. See [Disappearing messages](docs/DISAPPEARING_MESSAGES.md) for timer behaviour, upgrading existing databases and verification.
+
 ---
 
 ## 📖 System Design & Motion Specification

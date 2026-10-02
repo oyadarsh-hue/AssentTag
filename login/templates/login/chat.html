@@ -2,222 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AssentTag - Chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ target_user.first_name }} · AssentTag Chat</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        :root { --neon-blue: #00f3ff; --neon-purple: #bc13fe; }
-        * { box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: url('/static/assets/user_bg.jpg') center/cover fixed; color: #fff; margin:0; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; overflow:hidden;}
-        
-        .chat-overlay {
-            background: rgba(30, 20, 20, 0.4); backdrop-filter: blur(40px);
-            border-radius: 20px; width: 100%; max-width: 800px; height: 80vh; margin-top: 60px;
-            border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-            display: flex; flex-direction: column; overflow: hidden;
-        }
-        .glass-nav { 
-            background: rgba(10,10,14,0.9); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0 4%; 
-            display: flex; justify-content: space-between; align-items: center; height: 80px; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
-        }
-        
-        .nav-left { display: flex; align-items: center; gap: 12px; }
-        .logo-img { width: 35px; animation: pulseGlow 3s infinite alternate; filter: drop-shadow(0 0 5px var(--neon-blue)); }
-        @keyframes pulseGlow { 0% { filter: drop-shadow(0 0 5px var(--neon-blue)); transform: scale(1); } 100% { filter: drop-shadow(0 0 15px var(--neon-blue)); transform: scale(1.05); } }
-        .logo-text { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 1.2rem; color: #fff; text-transform: uppercase; letter-spacing: 1px;}
-
-        .nav-right { display: flex; align-items: center; gap: 20px; }
-        .nav-btn { background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 8px 16px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: 0.3s; }
-        .nav-btn:hover { background: rgba(0,243,255,0.1); box-shadow: 0 0 10px rgba(0,243,255,0.2); }
-        .profile-wrap { display: flex; align-items: center; gap: 10px; }
-        .profile-name { font-size: 0.85rem; font-weight: 700; color: #fff; }
-        .avatar-circle { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--neon-blue); object-fit: cover; }
-        
-        .chat-target-header { padding: 15px 25px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; background: #161b22; }
-        .header-left { display: flex; align-items: center; gap: 15px; }
-        .header-title { font-size: 1.1rem; font-weight: 800; color: #fff; display: block; }
-        .header-sub { font-size: 0.75rem; color: #888; }
-        .e2e-badge { display: flex; align-items: center; gap: 5px; font-size: 0.7rem; color: #FFD700; font-weight: 700; background: rgba(255, 215, 0, 0.1); padding: 5px 10px; border-radius: 20px; }
-
-        .chat-body { flex:1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
-        
-        .msg-container { display:flex; flex-direction: column; max-width: 70%; position:relative; }
-        .msg-container.sent { align-self: flex-end; align-items: flex-end; }
-        .msg-container.recv { align-self: flex-start; align-items: flex-start; }
-        
-        .msg-box { padding: 10px 14px 6px; border-radius: 16px; font-size: 0.95rem; line-height: 1.4; word-break: break-all; min-width: 100px; position:relative;}
-        .sent .msg-box { background: rgba(0, 243, 255, 0.15); border: 1px solid rgba(0, 243, 255, 0.3); border-bottom-right-radius: 4px; color: #fff; }
-        .recv .msg-box { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-bottom-left-radius: 4px; color: #eee; }
-        
-        .msg-time { font-size: 0.65rem; color: #888; font-weight: 500; margin-top: 5px; }
-        .disappear-tag { color: var(--neon-purple); font-weight: 800; font-size: 0.65rem; padding-left: 5px;}
-
-        .chat-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); background: #0d1117; display: flex; flex-direction: column; gap: 10px; }
-        .footer-controls { display: flex; justify-content: space-between; align-items: center; padding: 0 10px; }
-        .disappear-label { font-size: 0.8rem; color: #fff; font-weight: 700; display: flex; align-items: center; gap: 8px; }
-        .input-wrapper { display: flex; gap: 10px; background: #161b22; padding: 10px 15px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); align-items: center; }
-        
-        .timeline-select {
-            background: rgba(255,255,255,0.1); border: none; color: #fff; font-size: 0.8rem;
-            padding: 8px 12px; border-radius: 20px; cursor: pointer; outline: none; appearance: none;
-            font-weight: 600; text-align: center;
-        }
-        .timeline-select option { background: #111; color: #fff; }
-        
-        input[type="text"] { flex: 1; background: transparent; border: none; padding: 10px 15px; color: #fff; font-size: 0.95rem; outline: none; }
-        
-        .btn-send { background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); border: none; color: #fff; padding: 10px 24px; border-radius: 30px; font-weight: 700; cursor: pointer; transition: 0.3s; }
-        .btn-send:hover { filter: brightness(1.2); }
-        
-        /* Floating Action Button for Scroll Down */
-        .fab-scroll {
-            position: absolute; bottom: 90px; right: 30px; width: 45px; height: 45px;
-            background: rgba(188, 19, 254, 0.8); border: 2px solid var(--neon-blue); border-radius: 50%;
-            display: flex; justify-content: center; align-items: center; color: #fff; font-size: 1.2rem;
-            cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.5); transition: 0.3s; z-index: 100;
-            opacity: 0; pointer-events: none;
-        }
-        .fab-scroll.visible { opacity: 1; pointer-events: auto; }
-        .fab-scroll:hover { background: var(--neon-blue); border-color: var(--neon-purple); transform: scale(1.1); }
-    </style>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-{% include "includes/visual-head.html" %}
+    {% include "includes/visual-head.html" %}
+    <link rel="stylesheet" href="/static/css/chat-timers.css">
 </head>
 <body class="at-experience" data-at-scene="chat" data-at-photo="/static/assets/page-chat.webp">
-    <nav class="glass-nav">
-        <div class="nav-left">
-            <img src="/static/assets/assenttag-logo.png" class="logo-img at-brand-mark" onerror="this.style.display='none'">
-            <div class="logo-text">AssentTag Chat</div>
-        </div>
-        <div class="nav-right" style="display:flex; align-items:center; gap:20px;">
-            <a href="/login/messages/" class="nav-btn" style="color:var(--neon-blue); text-decoration:none; font-weight:600; padding:8px 15px; border:1px solid var(--neon-blue); border-radius:5px; transition:0.3s;" onmouseover="this.style.background='rgba(0, 243, 255, 0.1)'" onmouseout="this.style.background='transparent'">Back &rarr;</a>
-            <div style="display:flex; align-items:center; gap:10px;">
-                <span class="profile-name" style="font-weight: 700; color: #fff; font-size: 0.9rem;">{{ current_user.first_name }}</span>
-                <a href="/register/profile/"><img src="{% if current_user.photo %}/media/{{ current_user.photo }}{% else %}/static/assets/user_icon.svg{% endif %}" class="avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--neon-blue); object-fit: cover;" onerror="this.onerror=null; this.src='/static/assets/user_icon.svg';"></a>
-            </div>
-        </div>
+    <nav class="chat-nav" aria-label="Chat navigation">
+        <a class="chat-brand" href="/index/index3/"><img src="/static/assets/assenttag-logo.png" alt="">AssentTag</a>
+        <a class="chat-back" href="/login/messages/">← All conversations</a>
     </nav>
-    
-    <div class="chat-overlay">
-        <figure class="at-chat-photo"><img src="/static/assets/page-chat.webp" alt="A person having a private conversation on a real smartphone" width="1536" height="1024"></figure>
-        <div class="chat-target-header">
-            <div class="header-left">
-                <img class="avatar-circle" style="width:45px; height:45px;" src="/media/{{ target_user.photo }}" onerror="this.onerror=null; this.src='/static/assets/user_icon.svg';">
-                <div>
-                    <span class="header-title">{{ target_user.first_name }} {{ target_user.last_name }}</span>
-                    <span class="header-sub">@{{ target_user.first_name|lower }}</span>
-                </div>
+    <main class="conversation" data-chat-url="/login/chat/{{ target_user.register_id }}/" data-server-now="{{ server_now }}">
+        <header class="conversation-header">
+            <div class="contact">
+                <img src="{% if target_user.photo %}/media/{{ target_user.photo }}{% else %}/static/assets/user_icon.svg{% endif %}" alt="" onerror="this.onerror=null;this.src='/static/assets/user_icon.svg'">
+                <div><h1>{{ target_user.first_name }} {{ target_user.last_name }}</h1><p>Mutual followers · Personal conversation</p></div>
             </div>
-            <div class="e2e-badge">
-                <i class="fas fa-lock"></i> End-to-End Encrypted
-            </div>
-        </div>
-
-        <div class="chat-body" id="cb">
-            {% for msg in chat_messages %}
-                {% if "[DECOY_FLAG]" in msg.content %}
-                    {% if msg.sender_id == current_user_id %}
-                        <!-- Sender (Hacker) sees normal message -->
-                        <div class="msg-container sent">
-                            <div class="msg-box">
-                                {{ msg.content|slice:"13:" }}
-                                <div style="font-size:0.65rem; color:#888; text-align:right; margin-top:4px;">{{ msg.timestamp|date:"M d, Y, g:i A" }}</div>
-                            </div>
-                        </div>
-                    {% else %}
-                        <!-- Receiver sees Onyx/Red Biohazard Warning -->
-                        <div class="msg-container recv" style="width:100%; max-width:100%;">
-                            <div class="msg-box" style="border: 2px solid #ff0044; background: #0a0a0c; width: 100%; box-shadow: 0 0 20px rgba(255,0,68,0.4);">
-                                <div style="color: #ff0044; font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: 0.9rem; margin-bottom: 5px; text-transform: uppercase; letter-spacing:1px; display:flex; align-items:center; gap:8px;">
-                                    <i class="fas fa-radiation-alt" style="font-size:1.2rem;"></i> APEX BREACH
-                                </div>
-                                <div style="color: #fff; font-size: 1rem; line-height:1.4;">
-                                    BEHAVIORAL BIOMETRIC MISMATCH.<br>
-                                    PHYSICAL DEVICE COMPROMISED.<br>
-                                    <b style="color:#ff0044; text-transform:uppercase;">Do Not Send Funds.</b>
-                                </div>
-                                <div style="font-size: 0.8rem; color: rgba(255,255,255,0.4); margin-top: 10px; font-style: italic; border-top:1px solid rgba(255,0,68,0.3); padding-top:5px;">
-                                    Extortion attempt neutralized: "{{ msg.content|slice:"13:" }}"
-                                </div>
-                            </div>
-                        </div>
-                    {% endif %}
-                {% else %}
-                    <!-- Normal message tracking -->
-                    <div class="msg-container {% if msg.sender_id == current_user_id %}sent{% else %}recv{% endif %}">
-                        <div class="msg-box" style="{% if msg.is_disappearing %}border: 1px dashed var(--neon-purple);{% endif %}">
-                            {{ msg.content }}
-                            <div style="font-size:0.65rem; color:#888; text-align:right; margin-top:4px; display:flex; justify-content:flex-end; align-items:center; gap:5px;">
-                                {% if msg.is_disappearing %}
-                                    <i class="fas fa-history" style="color:var(--neon-purple);" title="Disappearing Message"></i>
-                                {% endif %}
-                                {{ msg.timestamp|date:"M d, Y, g:i A" }}
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
-            {% endfor %}
-            {% if not chat_messages %}
-                <div style="text-align:center; padding-top:40%; color:#aaa; font-size:0.9rem;">
-                    Send a message to start chatting with {{ target_user.first_name }}!
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="chat-footer">
-            <form method="POST" action="/login/chat/{{ target_user.register_id }}/" style="margin:0; display: flex; flex-direction: column; gap: 10px;">
+            <button class="timer-chip" type="button" data-open-timer aria-haspopup="dialog" aria-controls="timer-dialog" aria-label="Disappearing messages settings">
+                <svg class="timer-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="14" r="8"/><path d="M9 2h6M12 2v4m6 2 2-2m-8 4v5l3 2"/></svg>
+                <span class="chip-label">Message timer</span><strong data-timer-label>{{ timer.label }}</strong>
+            </button>
+        </header>
+        <div class="timer-banner"><span data-timer-description>{% if timer.duration %}New messages disappear {{ timer.label }} after sending.{% else %}Disappearing messages are off. New messages stay in this chat.{% endif %}</span> <button type="button" data-open-timer>Change</button></div>
+        <section class="chat-body" id="cb" aria-label="Messages">{% include 'login/chat_messages.html' %}</section>
+        <footer class="chat-composer">
+            <div class="composer-top"><button class="timer-link" type="button" data-open-timer><svg class="timer-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="14" r="8"/><path d="M9 2h6M12 2v4m0 4v5l3 2"/></svg>Disappearing messages · <span data-timer-label>{{ timer.label }}</span></button><span class="composer-hint">Your next message follows this timer</span></div>
+            <form method="POST" action="/login/chat/{{ target_user.register_id }}/" id="message-form">
                 {% csrf_token %}
-                <div class="footer-controls" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-                    <div class="disappear-label">
-                        <i class="fas fa-stopwatch" style="color: var(--neon-purple);"></i> Auto-Delete:
-                        <select name="expire_timeline" class="timeline-select">
-                            <option value="0">Off (Keep)</option>
-                            <option value="24h">24 Hours</option>
-                            <option value="7d">7 Days</option>
-                            <option value="30d">30 Days</option>
-                            <option value="1y">1 Year</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="input-wrapper">
-                    <input type="hidden" name="is_disappearing" id="disappearing_toggle" value="false">
-                    <input type="text" name="content" placeholder="Message..." required autocomplete="off" style="flex:1; background:transparent; border:none; color:#fff; padding:10px; outline:none;">
-                    <button type="submit" class="btn-send">Send</button>
-                </div>
+                <div class="composer-input"><label class="sr-only" for="message-content">Message</label><input id="message-content" name="content" type="text" placeholder="Write a message…" required autocomplete="off" maxlength="10000"><button type="submit" class="send-button">Send ↑</button></div>
             </form>
-        </div>
-        
-        <!-- Scroll Down Button -->
-        <div class="fab-scroll" id="scrollBtn" onclick="scrollToBottom()">&#8595;</div>
-    </div>
-
-    {% if msg %}
-    <script>Swal.fire({ title: 'System', text: '{{ msg }}', icon: '{{ msg_type }}', background: '#161b22', color: '#fff' }).then(() => { {% if redirect_url %} window.location.href = "{{ redirect_url }}"; {% endif %} });</script>
-    {% endif %}
-    
-    <script>
-        const chatBody = document.getElementById('cb');
-        const scrollBtn = document.getElementById('scrollBtn');
-        
-        function scrollToBottom() {
-            chatBody.scrollTo({ top: chatBody.scrollHeight, behavior: 'smooth' });
-        }
-        
-        // Initial snap to bottom
-        chatBody.scrollTop = chatBody.scrollHeight;
-        
-        // Toggle visibility of scroll down button based on position
-        chatBody.addEventListener('scroll', function() {
-            if (chatBody.scrollHeight - chatBody.scrollTop - chatBody.clientHeight > 150) {
-                scrollBtn.classList.add('visible');
-            } else {
-                scrollBtn.classList.remove('visible');
-            }
-        });
-
-        document.querySelector('.timeline-select').addEventListener('change', function(e) {
-            document.getElementById('disappearing_toggle').value = e.target.value !== "0" ? "true" : "false";
-        });
-    </script>
+            <p class="chat-status" role="status" aria-live="polite" id="chat-status"></p>
+        </footer>
+    </main>
+    <dialog class="timer-dialog" id="timer-dialog" aria-labelledby="timer-title" aria-describedby="timer-description">
+        <form class="dialog-content" id="timer-form">
+            <div class="dialog-heading"><h2 id="timer-title">Disappearing messages</h2><button class="dialog-close" type="button" data-close-timer aria-label="Close settings">×</button></div>
+            <p class="dialog-description" id="timer-description">Choose how long new messages stay in this conversation. The timer starts when a message is sent, even if it hasn't been read.</p>
+            <fieldset class="timer-options"><legend class="sr-only">Message duration</legend>
+            {% for seconds, label in timer_choices %}<label class="timer-option"><input type="radio" name="duration" value="{{ seconds }}" {% if seconds == timer.duration %}checked{% endif %}><span>{{ label }}</span>{% if seconds == 60 %}<small>Quick timer</small>{% elif seconds == 0 %}<small>Keep new messages</small>{% endif %}</label>{% endfor %}
+            </fieldset>
+            <p class="dialog-note">Applies to both people. Changing or turning off the timer doesn't change messages already sent. A screenshot or saved copy can still remain.</p>
+            <p class="dialog-error" id="timer-error" role="alert"></p>
+            <div class="dialog-actions"><button type="button" data-close-timer>Cancel</button><button class="save-timer" type="submit">Save timer</button></div>
+        </form>
+    </dialog>
+    {{ timer|json_script:'initial-chat-timer' }}
+    <script src="/static/js/chat-timers.js" defer></script>
 </body>
 </html>
