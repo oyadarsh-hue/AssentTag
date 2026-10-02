@@ -77,14 +77,38 @@ class FacePrivacyTests(SimpleTestCase):
         self.assertEqual(mask[126,180],255)
         self.assertEqual(mask[190,100],0)  # Do not widen the entire jaw into a fixed shape.
 
-    def test_forehead_tapers_at_temples_without_hair_spikes(self):
+    def test_forehead_follows_detected_skin_hair_transition(self):
         _,points=self.landmark_shape()
         frame=np.full_like(self.frame,150)
         frame[:85]=15  # Distinct hair-to-skin boundary.
         forehead=_forehead_points(frame,points,np.array([0.,1.]),82)
-        self.assertGreater(forehead[0,1],forehead[4,1])
-        self.assertGreater(forehead[-1,1],forehead[5,1])
-        self.assertGreaterEqual(forehead[:,1].min(),79)
+        self.assertTrue(np.all((forehead[:,1]>=83)&(forehead[:,1]<=86)))
+
+    def test_fitted_mask_does_not_feather_into_unselected_pixels(self):
+        shape,_=self.landmark_shape()
+        with patch('image.face_privacy.predictor',return_value=shape):
+            mask=face_mask(self.frame,self.face)
+            before=self.frame.copy()
+            blur_private_face(self.frame,self.face)
+        self.assertTrue(set(np.unique(mask)).issubset({0,255}))
+        self.assertTrue(np.array_equal(self.frame[mask==0],before[mask==0]))
+
+    def test_colour_segmentation_failure_keeps_features_private(self):
+        import cv2
+        shape,points=self.landmark_shape()
+        with patch('image.face_privacy.predictor',return_value=shape), patch('image.face_privacy.cv2.grabCut',side_effect=cv2.error('failure')):
+            mask=face_mask(self.frame,self.face)
+        for x,y in points:
+            self.assertEqual(mask[y,x],255)
+
+    def test_repeated_requests_keep_identical_contours(self):
+        import cv2
+        shape,_=self.landmark_shape()
+        with patch('image.face_privacy.predictor',return_value=shape):
+            expected=face_mask(self.frame,self.face)
+            for seed in (17,42,999):
+                cv2.setRNGSeed(seed)
+                self.assertTrue(np.array_equal(expected,face_mask(self.frame,self.face)))
 
 
 class CommentFlowTests(SimpleTestCase):

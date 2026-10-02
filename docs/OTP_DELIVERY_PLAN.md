@@ -10,7 +10,7 @@
 6. Missing configuration does not consume the resend quota. Actual send attempts are limited to five per session per hour.
 7. A successful check rechecks the follow relationship and sends the pending message. Delivery failure never bypasses verification.
 
-## Remaining activation step
+## Sender activation for a new installation
 
 The connected Codex Gmail plugin is not the running Django server's SMTP authorization. Its credentials cannot be exported into this project.
 

@@ -2,7 +2,11 @@
 import cv2
 import dlib
 import numpy as np
+from threading import Lock
 from face_utils import predictor, dlib_lock
+
+
+_segmentation_lock = Lock()
 
 
 def _smooth_outline(points, passes=2):
@@ -29,28 +33,80 @@ def _forehead_points(frame, landmarks, down, face_height):
         return np.median(lab[py-radius:py+radius+1, px-radius:px+radius+1], axis=(0,1))
 
     depths = []
-    # Hair reaches lower at the temples: do not project outer brow points as
-    # high as the center of the forehead (which produced pointed hair spikes).
-    position = np.linspace(0, 1, len(brows))
-    caps = face_height * (.08 + .40 * np.sin(np.pi*position)**.65)
+    # Follow the first sustained skin-to-hair transition independently at each
+    # brow. A fixed dome cropped forehead skin on some faces and covered hair
+    # on others. Use the last skin sample, not the third sample inside the hair.
     for index, brow in enumerate(brows):
         # Start above the eyebrow itself, so dark eyebrow hairs are not skin seeds.
         seed = sample(brow - down * face_height * .10)
         depth = face_height * .43
         misses = 0
         if seed is not None:
-            for distance in np.arange(face_height*.16, face_height*.53, max(1,face_height*.015)):
+            step = max(1, face_height*.01)
+            for distance in np.arange(face_height*.12, face_height*.60, step):
                 color = sample(brow - down * distance)
-                misses = misses+1 if color is None or np.linalg.norm(color-seed) > 34 else 0
+                misses = misses+1 if color is None or np.linalg.norm(color-seed) > 30 else 0
                 if misses >= 3:
-                    # Retain a small overlap at the boundary instead of leaving a skin strip.
-                    depth = max(face_height*.22, distance)
+                    depth = max(face_height*.06, distance-2*step)
                     break
-        depths.append(min(depth, caps[index]))
-    # Smooth isolated lighting changes while retaining the individual's hairline slope.
-    depths = np.convolve(np.pad(depths, (1,1), mode='edge'), [1/3]*3, mode='valid')
-    depths = np.minimum(depths, caps)
-    return brows - depths[:,None]*down
+        depths.append(depth)
+    return brows - np.asarray(depths)[:,None]*down
+
+
+def _segment_outline(frame, landmarks, down, horizontal, face_height):
+    """Refine the upper silhouette locally; landmark features are hard seeds.
+
+    GrabCut learns foreground/background colours from this face, rather than
+    using a skin-colour threshold shared by people with different skin tones.
+    """
+    jaw = landmarks[:17]
+    brow = landmarks[17:27].mean(axis=0)
+    side = (jaw-brow) @ horizontal
+    top = np.array([brow+horizontal*side.min()-down*face_height*.70,
+                    brow+horizontal*side.max()-down*face_height*.70])
+    envelope = np.vstack((jaw, top[::-1]))
+    lo = np.maximum(0, np.floor(envelope.min(axis=0)-face_height*.12)).astype(int)
+    hi = np.minimum(frame.shape[1::-1], np.ceil(envelope.max(axis=0)+face_height*.12)).astype(int)
+    roi = frame[lo[1]:hi[1],lo[0]:hi[0]]
+    labels = np.full(roi.shape[:2], cv2.GC_BGD, np.uint8)
+    cv2.fillPoly(labels,[np.rint(envelope-lo).astype(np.int32)],cv2.GC_PR_FGD)
+    core = cv2.convexHull(np.rint(landmarks-lo).astype(np.int32))
+    cv2.fillConvexPoly(labels,core,cv2.GC_FGD)
+    lab = cv2.cvtColor(roi,cv2.COLOR_BGR2LAB)
+    seeds = landmarks[[19,20,23,24]]-down*face_height*.10-lo
+    samples = [lab[int(np.clip(p[1],0,roi.shape[0]-1)),int(np.clip(p[0],0,roi.shape[1]-1)),0]
+               for p in seeds]
+    skin_light = float(np.median(samples))
+    yy,xx = np.indices(roi.shape[:2])
+    above_brows = ((xx+lo[0]-brow[0])*down[0]+(yy+lo[1]-brow[1])*down[1]) < -face_height*.08
+    # Dark glasses are mandatory foreground; dark hair above the brows is
+    # background. Without separate seeds, glasses can teach GrabCut to keep hair.
+    skin_chroma = np.median([lab[int(np.clip(p[1],0,roi.shape[0]-1)),int(np.clip(p[0],0,roi.shape[1]-1)),1:]
+                             for p in seeds],axis=0)
+    chroma_distance = np.linalg.norm(lab[:,:,1:].astype(float)-skin_chroma,axis=2)
+    labels[above_brows & (lab[:,:,0] < skin_light*.70) & (chroma_distance>12)
+           & (labels!=cv2.GC_FGD)] = cv2.GC_BGD
+    forehead_skin = (above_brows & (labels==cv2.GC_PR_FGD)
+                     & (lab[:,:,0]>=skin_light*.40) & (chroma_distance<12))
+    labels[forehead_skin] = cv2.GC_FGD
+    # Border hair and background are samples for the competing colour model.
+    # GrabCut initializes its colour clusters randomly. The same photograph
+    # must keep the same boundary on every request, including concurrent ones.
+    with _segmentation_lock:
+        cv2.setRNGSeed(0)
+        cv2.grabCut(roi,labels,None,np.zeros((1,65),np.float64),
+                    np.zeros((1,65),np.float64),4,cv2.GC_INIT_WITH_MASK)
+    selected = np.uint8((labels==cv2.GC_FGD)|(labels==cv2.GC_PR_FGD))*255
+    contours,_ = cv2.findContours(selected,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+    if not contours:
+        raise ValueError('No face silhouette')
+    contour = max(contours,key=cv2.contourArea)
+    contour = cv2.approxPolyDP(contour,max(1,face_height*.006),True).reshape(-1,2)
+    selected.fill(0)
+    cv2.fillPoly(selected,[_smooth_outline(contour,passes=1)],255)
+    result = np.zeros(frame.shape[:2],np.uint8)
+    result[lo[1]:hi[1],lo[0]:hi[0]]=selected
+    return result
 
 
 def face_mask(frame, face):
@@ -94,33 +150,37 @@ def face_mask(frame, face):
     mask = np.zeros((height, width), dtype=np.uint8)
     cv2.fillPoly(mask, [np.rint(points).astype(np.int32)], 255)
     if fitted:
+        try:
+            mask = _segment_outline(frame,landmarks,down,horizontal,face_height)
+        except (cv2.error, ValueError):
+            pass  # Preserve the landmark mask if colour segmentation is ambiguous.
         # Keep brows, eyes, nose and lips fully opaque even for unusual face poses.
         cv2.fillConvexPoly(mask, cv2.convexHull(np.rint(landmarks[17:]).astype(np.int32)), 255)
         # Spectacle frames/arms can extend beyond facial landmarks at the temples.
         # Widen only this narrow eye band, in the face's tilted coordinate system.
         center = landmarks[36:48].mean(axis=0)
         jaw_x = (landmarks[:17]-center) @ horizontal
-        brow_y = (landmarks[17:27]-center) @ down
         eye_y = (landmarks[36:48]-center) @ down
-        left, right = jaw_x.min()-span*.07, jaw_x.max()+span*.07
-        top, bottom = brow_y.min()-face_height*.05, eye_y.max()+face_height*.15
-        guard = np.array([center+horizontal*((left+right)/2+(right-left)/2*np.cos(t))
-                          +down*((top+bottom)/2+(bottom-top)/2*np.sin(t))
-                          for t in np.linspace(0,2*np.pi,40,endpoint=False)])
-        # Join the guard to the fitted outline so protection has a continuous
-        # silhouette rather than rectangular wings beside the eyes.
-        outline = np.vstack((points, guard, landmarks[17:]))
-        hull = cv2.convexHull(np.rint(outline).astype(np.int32)).reshape(-1,2)
-        mask.fill(0)
-        cv2.fillPoly(mask, [_smooth_outline(hull)], 255)
+        left, right = jaw_x.min()-span*.09, jaw_x.max()+span*.09
+        top, bottom = eye_y.min()-face_height*.025, eye_y.max()+face_height*.25
+        guard = np.array([center+horizontal*a+down*b for a,b in
+                          [(left+3,top),(right-3,top),(right,top+3),(right,bottom-3),
+                           (right-3,bottom),(left+3,bottom),(left,bottom-3),(left,top+3)]])
+        # Keep the individual hairline's concavities; a convex hull bridged
+        # across hair and produced an oversized generic oval.
+        lower_hull = cv2.convexHull(np.rint(np.vstack((guard,landmarks))).astype(np.int32)).reshape(-1,2)
+        cv2.fillPoly(mask, [_smooth_outline(lower_hull,passes=1)], 255)
         # Rounded edges must never uncover the actual eyes, brows, nose or lips.
         cv2.fillConvexPoly(mask, cv2.convexHull(np.rint(landmarks).astype(np.int32)), 255)
-    padding = max(2, round(min(w,h)*(.015 if fitted else .045)))
-    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (padding*2+1, padding*2+1))
-    mask = cv2.dilate(mask, kernel)
-    # Feather only OUTSIDE the opaque core: facial detail is never blended back in.
-    feather = cv2.GaussianBlur(mask, (padding*2+1, padding*2+1), 0)
-    return np.maximum(mask, feather)
+        contours,_ = cv2.findContours(mask,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+        contour = max(contours,key=cv2.contourArea)
+        contour = cv2.approxPolyDP(contour,max(1,face_height*.006),True).reshape(-1,2)
+        mask.fill(0)
+        cv2.fillPoly(mask,[_smooth_outline(contour,passes=2)],255)
+        cv2.fillConvexPoly(mask,cv2.convexHull(np.rint(landmarks).astype(np.int32)),255)
+    # No outward dilation or feathering: every pixel outside the selected
+    # facial contour remains unchanged. Facial features remain fully opaque.
+    return mask
 
 
 def blur_private_face(frame, face):

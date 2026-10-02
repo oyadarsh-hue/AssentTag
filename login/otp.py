@@ -85,9 +85,10 @@ def issue_challenge(session, user):
         message.attach_alternative(html, 'text/html')
         if message.send(fail_silently=False) != 1:
             raise RuntimeError('Email backend did not accept the message')
-    except Exception:
+    except Exception as exc:
         # Do not expose SMTP credentials, codes, or message contents in logs.
-        logger.warning('AssentTag verification email delivery failed')
+        logger.warning('AssentTag verification email delivery failed: type=%s smtp_code=%s errno=%s',
+                       type(exc).__name__, getattr(exc,'smtp_code',None), getattr(exc,'errno',None))
         return False, 'We could not send your verification email. Please retry or contact the administrator.'
     nonce = secrets.token_hex(16)
     # SMTP can take time: give the user five full minutes after acceptance.

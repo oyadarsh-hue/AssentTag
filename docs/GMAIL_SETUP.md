@@ -15,6 +15,16 @@ For a masked desktop setup form, run `python setup_email.py --gui`. The form exp
 
 The Gmail connector used in Codex does not provide SMTP credentials to the running Django application. The application sends through Django's configured SMTP backend. OS environment variables take precedence over `.env`; `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, and `DEFAULT_FROM_EMAIL` must match the intended sender.
 
+## Diagnose a configured sender that cannot deliver
+
+Run `python manage.py check_email --connect` in the same environment that starts Django. This checks network access, TLS and authentication without sending an email or printing credentials. If it reports blocked network access (Windows error 10013), start Django from a normal local terminal with outbound SMTP access:
+
+```powershell
+python manage.py runserver 127.0.0.1:8010 --noreload
+```
+
+A server launched inside a network-restricted automation sandbox may fail even when the saved Gmail credentials work elsewhere. Restart the actual server after changing its environment. Authentication failures (SMTP 535) require updating the App Password; do not replace working credentials for a network-permission failure. Delivery diagnostics log only the exception type and numeric error codes, never email contents or credentials.
+
 The old fixed `123456` token, code logging, and disk email fallback have been removed. Registration's existing biometric enrollment and login behavior remain unchanged; this OTP verifies a financial-keyword message, not an actual money transfer.
 
 Implementation reference: [Django email configuration](https://docs.djangoproject.com/en/4.2/topics/email/).

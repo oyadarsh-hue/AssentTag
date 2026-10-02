@@ -102,6 +102,21 @@ class EmailOTPTests(SimpleTestCase):
             self.assertFalse(issue_challenge(self.session, self.user)[0])
         self.assertNotIn(CHALLENGE_KEY, self.session)
 
+    def test_delivery_diagnostics_never_log_smtp_payload(self):
+        import smtplib
+        error=smtplib.SMTPAuthenticationError(535,b'private password or mail payload')
+        with patch('login.otp.EmailMultiAlternatives.send',side_effect=error), self.assertLogs('login.otp',level='WARNING') as logs:
+            self.assertFalse(issue_challenge(self.session,self.user)[0])
+        self.assertIn('smtp_code=535',logs.output[0])
+        self.assertNotIn('private password',logs.output[0])
+
+    def test_network_denial_has_actionable_safe_diagnostic(self):
+        from login.management.commands.check_email import Command
+        error=OSError(10013,'private details')
+        result=Command.delivery_error(error)
+        self.assertIn('network access is blocked',result)
+        self.assertNotIn('private details',result)
+
     @override_settings(EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend', EMAIL_HOST_USER='', EMAIL_HOST_PASSWORD='')
     def test_missing_credentials(self):
         self.assertFalse(issue_challenge(self.session, self.user)[0])
