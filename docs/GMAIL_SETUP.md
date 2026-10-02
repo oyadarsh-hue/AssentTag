@@ -4,6 +4,8 @@ The financial-message verification flow sends a random six-digit code to the log
 
 ## Complete the local Gmail setup
 
+For a masked desktop setup form, run `python setup_email.py --gui`. The form explains the one-time credential step, saves it locally, and automatically sends a test. OTPs themselves are then generated and emailed by the running application on demand.
+
 1. Enable [Google 2-Step Verification](https://support.google.com/accounts/answer/185833?hl=en).
 2. Create an App Password at [Google Account App Passwords](https://myaccount.google.com/apppasswords). Some managed accounts do not offer this option; consult your administrator in that case.
 3. Run `python setup_email.py --email adarsh22saji@gmail.com --test` in this project. Enter the App Password privately at the terminal prompt. This fills in the sender address and automatically sends a delivery test after saving. Do not use your normal Google password and do not paste the App Password into chat. Use `python setup_email.py` if you prefer to choose another sender and test separately.

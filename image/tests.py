@@ -3,7 +3,7 @@ from types import SimpleNamespace
 import numpy as np
 from django.test import SimpleTestCase, RequestFactory
 from django.contrib.messages.storage.fallback import FallbackStorage
-from image.face_privacy import face_mask, blur_private_face
+from image.face_privacy import face_mask, blur_private_face, _forehead_points
 
 
 class FacePrivacyTests(SimpleTestCase):
@@ -76,6 +76,15 @@ class FacePrivacyTests(SimpleTestCase):
         self.assertEqual(mask[126,100],255)
         self.assertEqual(mask[126,180],255)
         self.assertEqual(mask[190,100],0)  # Do not widen the entire jaw into a fixed shape.
+
+    def test_forehead_tapers_at_temples_without_hair_spikes(self):
+        _,points=self.landmark_shape()
+        frame=np.full_like(self.frame,150)
+        frame[:85]=15  # Distinct hair-to-skin boundary.
+        forehead=_forehead_points(frame,points,np.array([0.,1.]),82)
+        self.assertGreater(forehead[0,1],forehead[4,1])
+        self.assertGreater(forehead[-1,1],forehead[5,1])
+        self.assertGreaterEqual(forehead[:,1].min(),79)
 
 
 class CommentFlowTests(SimpleTestCase):

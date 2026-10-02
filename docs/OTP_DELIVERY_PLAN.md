@@ -22,6 +22,8 @@ python setup_email.py --email adarsh22saji@gmail.com --test
 
 This stores local configuration in `.env` and sends a delivery test. Restart each running Django server afterwards. Configure each local checkout privately; `.env` is intentionally excluded from both Git and project synchronization.
 
+For a desktop form with a masked password field instead of a terminal prompt, use `python setup_email.py --gui`. This is a one-time sender setup, not a manual step for each OTP request.
+
 If this Google account cannot offer App Passwords, a separately configured Gmail OAuth application or a transactional email provider is needed. Both require their own account authorization/credentials; neither can be replaced with a fixed OTP or a simulated success response.
 
 ## Acceptance check
