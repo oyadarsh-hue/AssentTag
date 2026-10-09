@@ -22,8 +22,11 @@ from django.conf.urls.static import static
 
 
 from django.views.generic import RedirectView
+from .assistant_views import assistant_api
 
 urlpatterns = [
+    path('api/assistant/status/', assistant_api),
+    path('api/assistant/chat/', assistant_api),
     path('admin/', admin.site.urls),
      path('complaint/',include('complaint.url')),
      path('feedback/',include('feedback.url')),

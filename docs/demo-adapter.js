@@ -1,13 +1,16 @@
 /* Backend-only adapter. Original templates, layout, inline animations and shared
-   visual-experience.js remain intact. Nothing is uploaded or sent to a server. */
+   visual-experience.js remain intact. App actions are simulated. The assistant
+   may connect to its separately configured real API with the user's chat text. */
 (() => {
   'use strict';
   const page = location.pathname.split('/').pop() || 'index.html';
   const aliases={feed:'demo.html',login:'login.html',register:'register.html',profile:'profile.html',explore:'explore.html',notifications:'notifications.html',upload:'upload.html'};
   if(page==='demo.html' && aliases[location.hash.slice(1)] && location.hash!=='#feed') location.replace(aliases[location.hash.slice(1)]);
   const people=[{register_id:2,first_name:'Maya',last_name:'River',email:'maya@example.com',photo:'assets/user_icon.svg'}, {register_id:3,first_name:'Alex',last_name:'Stone',email:'alex@example.com',photo:'assets/user_icon.svg'}];
-  window.fetch = async input => {
+  const nativeFetch = window.fetch.bind(window);
+  window.fetch = async (input, options) => {
     const url=String(input?.url || input);
+    if(new URL(url, location.href).pathname.startsWith('/api/assistant/')) return nativeFetch(input, options);
     let data={status:'demo',message:'UI preview only. No server action was performed.'};
     if(url.includes('ajax_user_posts'))data={posts:[{url:'static/assets/photo-index-hero-v2.webp',caption:'A moment shared thoughtfully.'},{url:'static/assets/photo-consent.webp',caption:'Every face has a say.'},{url:'static/assets/page-stories.webp',caption:'Sample story'}]};
     if(url.includes('get_likers'))data={status:'success',likers:people};
@@ -44,7 +47,7 @@
     }
   },true);
   document.addEventListener('submit',e=>{
-    if(e.target.matches('#message-form,#timer-form'))return;
+    if(e.target.matches('#message-form,#timer-form') || e.target.closest('[data-at-assistant]'))return;
     e.preventDefault();e.stopImmediatePropagation();
     if(page==='login.html'){location.href=e.target.querySelector('[name=role]')?.value==='admin'?'admin.html':'demo.html';return;}
     if(page==='register.html'){tell('Registration layout preview. Use Dashboard in the preview notice to explore.');return;}

@@ -79,7 +79,7 @@ def prepare_input(match):
 manifest={}
 def export(template,filename,extra=None):
     source=engine.get_template(template).render(Context({**base,**(extra or {})}))
-    text=rewrite(source)
+    text=rewrite(source).replace('data-site-mode="app"', 'data-site-mode="preview"')
     text=re.sub(r'<form\b([^>]*)>',lambda m:'<form'+re.sub(r'\s(?:action|method)="[^"]*"','',m[1])+' method="dialog" novalidate data-demo-form>',text)
     if filename in ('login.html','register.html','edit-profile.html'):
         text=re.sub(r'<input\b[^>]*>',prepare_input,text)
@@ -105,7 +105,7 @@ for file in (ROOT/'static/assets').iterdir():
         shutil.copy2(file,assets/file.name)
         if file.suffix=='.svg':
             (assets/file.name).write_text('\n'.join(line.rstrip() for line in file.read_text(encoding='utf-8').splitlines())+'\n',encoding='utf-8')
-for kind,names in {'css':['visual-experience.css','color-vibe.css','chat-timers.css'],'js':['visual-experience.js','success-notices.js']}.items():
+for kind,names in {'css':['visual-experience.css','color-vibe.css','chat-timers.css','assistant.css'],'js':['visual-experience.js','success-notices.js','assistant-config.js','assistant.js']}.items():
     target=OUT/'static'/kind
     target.mkdir(exist_ok=True)
     for name in names:

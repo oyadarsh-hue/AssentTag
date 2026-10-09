@@ -1,0 +1,2 @@
+# Only needed for a hosted production WSGI server. The local launcher uses stdlib.
+waitress>=3.0.2,<4

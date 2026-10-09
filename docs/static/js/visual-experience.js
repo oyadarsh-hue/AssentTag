@@ -130,7 +130,7 @@
     const watch = root => {
       const elements = [...(root.matches?.(selector) ? [root] : []), ...root.querySelectorAll(selector)];
       elements.forEach((el, index) => {
-        if (observed.has(el)) return;
+        if (observed.has(el) || el.closest('[data-at-assistant]')) return;
         observed.add(el); prepareHeading(el); el.style.setProperty('--at-delay', `${Math.min(index % 5 * 65, 260)}ms`); observer.observe(el);
       });
     };

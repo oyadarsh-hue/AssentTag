@@ -13,6 +13,14 @@ Share this link on LinkedIn or open it on any device. The GitHub Pages showcase 
 
 The public site uses the **original project templates, layouts and animations**, including the dashboard scroll transitions, 3D Explore and profile Time-Stream. It is built into `docs/`. Rebuild it with `python tools/build_ui_demo.py` (Django required); this exporter reads only templates and allowlisted design assets, never the database or uploaded user photos. GitHub Pages publishes `main` → `/docs`.
 
+## Assent personal assistant
+
+Every full page includes the animated dot helper, site guide, and a personal task
+list saved on the device. The owner requires **GPT-7 or higher**; no eligible model
+is currently available to the configured account, so AI chat remains disabled
+without falling back to an older model. See [assistant setup and current status](ASSISTANT.md)
+for the isolated Python service, privacy details, tests, and prepared Render hosting.
+
 ## Open the full project UI locally
 
 **[Open AssentTag — full website](http://127.0.0.1:8010/)** · [Login](http://127.0.0.1:8010/login/login/) · [Messages](http://127.0.0.1:8010/login/messages/)
