@@ -88,7 +88,7 @@
   };
   syncThemeButton();
   themeButton?.addEventListener('click', () => requestAnimationFrame(syncThemeButton));
-  const headingSelector = 'h1,h2,h3,.panel-heading,.profile-name,.section-title';
+  const headingSelector = 'h1,h2,h3,.panel-heading,.profile-name,.section-title,.cap-title,.universe-title';
   const selector = `section, .feature-box, .feature-card, .glass-panel, .post-card, .profile-card, .form-card, .otp-card, .auth-container, .stat-card, .cap-block, .notification-card, .contact-item, .at-pathway, .at-step, .at-workflow-chapter, ${headingSelector}, footer`;
   const prepareHeading = el => {
     if (reducedMotion.matches || !el.matches(headingSelector) || el.dataset.atWordsReady || el.matches('.ghost-text-content,[contenteditable]')) return;
