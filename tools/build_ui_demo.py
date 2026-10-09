@@ -105,7 +105,7 @@ for file in (ROOT/'static/assets').iterdir():
         shutil.copy2(file,assets/file.name)
         if file.suffix=='.svg':
             (assets/file.name).write_text('\n'.join(line.rstrip() for line in file.read_text(encoding='utf-8').splitlines())+'\n',encoding='utf-8')
-for kind,names in {'css':['visual-experience.css','chat-timers.css'],'js':['visual-experience.js','success-notices.js']}.items():
+for kind,names in {'css':['visual-experience.css','color-vibe.css','chat-timers.css'],'js':['visual-experience.js','success-notices.js']}.items():
     target=OUT/'static'/kind
     target.mkdir(exist_ok=True)
     for name in names:

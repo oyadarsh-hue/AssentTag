@@ -101,7 +101,7 @@ For a one-click local launch, double-click **Start AssentTag.cmd**. It opens `ht
 
 For detailed token system, UI typography, spatial grid, and "The Veil" motion design specifications, see [DESIGN.md](DESIGN.md).
 
-The shared colorful visual layer is in `static/css/visual-experience.css` and `static/js/visual-experience.js`, included by every full-page template. Generated logo and image assets are kept in `static/assets/`. Motion respects the device's reduced-motion setting and adds no animation toggle.
+The shared visual layer is in `static/css/visual-experience.css` and `static/js/visual-experience.js`, included by every full-page template. The additional `static/css/color-vibe.css` layer adds cyan, violet, coral and gold accents, larger landing typography, animated gradient text, and colorful cards and controls. It includes dark, light, reduced-motion and forced-colors treatments and is also exported into the GitHub Pages demo. Generated logo and image assets are kept in `static/assets/`.
 
 For real Gmail OTP delivery, follow [Gmail setup](docs/GMAIL_SETUP.md). Run `python setup_email.py` to enter a Gmail App Password privately, restart Django, then use `python manage.py check_email --send-to YOUR_ADDRESS` to test delivery. A connected Codex Gmail account does not configure the application's SMTP sender automatically.
 
