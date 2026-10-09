@@ -1,3 +1,2 @@
-/* Public connection settings only. NEVER put an API key or access code here.
-   Set backend to the HTTPS origin of assistant_service when it is hosted. */
-window.ASSENT_ASSISTANT_CONFIG = Object.freeze({ backend: '', requestedModel: 'GPT-7 or higher' });
+/* Public navigation only. The private service must be running on this computer. */
+window.ASSENT_ASSISTANT_CONFIG = Object.freeze({ workspace: 'http://127.0.0.1:8040/' });

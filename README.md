@@ -15,11 +15,11 @@ The public site uses the **original project templates, layouts and animations**,
 
 ## Assent personal assistant
 
-Every full page includes the animated dot helper, site guide, and a personal task
-list saved on the device. The owner requires **GPT-7 or higher**; no eligible model
-is currently available to the configured account, so AI chat remains disabled
-without falling back to an older model. See [assistant setup and current status](ASSISTANT.md)
-for the isolated Python service, privacy details, tests, and prepared Render hosting.
+Every full page includes the animated **Ask Assent** launcher. It opens the full
+private workspace at `http://127.0.0.1:8040/` on the visitor's own computer,
+rather than an embedded site-guide popup. The private service must already be
+running. Its source, project files, and history are excluded from this public
+repository. See [launcher behavior and local setup](ASSISTANT.md).
 
 ## Open the full project UI locally
 

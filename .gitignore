@@ -45,3 +45,6 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+# Private assistant source, workspaces, and local history (never publish).
+/private_assistant/
